@@ -1,19 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Interstitial Ad Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubh Zone - Your App Universe</title>
+    <style>
+        /* --- Google Font --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-  <!-- Interstitial Ad Code -->
-  <script async type="application/javascript" src="https://a.pemsrv.com/ad-provider.js"></script>
+        /* --- Global Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Header / Navigation --- */
+        .header {
+            background-color: #1c1c1c;
+            padding: 1rem 0;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #00aaff;
+            text-decoration: none;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+        }
+
+        /* --- App Grid Section --- */
+        .app-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* --- App Card --- */
+        .app-card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 170, 255, 0.2);
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .app-info {
+            padding: 1.5rem;
+        }
+
+        .app-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-category {
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background-color: #00aaff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background-color: #0088cc;
+        }
+        
+        /* --- Footer --- */
+        .footer {
+            background-color: #1c1c1c;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+        }
+        
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+    </style>
 </head>
 <body>
-  <h1>Interstitial Ad Testing Page</h1>
 
-  <ins class="eas6a97888e33" data-zoneid="5673708"></ins>
-  <script>
-    (AdProvider = window.AdProvider || []).push({ serve: {} });
-  </script>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="#" class="logo">Shubh Zone</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Welcome to Shubh Zone</h1>
+            <p>Your new universe of amazing apps. Discover, download, and enjoy the best apps curated just for you.</p>
+        </section>
+
+        <!-- App Listing Section -->
+        <section class="app-section container">
+            <h2 class="section-title">Featured Apps</h2>
+            <div class="app-grid">
+
+                <!-- App Card 1 -->
+                <div class="app-card">
+                    <div class="app-icon">
+                        <img src="https://via.placeholder.com/300x200/00aaff/FFFFFF?text=App+Icon+1" alt="App Icon">
+                    </div>
+                    <div class="app-info">
+                        <h3>Photo Editor Pro</h3>
+                        <p class="app-category">Photography</p>
+                        <a href="#" class="download-btn">Download</a>
+                    </div>
+                </div>
+
+                <!-- App Card 2 -->
+                <div class="app-card">
+                    <div class="app-icon">
+                        <img src="https://via.placeholder.com/300x200/e94560/FFFFFF?text=App+Icon+2" alt="App Icon">
+                    </div>
+                    <div class="app-info">
+                        <h3>Task Manager</h3>
+                        <p class="app-category">Productivity</p>
+                        <a href="#" class="download-btn">Download</a>
+                    </div>
+                </div>
+
+                <!-- App Card 3 -->
+                <div class="app-card">
+                    <div class="app-icon">
+                        <img src="https://via.placeholder.com/300x200/50c878/FFFFFF?text=App+Icon+3" alt="App Icon">
+                    </div>
+                    <div class="app-info">
+                        <h3>Cloud Storage</h3>
+                        <p class="app-category">Utility</p>
+                        <a href="#" class="download-btn">Download</a>
+                    </div>
+                </div>
+                
+                <!-- App Card 4 -->
+                <div class="app-card">
+                    <div class="app-icon">
+                        <img src="https://via.placeholder.com/300x200/f0a500/FFFFFF?text=App+Icon+4" alt="App Icon">
+                    </div>
+                    <div class="app-info">
+                        <h3>Fitness Tracker</h3>
+                        <p class="app-category">Health & Fitness</p>
+                        <a href="#" class="download-btn">Download</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Copyright © 2025 Shubh Zone - All Rights Reserved.</p>
+    </footer>
+
 </body>
 </html>
