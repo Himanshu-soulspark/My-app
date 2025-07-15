@@ -1,233 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shubh Zone - Your App Universe</title>
-
-  <!-- MONETAG VERIFICATION CODE - DO NOT REMOVE -->
-  <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38" />
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #121212;
-      color: #ffffff;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .header {
-      background-color: #1c1c1c;
-      padding: 1rem 0;
-      border-bottom: 1px solid #333;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #00aaff;
-      text-decoration: none;
-    }
-
-    .hero {
-      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop') no-repeat center center/cover;
-      height: 60vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 20px;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      max-width: 600px;
-    }
-
-    .app-section {
-      padding: 4rem 0;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 3rem;
-    }
-
-    .app-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-    }
-
-    .app-card {
-      background-color: #1e1e1e;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #333;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .app-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 20px rgba(0, 170, 255, 0.2);
-    }
-
-    .app-icon img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .app-info {
-      padding: 1.5rem;
-    }
-
-    .app-info h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .app-category {
-      color: #aaa;
-      margin-bottom: 1rem;
-    }
-
-    .download-btn {
-      display: inline-block;
-      background-color: #00aaff;
-      color: #ffffff;
-      padding: 10px 20px;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background-color 0.3s ease;
-    }
-
-    .download-btn:hover {
-      background-color: #0088cc;
-    }
-
-    .footer {
-      background-color: #1c1c1c;
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 2rem;
-      border-top: 1px solid #333;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 2.5rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubhzone - कमाएँ, बेचें, और वीडियो देखें</title>
+    
+    <!-- Monetag Verification Code -->
+    <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 20px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #77aaff 3px solid;
+        }
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            float: right;
+        }
+        header li {
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        #showcase {
+            min-height: 400px;
+            background: #333 url('https://via.placeholder.com/1500x400.png?text=Welcome+to+Shubhzone') no-repeat center center/cover;
+            color: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #showcase h1 {
+            font-size: 55px;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        #showcase p {
+            font-size: 20px;
+        }
+        #main {
+            padding-top: 30px;
+        }
+        .feature-box {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .feature-box h3 {
+            color: #333;
+        }
+        .feature-box input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .button {
+            display: inline-block;
+            background: #77aaff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background: #5588dd;
+        }
+        footer {
+            padding: 20px;
+            margin-top: 20px;
+            color: #fff;
+            background-color: #333;
+            text-align: center;
+        }
+        .owner-info {
+            padding: 20px;
+            background: #e2e2e2;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Header -->
-  <header class="header">
-    <nav class="navbar container">
-      <a href="#" class="logo">Shubh Zone</a>
-    </nav>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Welcome to Shubh Zone</h1>
-    <p>Your new universe of amazing apps. Discover, download, and enjoy the best apps curated just for you.</p>
-  </section>
-
-  <!-- Featured Apps -->
-  <section class="app-section container">
-    <h2 class="section-title">Featured Apps</h2>
-    <div class="app-grid">
-
-      <!-- App 1 -->
-      <div class="app-card">
-        <div class="app-icon">
-          <img src="https://via.placeholder.com/300x200/00aaff/FFFFFF?text=App+1" alt="App 1">
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><a href="#">Shubhzone</a></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="current"><a href="#">होम</a></li>
+                    <li><a href="#features">फीचर्स</a></li>
+                    <li><a href="#contact">संपर्क</a></li>
+                </ul>
+            </nav>
         </div>
-        <div class="app-info">
-          <h3>Photo Editor Pro</h3>
-          <p class="app-category">Photography</p>
-          <a href="#" class="download-btn">Download</a>
-        </div>
-      </div>
+    </header>
 
-      <!-- App 2 -->
-      <div class="app-card">
-        <div class="app-icon">
-          <img src="https://via.placeholder.com/300x200/e94560/FFFFFF?text=App+2" alt="App 2">
+    <section id="showcase">
+        <div class="container">
+            <h1>वीडियो देखें और कमाएं</h1>
+            <p>Shubhzone में आपका स्वागत है! यहां आप वीडियो देखकर, वीडियो बेचकर और यूट्यूब वीडियो लिंक डालकर पैसे कमा सकते हैं।</p>
         </div>
-        <div class="app-info">
-          <h3>Task Manager</h3>
-          <p class="app-category">Productivity</p>
-          <a href="#" class="download-btn">Download</a>
-        </div>
-      </div>
+    </section>
 
-      <!-- App 3 -->
-      <div class="app-card">
-        <div class="app-icon">
-          <img src="https://via.placeholder.com/300x200/50c878/FFFFFF?text=App+3" alt="App 3">
-        </div>
-        <div class="app-info">
-          <h3>Cloud Storage</h3>
-          <p class="app-category">Utility</p>
-          <a href="#" class="download-btn">Download</a>
-        </div>
-      </div>
+    <div id="main" class="container">
+        <section id="features">
+            <div class="feature-box">
+                <h3>यूट्यूब वीडियो लिंक से कमाएं</h3>
+                <p>बस अपने पसंदीदा यूट्यूब वीडियो का लिंक यहां पेस्ट करें और कमाई शुरू करें।</p>
+                <form>
+                    <input type="text" placeholder="यूट्यूब वीडियो का लिंक यहाँ डालें...">
+                    <button type="submit" class="button">शुरू करें</button>
+                </form>
+            </div>
 
-      <!-- App 4 -->
-      <div class="app-card">
-        <div class="app-icon">
-          <img src="https://via.placeholder.com/300x200/f0a500/FFFFFF?text=App+4" alt="App 4">
-        </div>
-        <div class="app-info">
-          <h3>Fitness Tracker</h3>
-          <p class="app-category">Health & Fitness</p>
-          <a href="#" class="download-btn">Download</a>
-        </div>
-      </div>
+            <div class="feature-box">
+                <h3>अपने वीडियो बेचें</h3>
+                <p>क्या आप एक कंटेंट क्रिएटर हैं? अपने वीडियो को हमारे प्लेटफॉर्म पर अपलोड करें और बेचें।</p>
+                <a href="#" class="button">वीडियो अपलोड करें</a>
+            </div>
 
+            <div class="feature-box">
+                <h3>वीडियो देखकर कमाएं</h3>
+                <p>हमारे प्लेटफॉर्म पर वीडियो देखें और विज्ञापन राजस्व का एक हिस्सा अर्जित करें।</p>
+                <a href="#" class="button">वीडियो देखना शुरू करें</a>
+            </div>
+        </section>
+
+        <section id="contact" class="owner-info">
+            <h2>हमारे बारे में</h2>
+            <p>Shubhzone एक क्रांतिकारी मंच है जो वीडियो कंटेंट देखने और साझा करने के तरीके को बदल रहा है।</p>
+            <p><strong>ओनर:</strong> हिमांशु कुमार</p>
+            <p><strong>ई-मेल:</strong> udbhavscience12@gmail.com</p>
+        </section>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>© 2025 Shubh Zone. All Rights Reserved.</p>
-  </footer>
+    <footer>
+        <p>Shubhzone © 2025 | सर्वाधिकार सुरक्षित</p>
+        <p>ओनर: हिमांशु कुमार | संपर्क: udbhavscience12@gmail.com</p>
+    </footer>
 
 </body>
 </html>
