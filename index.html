@@ -79,16 +79,16 @@
         
         /* Features Section */
         #features { background: var(--secondary-color); }
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; text-align: left; }
+        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
         .feature-card { background: var(--card-bg); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
         .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
         
         /* Successful Creators Section */
-        .creators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; }
+        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center;}
         .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; }
+        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; }
         .creator-card .name { font-weight: 700; font-size: 1.2rem; }
         
         /* FAQ Section */
@@ -107,17 +107,50 @@
         footer a { color: var(--accent-cyan); text-decoration: none; }
         footer .footer-contact { margin-bottom: 20px; }
 
-        /* Responsive */
-        @media(max-width: 900px) {
-            .slide { flex-direction: column; }
-            .slide-image, .slide-content { flex: 1; }
-            .slide-content { padding: 30px; text-align: center; }
-            .slide-content h2 { font-size: 1.8rem; }
-            .start-button { align-self: center; }
+        /* Desktop Mode: 2-Column Grid */
+        @media (min-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .creators-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
-        @media(max-width: 768px) {
+
+        /* Mobile Responsive Fixes */
+        @media(max-width: 900px) {
+            .slider-container {
+                aspect-ratio: auto; /* Remove fixed aspect ratio on mobile */
+                height: auto;
+            }
+            .slide {
+                flex-direction: column;
+                height: auto;
+            }
+            .slide-image {
+                flex: none; /* Let image have its own aspect ratio */
+                aspect-ratio: 16 / 9;
+                width: 100%;
+            }
+            .slide-content {
+                flex: 1;
+                padding: 30px;
+                text-align: center;
+            }
+            .slide-content h2 {
+                font-size: 1.8rem;
+            }
+            .start-button {
+                align-self: center; /* Center the button on mobile */
+            }
+            .slider-nav {
+                display: none; /* Hide arrows on mobile for a cleaner look */
+            }
+        }
+        
+        @media(max-width: 767px) {
             #logo a { font-size: 24px; }
-            .section { padding: 60px 0; }
+            .section { padding: 60px 20px; }
             .section-title { font-size: 2.2rem; }
         }
 
@@ -174,22 +207,19 @@
                 <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
                 <div class="creators-grid">
                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=a" alt="Creator 1">
+                        <img src="https://i.pravatar.cc/100?u=a" alt="Rohan Sharma">
                         <p class="quote">"Shubhzone gave my channel the initial push it needed. The views and earnings are real!"</p>
-                        <p class="name">Rohan Sharma</p>
-                        <span>Gaming Creator</span>
+                        <div><p class="name">Rohan Sharma</p><span>Gaming Creator</span></div>
                     </div>
                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=b" alt="Creator 2">
+                        <img src="https://i.pravatar.cc/100?u=b" alt="Vikram Singh">
                         <p class="quote">"Being able to promote my videos so easily helped me reach my first 1000 subscribers."</p>
-                        <p class="name">Vikram Singh</p>
-                        <span>Tech Reviews</span>
+                        <div><p class="name">Vikram Singh</p><span>Tech Reviews</span></div>
                     </div>
                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=c" alt="Creator 3">
+                        <img src="https://i.pravatar.cc/100?u=c" alt="Anjali Verma">
                         <p class="quote">"The community support is incredible. I've learned so much and made great friends here."</p>
-                        <p class="name">Anjali Verma</p>
-                        <span>Vlogging & Lifestyle</span>
+                        <div><p class="name">Anjali Verma</p><span>Vlogging & Lifestyle</span></div>
                     </div>
                 </div>
             </div>
@@ -233,10 +263,12 @@
     const prevSlide = () => { currentIndex = (currentIndex - 1 + slideCount) % slideCount; goToSlide(currentIndex); };
     const startAutoPlay = () => { autoPlayInterval = setInterval(nextSlide, 3000); };
     const stopAutoPlay = () => { clearInterval(autoPlayInterval); };
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
-    slider.addEventListener('mouseenter', stopAutoPlay);
-    slider.addEventListener('mouseleave', startAutoPlay);
+    if (window.innerWidth > 900) { // Only add arrow functionality and hover on desktop
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+        slider.addEventListener('mouseenter', stopAutoPlay);
+        slider.addEventListener('mouseleave', startAutoPlay);
+    }
     startAutoPlay();
 
     // FAQ Accordion Script
