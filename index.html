@@ -27,7 +27,7 @@
             padding: 0;
             background: var(--primary-color);
             color: var(--text-color);
-            line-height: 1.7;
+            line-height: 1.6;
             overflow-x: hidden;
         }
 
@@ -35,7 +35,7 @@
             width: 90%;
             max-width: 1200px;
             margin: auto;
-            padding: 0 20px;
+            padding: 0 15px;
         }
         
         /* Header & Logo */
@@ -50,90 +50,118 @@
         }
         
         .header-container { display: flex; justify-content: space-between; align-items: center; }
-        #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
+        #logo a { font-family: 'Russo One', sans-serif; font-size: 26px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
         #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
         #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
 
-        /* Hero Section */
+        /* Hero Section (Replaces Slider for a simpler look) */
         #hero {
-            padding: 40px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: left;
-            background: url('https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg') no-repeat center center/cover;
-            min-height: 400px;
+            padding: 50px 0;
+            text-align: center;
+            background-image: linear-gradient(rgba(13, 15, 24, 0.8), rgba(13, 15, 24, 1)), url('https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg');
+            background-size: cover;
+            background-position: center;
         }
-
-        .hero-content {
-            background: rgba(13, 15, 24, 0.7);
-            backdrop-filter: blur(5px);
-            padding: 40px;
-            border-radius: 15px;
-            max-width: 550px;
+        #hero h2 {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
+            margin: 0 0 15px 0;
         }
-        
-        .hero-content h2 { font-size: 2.5rem; color: var(--accent-cyan); margin: 0 0 15px 0; line-height: 1.2; }
-        .hero-content p { font-size: 1rem; color: var(--text-muted); margin-bottom: 30px; }
-        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); }
-        .start-button:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 229, 255, 0.7); }
+        #hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .start-button {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+            color: var(--text-color);
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+        }
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
+        }
 
         /* General Section Styling */
-        .section { padding: 80px 0; text-align: center; }
-        .section-title { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-cyan); }
-        .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 50px auto; }
+        .section {
+            padding: 60px 0;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--accent-cyan);
+        }
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+        }
         
-        /* Features Section - UPDATED */
-        #features { background: var(--secondary-color); }
+        /* Features Section - UPDATED for 2-column mobile layout */
+        #features {
+            background: var(--primary-color); /* Matches the reference image background */
+        }
         .features-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr); /* Always 2 columns */
-            gap: 20px; /* Reduced gap for mobile */
+            gap: 15px; /* Gap between cards */
             text-align: left;
         }
         .feature-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 4px solid var(--accent-cyan);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: transparent; /* No card background */
+            padding: 15px;
+            border-left: 3px solid var(--accent-cyan); /* Neon border on the left */
         }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.3rem; }
-        .feature-card p { font-size: 0.9rem; color: var(--text-muted); }
-
-        /* Creators Section */
-        .creators-grid {
-            display: grid;
-            grid-template-columns: 1fr; /* Start with 1 column on mobile */
-            gap: 30px;
+        .feature-card h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
         }
-        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center;}
-        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; }
-        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
+        .feature-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
         
+        /* Creators Section */
+        #creators { background: var(--secondary-color); }
+        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; }
+        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
+        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; }
+        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
+
         /* Footer */
         footer { padding: 40px 20px; background: #08090f; text-align: center; }
         footer p { margin: 5px 0; color: var(--text-muted); }
-        footer a { color: var(--accent-cyan); text-decoration: none; }
-        footer .footer-contact { margin-bottom: 20px; }
-        
-        /* Media Queries for larger screens */
-        @media(min-width: 768px) {
-            .creators-grid {
-                 grid-template-columns: repeat(3, 1fr); /* 3 columns for creators on tablets and up */
-            }
-             .features-grid {
-                gap: 30px; /* Increase gap on larger screens */
-            }
-        }
 
-        @media(max-width: 767px) {
-            #logo a { font-size: 24px; }
-            .section { padding: 60px 20px; }
-            .section-title { font-size: 2.2rem; }
-            .hero-content h2 { font-size: 2rem; }
+        /* Desktop specific styles */
+        @media (min-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            #hero h2 { font-size: 3rem; }
+            .section-title { font-size: 2.8rem; }
+            .section-subtitle { font-size: 1.1rem; }
+            .features-grid { gap: 30px; }
+            .feature-card { padding: 25px; }
+            .feature-card h3 { font-size: 1.5rem; }
+            .feature-card p { font-size: 1rem; }
+            .creators-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
     </style>
@@ -150,11 +178,9 @@
     <main>
         <section id="hero">
             <div class="container">
-                <div class="hero-content">
-                    <h2>Monetize Every Click</h2>
-                    <p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p>
-                    <a href="#" class="start-button">Start</a>
-                </div>
+                <h2>Monetize Every Click</h2>
+                <p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p>
+                <a href="#" class="start-button">Start</a>
             </div>
         </section>
 
@@ -179,19 +205,19 @@
                 <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
                 <div class="creators-grid">
                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=a" alt="Rohan Sharma">
+                        <img src="https://i.pravatar.cc/100?u=a" alt="Creator 1">
                         <p class="quote">"Shubhzone gave my channel the initial push it needed. The views and earnings are real!"</p>
-                        <div><p class="name">Rohan Sharma</p><span>Gaming Creator</span></div>
+                        <p class="name">Rohan S.</p>
                     </div>
                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=b" alt="Vikram Singh">
+                        <img src="https://i.pravatar.cc/100?u=b" alt="Creator 2">
                         <p class="quote">"Being able to promote my videos so easily helped me reach my first 1000 subscribers."</p>
-                        <div><p class="name">Vikram Singh</p><span>Tech Reviews</span></div>
+                        <p class="name">Vikram Singh</p>
                     </div>
                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=c" alt="Anjali Verma">
+                        <img src="https://i.pravatar.cc/100?u=c" alt="Creator 3">
                         <p class="quote">"The community support is incredible. I've learned so much and made great friends here."</p>
-                        <div><p class="name">Anjali Verma</p><span>Vlogging & Lifestyle</span></div>
+                        <p class="name">Anjali V.</p>
                     </div>
                 </div>
             </div>
@@ -200,13 +226,9 @@
 
     <footer>
         <div class="container">
-            <div class="footer-contact">
-                <p><strong>Owner:</strong> Himanshu Kumar</p>
-                <p><strong>Support Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
-            </div>
             <p>Shubhzone © 2025 | All Rights Reserved</p>
         </div>
     </footer>
-    
+
 </body>
 </html>
