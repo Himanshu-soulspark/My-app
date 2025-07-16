@@ -1,181 +1,508 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - कमाएँ, बेचें, और वीडियो देखें</title>
+    <title>Shubhzone - Earn, Sell, and Watch Videos</title>
     
     <!-- Monetag Verification Code -->
     <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary-color: #0d0f18;
+            --secondary-color: #1a1c2d;
+            --accent-cyan: #00e5ff;
+            --accent-violet: #8e44ad;
+            --text-color: #ffffff;
+            --text-muted: #bdc3c7;
+            --card-bg: rgba(26, 28, 45, 0.8);
+        }
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+            color: var(--text-color);
+            line-height: 1.7;
+            overflow-x: hidden;
         }
+
         .container {
-            width: 80%;
+            width: 90%;
+            max-width: 1200px;
             margin: auto;
             overflow: hidden;
             padding: 0 20px;
         }
+
         header {
-            background: #333;
-            color: #fff;
-            padding-top: 30px;
+            background: rgba(13, 15, 24, 0.7);
+            backdrop-filter: blur(10px);
+            color: var(--text-color);
+            padding-top: 20px;
+            padding-bottom: 20px;
             min-height: 70px;
-            border-bottom: #77aaff 3px solid;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
         }
+
         header a {
-            color: #fff;
+            color: var(--text-color);
             text-decoration: none;
             text-transform: uppercase;
             font-size: 16px;
+            transition: color 0.3s ease;
         }
+        
+        header a:hover {
+            color: var(--accent-cyan);
+        }
+
         header ul {
             padding: 0;
             margin: 0;
             list-style: none;
             float: right;
         }
+
         header li {
             display: inline;
-            padding: 0 20px 0 20px;
+            padding: 0 15px;
         }
+
         header #branding {
             float: left;
         }
+
         header #branding h1 {
             margin: 0;
+            font-size: 28px;
+            color: var(--accent-cyan);
         }
-        #showcase {
-            min-height: 400px;
-            background: #333 url('https://via.placeholder.com/1500x400.png?text=Welcome+to+Shubhzone') no-repeat center center/cover;
-            color: #fff;
+
+        /* Hero Section */
+        #hero {
+            min-height: 90vh;
+            background: var(--primary-color);
+            color: var(--text-color);
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 0 20px;
+            position: relative;
         }
-        #showcase h1 {
-            font-size: 55px;
-            margin-top: 0;
-            margin-bottom: 10px;
+        
+        #hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.1), transparent 70%);
+            animation: pulse 5s infinite;
         }
-        #showcase p {
-            font-size: 20px;
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.2); opacity: 0; }
+            100% { transform: scale(0.95); opacity: 0; }
         }
-        #main {
-            padding-top: 30px;
+
+        #hero h1 {
+            font-size: 3.5rem;
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            text-shadow: 0 0 15px var(--accent-cyan);
         }
-        .feature-box {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
+
+        #hero p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+            color: var(--text-muted);
         }
-        .feature-box h3 {
-            color: #333;
-        }
-        .feature-box input[type="text"] {
-            padding: 10px;
-            width: 70%;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .button {
+
+        .cta-button {
             display: inline-block;
-            background: #77aaff;
-            color: #fff;
-            padding: 10px 20px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+            color: var(--text-color);
+            padding: 15px 35px;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
             text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
         }
-        .button:hover {
-            background: #5588dd;
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
         }
+
+        /* General Sections Styling */
+        .section {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--accent-cyan);
+        }
+        
+        /* How It Works Section */
+        #how-it-works .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .step-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            width: 30%;
+            min-width: 280px;
+            border: 1px solid var(--secondary-color);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+        
+        .step-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--accent-cyan);
+        }
+        
+        .step-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Features Section */
+        #features .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-item {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: left;
+        }
+        
+        .feature-item h3 {
+            color: var(--accent-cyan);
+            margin-top: 0;
+        }
+
+        /* Testimonials */
+        #testimonials .testimonial-cards {
+            display: flex;
+            gap: 30px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+        
+        .testimonial-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            min-width: 300px;
+            border-left: 5px solid var(--accent-violet);
+        }
+
+        .testimonial-card p.quote {
+            font-style: italic;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .testimonial-card .author {
+            font-weight: bold;
+            color: var(--accent-cyan);
+        }
+        
+        /* FAQ Section */
+        .faq-item {
+            background: var(--card-bg);
+            margin-bottom: 10px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .faq-question {
+            padding: 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 20px;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+            color: var(--text-muted);
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Adjust as needed */
+            padding: 0 20px 20px;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        /* Footer */
         footer {
-            padding: 20px;
-            margin-top: 20px;
-            color: #fff;
-            background-color: #333;
+            padding: 40px 20px;
+            margin-top: 40px;
+            color: var(--text-muted);
+            background-color: var(--primary-color);
             text-align: center;
+            border-top: 1px solid var(--secondary-color);
         }
-        .owner-info {
-            padding: 20px;
-            background: #e2e2e2;
-            text-align: center;
+        
+        footer p {
+            margin: 5px 0;
         }
+        
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        footer .social-links a {
+            margin: 0 10px;
+            font-size: 1.5rem;
+        }
+
+        /* Responsiveness */
+        @media(max-width: 768px) {
+            header #branding, header nav, header ul {
+                float: none;
+                text-align: center;
+            }
+            
+            header ul {
+                margin-top: 10px;
+            }
+            
+            header li {
+                padding: 0 10px;
+            }
+            
+            #hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            #hero p {
+                font-size: 1rem;
+            }
+            
+            #how-it-works .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .step-card {
+                width: 90%;
+            }
+        }
+
     </style>
 </head>
 <body>
     <header>
         <div class="container">
             <div id="branding">
-                <h1><a href="#">Shubhzone</a></h1>
+                <h1><a href="#">Shubhzone.shop</a></h1>
             </div>
             <nav>
                 <ul>
-                    <li class="current"><a href="#">होम</a></li>
-                    <li><a href="#features">फीचर्स</a></li>
-                    <li><a href="#contact">संपर्क</a></li>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#faq">FAQ</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section id="showcase">
+    <section id="hero">
         <div class="container">
-            <h1>वीडियो देखें और कमाएं</h1>
-            <p>Shubhzone में आपका स्वागत है! यहां आप वीडियो देखकर, वीडियो बेचकर और यूट्यूब वीडियो लिंक डालकर पैसे कमा सकते हैं।</p>
+            <h1>Fuel Your YouTube Dreams with Shubhzone</h1>
+            <p>Monetize your time, grow your reach, and unlock your creator journey. We empower emerging creators to grow, earn, and thrive.</p>
+            <a href="#" class="cta-button">Start Creating & Earning</a>
         </div>
     </section>
 
-    <div id="main" class="container">
-        <section id="features">
-            <div class="feature-box">
-                <h3>यूट्यूब वीडियो लिंक से कमाएं</h3>
-                <p>बस अपने पसंदीदा यूट्यूब वीडियो का लिंक यहां पेस्ट करें और कमाई शुरू करें।</p>
-                <form>
-                    <input type="text" placeholder="यूट्यूब वीडियो का लिंक यहाँ डालें...">
-                    <button type="submit" class="button">शुरू करें</button>
-                </form>
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step-card">
+                    <div class="icon">🎬</div>
+                    <h3>Watch & Earn</h3>
+                    <p>Get paid to watch videos from other creators. Your time is valuable, and we make sure you're rewarded for it.</p>
+                </div>
+                <div class="step-card">
+                    <div class="icon">🚀</div>
+                    <h3>Embed & Promote</h3>
+                    <p>Submit your YouTube videos to our platform. Gain views, grow your audience, and get your content discovered.</p>
+                </div>
+                <div class="step-card">
+                    <div class="icon">💬</div>
+                    <h3>Chat & Get Paid</h3>
+                    <p>Connect with other creators via chat support, collaborate, and receive your earnings through easy, direct payments.</p>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="feature-box">
-                <h3>अपने वीडियो बेचें</h3>
-                <p>क्या आप एक कंटेंट क्रिएटर हैं? अपने वीडियो को हमारे प्लेटफॉर्म पर अपलोड करें और बेचें।</p>
-                <a href="#" class="button">वीडियो अपलोड करें</a>
+    <section id="features" class="section" style="background: var(--secondary-color);">
+        <div class="container">
+            <h2 class="section-title">Why Join Shubhzone?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>🧠 Smart Monetization</h3>
+                    <p>Turn your views and watch time into real income. We provide a straightforward path to monetizing your content creation efforts from day one.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🤝 Supportive Creator Ecosystem</h3>
+                    <p>You're not alone. Join a network of emerging creators, share strategies, get instant help via chat, and grow together.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>⚡ Real-Time Payments</h3>
+                    <p>No more waiting for thresholds. Get your earnings with fast, easy, and direct withdrawals. We believe in instant rewards for your hard work.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>📊 Transparent Analytics</h3>
+                    <p>Track your video performance and earnings with a clear and simple dashboard. Make data-driven decisions to boost your growth.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>📢 Targeted Advertising</h3>
+                    <p>Promote your videos to a focused audience of viewers and creators who are genuinely interested in new content. Maximize your reach effectively.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>✅ Free to Join</h3>
+                    <p>Start your journey without any upfront costs. Shubhzone is free for creators, ensuring everyone has an equal opportunity to succeed.</p>
+                </div>
             </div>
-
-            <div class="feature-box">
-                <h3>वीडियो देखकर कमाएं</h3>
-                <p>हमारे प्लेटफॉर्म पर वीडियो देखें और विज्ञापन राजस्व का एक हिस्सा अर्जित करें।</p>
-                <a href="#" class="button">वीडियो देखना शुरू करें</a>
+        </div>
+    </section>
+    
+    <section id="testimonials" class="section">
+        <div class="container">
+            <h2 class="section-title">Success Stories</h2>
+            <p style="color: var(--text-muted); margin-top: -20px; margin-bottom: 40px;">🚀 Already helping 500+ new creators!</p>
+            <div class="testimonial-cards">
+                <div class="testimonial-card">
+                    <p class="quote">"I was struggling to get my first 100 subscribers. With Shubhzone, I gained over 1,000 views in a single week and earned my first payout! It's a game-changer."</p>
+                    <p class="author">- Rohit, Gaming Creator</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="quote">"The platform is so easy to use. I embedded my video, and within days, I saw a real increase in my watch hours. The community chat is a huge plus."</p>
+                    <p class="author">- Priya, DIY Vlogger</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="quote">"Getting paid for watching videos felt too good to be true, but it's real! I support other small creators and earn a little on the side. Win-win!"</p>
+                    <p class="author">- Sameer, Student</p>
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="contact" class="owner-info">
-            <h2>हमारे बारे में</h2>
-            <p>Shubhzone एक क्रांतिकारी मंच है जो वीडियो कंटेंट देखने और साझा करने के तरीके को बदल रहा है।</p>
-            <p><strong>ओनर:</strong> हिमांशु कुमार</p>
-            <p><strong>ई-मेल:</strong> udbhavscience12@gmail.com</p>
-        </section>
-    </div>
+    <section id="faq" class="section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">How do I get paid?</div>
+                    <div class="faq-answer">
+                        <p>Payments are made directly to you through easy withdrawal options. Once you reach the minimum payout threshold, you can request a withdrawal from your dashboard. We support various popular payment methods for your convenience.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can I advertise my own content?</div>
+                    <div class="faq-answer">
+                        <p>Absolutely! Our platform is designed for it. You can submit your YouTube video links to be included in our watch rotation. This allows you to gain views and promote your channel to our community of active users.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Is it free to join?</div>
+                    <div class="faq-answer">
+                        <p>Yes, joining Shubhzone as a creator or a viewer is completely free. We believe in providing opportunities without barriers. You can start earning and growing your channel without any subscription fees.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <footer>
-        <p>Shubhzone © 2025 | सर्वाधिकार सुरक्षित</p>
-        <p>ओनर: हिमांशु कुमार | संपर्क: udbhavscience12@gmail.com</p>
+        <div class="container">
+            <p><strong>Owner:</strong> Himanshu Kumar</p>
+            <p><strong>Contact Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+            <div class="social-links">
+                <!-- Add actual links here -->
+                <a href="#">Facebook</a> |
+                <a href="#">Instagram</a> |
+                <a href="#">Twitter</a>
+            </div>
+            <p style="margin-top: 20px;">Shubhzone © 2025 | <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a></p>
+        </div>
     </footer>
+
+<script>
+    // FAQ Accordion Script
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    faqItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Close other items
+            faqItems.forEach(otherItem => {
+                if(otherItem !== item && otherItem.classList.contains('active')) {
+                    otherItem.classList.remove('active');
+                }
+            });
+            // Toggle current item
+            item.classList.toggle('active');
+        });
+    });
+</script>
 
 </body>
 </html>
