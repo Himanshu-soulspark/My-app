@@ -46,10 +46,42 @@
             z-index: 1000;
         }
         
-        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        .header-container { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
         #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
         #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
         #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
+
+        /* --- Navigation Menu --- */
+        #main-nav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        #main-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+        #main-nav a:hover {
+            color: var(--accent-cyan);
+        }
+        #mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 2rem;
+            cursor: pointer;
+        }
 
         /* --- Hero Slider --- */
         #hero-slider { padding: 40px 0; }
@@ -62,7 +94,6 @@
         .slide-content { position: relative; z-index: 3; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: center; width:100%; }
         .slide-content h2 { font-family: 'Russo One', sans-serif; font-size: 3rem; color: var(--text-color); margin: 0 0 15px 0; text-shadow: 0 0 15px var(--accent-cyan);}
         .slide-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
-        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border-radius: 50px; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease; align-self: center; }
         
         /* --- General Section Styling --- */
         .section { padding: 80px 20px; text-align: center; }
@@ -75,7 +106,6 @@
         .feature-card { display: flex; flex-direction: column; background: var(--primary-color); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
         .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0, 229, 255, 0.1); }
         .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
-        /* Style for 3-line text limit */
         .feature-card p {
             margin: 0;
             height: 5.1em; /* 3 lines * 1.7 line-height */
@@ -105,7 +135,6 @@
             font-style: italic;
             color: var(--text-muted);
             margin-bottom: 15px;
-            /* Style for 3-line text limit */
             height: 5.1em; /* 3 lines * 1.7 line-height */
             overflow: hidden;
         }
@@ -121,17 +150,41 @@
         .footer-owner { font-size: 1.1rem; font-weight: 600; }
 
         /* --- Responsive Design --- */
-        /* For tablets and desktops (wider than 768px) */
         @media (min-width: 768px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .creators-grid {
+            .features-grid, .creators-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
         
         @media (max-width: 767px) {
+            #main-nav {
+                display: none;
+                position: absolute;
+                top: 72px; /* Header height */
+                left: 0;
+                width: 100%;
+                background: var(--primary-color);
+            }
+            #main-nav.active {
+                display: block;
+            }
+            #main-nav ul {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
+            #main-nav li {
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid var(--secondary-color);
+            }
+             #main-nav a {
+                display: block;
+                padding: 15px;
+            }
+            #mobile-menu-toggle {
+                display: block;
+            }
             .section { padding: 60px 20px; }
             .section-title { font-size: 2.2rem; }
             .slide-content h2 { font-size: 2rem; }
@@ -146,6 +199,15 @@
             <div id="logo">
                 <a href="#">Shubh<span class="logo-accent">zone</span><div class="logo-icon"></div></a>
             </div>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="#hero-slider">Home</a></li>
+                    <li><a href="#why-choose">Features</a></li>
+                    <li><a href="#">Shayari</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <button id="mobile-menu-toggle" aria-label="Open Menu">☰</button>
         </div>
     </header>
 
@@ -317,28 +379,36 @@
     
 <script>
     // --- Slider Script ---
-    const slidesWrapper = document.querySelector('.slides-wrapper');
-    let currentIndex = 0;
-    const slideCount = document.querySelectorAll('.slide').length;
+    const sliderWrapper = document.querySelector('.slides-wrapper');
+    let currentSlideIndex = 0;
+    const totalSlides = document.querySelectorAll('.slide').length;
     
-    function nextSlide() {
-        currentIndex = (currentIndex + 1) % slideCount;
-        slidesWrapper.style.transform = `translateX(-${currentIndex * (100 / slideCount)}%)`;
+    function showNextSlide() {
+        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+        sliderWrapper.style.transform = `translateX(-${currentSlideIndex * (100 / totalSlides)}%)`;
     }
     
-    setInterval(nextSlide, 4000); // Auto-play every 4 seconds
+    setInterval(showNextSlide, 4000);
 
     // --- FAQ Accordion Script ---
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
+    const allFaqItems = document.querySelectorAll('.faq-item');
+    allFaqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
         question.addEventListener('click', () => {
-            const currentlyActive = document.querySelector('.faq-item.active');
-            if (currentlyActive && currentlyActive !== item) {
-                currentlyActive.classList.remove('active');
+            const currentlyActiveFaq = document.querySelector('.faq-item.active');
+            if (currentlyActiveFaq && currentlyActiveFaq !== item) {
+                currentlyActiveFaq.classList.remove('active');
             }
             item.classList.toggle('active');
         });
+    });
+
+    // --- Mobile Menu Toggle Script ---
+    const menuToggleButton = document.getElementById('mobile-menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    
+    menuToggleButton.addEventListener('click', () => {
+        mainNav.classList.toggle('active');
     });
 </script>
 
