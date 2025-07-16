@@ -71,17 +71,17 @@
         
         /* --- Why Choose Us Section --- */
         #why-choose { background: var(--secondary-color); }
-        .features-grid { 
-            display: grid; 
-            /* Mobile First: Default to 1 column */
-            grid-template-columns: 1fr; 
-            gap: 30px; 
-            text-align: left; 
-        }
-        .feature-card { background: var(--primary-color); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
+        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
+        .feature-card { display: flex; flex-direction: column; background: var(--primary-color); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
         .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0, 229, 255, 0.1); }
         .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
-        
+        /* Style for 3-line text limit */
+        .feature-card p {
+            margin: 0;
+            height: 5.1em; /* 3 lines * 1.7 line-height */
+            overflow: hidden;
+        }
+
         /* --- How It Works / FAQ Accordion --- */
         #how-it-works, #faq { background: var(--primary-color); }
         #dedication { background: var(--secondary-color); padding-bottom: 60px; }
@@ -97,10 +97,18 @@
         .faq-answer-content li { margin-bottom: 10px; }
 
         /* --- Creators Section --- */
+        #creators { background: #0d0f18; }
         .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
         .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; }
         .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; }
+        .creator-card .quote {
+            font-style: italic;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            /* Style for 3-line text limit */
+            height: 5.1em; /* 3 lines * 1.7 line-height */
+            overflow: hidden;
+        }
         .creator-card .name { font-weight: 700; font-size: 1.2rem; }
 
         /* --- Final Note Section --- */
@@ -113,14 +121,13 @@
         .footer-owner { font-size: 1.1rem; font-weight: 600; }
 
         /* --- Responsive Design --- */
-        /* For tablets and desktops */
+        /* For tablets and desktops (wider than 768px) */
         @media (min-width: 768px) {
             .features-grid {
-                /* Change to 2 columns on screens wider than 768px */
                 grid-template-columns: repeat(2, 1fr);
             }
             .creators-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         
@@ -174,19 +181,19 @@
                 <div class="features-grid">
                     <div class="feature-card">
                         <h3>Earn From View One</h3>
-                        <p>Forget about subscriber counts or view targets. Your earning starts from the very first view on your very first video. Your effort will never go to waste here.</p>
+                        <p>Forget subscriber counts or view targets. Your earning starts from the very first view, on your very first video. Your effort never goes to waste here.</p>
                     </div>
                     <div class="feature-card">
                         <h3>No Monetization Barriers</h3>
-                        <p>No need for thousands of subscribers or impossible watch hours. We use a simple, transparent ad-revenue sharing system that works for real creators like you.</p>
+                        <p>No need for thousands of subscribers or impossible watch hours. We use a simple, transparent revenue sharing system that works for real creators.</p>
                     </div>
                      <div class="feature-card">
                         <h3>Double Income Strategy</h3>
-                        <p>Already on YouTube? Bring your audience here. They earn as viewers, and you earn twice: from YouTube and from Shubhzone. Same content, double the profit!</p>
+                        <p>Already on YouTube? Bring your audience to earn as viewers. You earn twice from the same content, creating a smart, double profit strategy.</p>
                     </div>
                     <div class="feature-card">
                         <h3>24/7 Dedicated Support</h3>
-                        <p>We are always here to help. Whether you have a question or face an issue, our dedicated team is committed to providing quick and reliable support.</p>
+                        <p>We are always here to help. Our dedicated team is committed to providing quick and reliable support for any questions or issues you may face.</p>
                     </div>
                 </div>
             </div>
@@ -237,18 +244,23 @@
                 <div class="creators-grid">
                     <div class="creator-card">
                         <img src="https://i.pravatar.cc/100?u=a" alt="Creator 1">
-                        <p class="quote">"Shubhzone gave my channel the push it needed. The earnings started from day one, which was so motivating!"</p>
+                        <p class="quote">"Shubhzone gave my channel the push it needed. Earning from day one was so motivating and really helped me to grow!"</p>
                         <p class="name">Rohan S.</p>
                     </div>
                     <div class="creator-card">
                         <img src="https://i.pravatar.cc/100?u=b" alt="Creator 2">
-                        <p class="quote">"The double income strategy is a game-changer. I earn from the same content on two platforms. It's brilliant!"</p>
+                        <p class="quote">"The double income strategy is a game-changer. Earning from the same content on two different platforms is simply brilliant."</p>
                         <p class="name">Anjali V.</p>
                     </div>
                      <div class="creator-card">
                         <img src="https://i.pravatar.cc/100?u=c" alt="Creator 3">
-                        <p class="quote">"Finally, a platform that respects creators. The support is amazing, and the community feels like family."</p>
+                        <p class="quote">"Finally, a platform that truly respects its creators. The support team is amazing and the community feels like a real family."</p>
                         <p class="name">Vikram K.</p>
+                    </div>
+                    <div class="creator-card">
+                        <img src="https://i.pravatar.cc/100?u=d" alt="You">
+                        <p class="quote">"This spot is waiting for you. Join our community of creators and start your success story with us today. Let's grow together!"</p>
+                        <p class="name">You Could Be Next</p>
                     </div>
                 </div>
             </div>
