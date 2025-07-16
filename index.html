@@ -3,287 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - Monetize, Connect, and Promote</title>
-    
-    <!-- Monetag Verification Code -->
-    <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
-    
+    <title>CreatorLaunch - Unleash Your Creativity</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&display=swap');
+        /* --- Google Font --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
+        /* --- Basic Styles --- */
         :root {
-            --primary-color: #0d0f18;
-            --secondary-color: #1a1c2d;
-            --accent-cyan: #00e5ff;
-            --accent-violet: #8e44ad;
-            --card-bg: rgba(26, 28, 45, 0.9);
+            --primary-color: #00f5c3; /* Vibrant Teal/Cyan */
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
             --text-color: #ffffff;
-            --text-muted: #bdc3c7;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: var(--primary-color);
+            background-color: var(--dark-bg);
             color: var(--text-color);
-            line-height: 1.7;
             overflow-x: hidden;
         }
 
         .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
+            max-width: 1100px;
+            margin: 0 auto;
             padding: 0 20px;
         }
+
+        /* --- Header / Navigation --- */
+        .main-header {
+            padding: 20px 0;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-color);
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #000;
+        }
         
-        /* Header & Logo */
-        header {
-            background: rgba(13, 15, 24, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 0;
-            border-bottom: 2px solid var(--accent-cyan);
-            position: sticky;
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 245, 195, 0.2);
+        }
+
+        /* --- Hero Section with Background Video --- */
+        .hero {
+            position: relative;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+
+        #bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2;
+            transform: translateX(-50%) translateY(-50%);
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
             top: 0;
-            z-index: 1000;
-        }
-        
-        .header-container { display: flex; justify-content: space-between; align-items: center; }
-        #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
-        #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
-        #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
-
-        /* Hero Slider */
-        #hero-slider { padding: 40px 0; display: flex; justify-content: center; align-items: center; }
-        .slider-container { width: 100%; max-width: 1100px; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        .slides-wrapper { display: flex; height: 100%; width: 300%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
-        .slide { width: calc(100% / 3); height: 100%; display: flex; background: var(--secondary-color); }
-        .slide-image { flex: 1.2; overflow: hidden; }
-        .slide-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .slide:hover .slide-image img { transform: scale(1.05); }
-        .slide-content { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left; }
-        .slide-content h2 { font-size: 2.5rem; color: var(--accent-cyan); margin: 0 0 15px 0; line-height: 1.2; }
-        .slide-content p { font-size: 1rem; color: var(--text-muted); margin-bottom: 30px; }
-        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); align-self: flex-start; }
-        .start-button:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 229, 255, 0.7); }
-        .slider-nav { position: absolute; top: 50%; left: 20px; right: 20px; transform: translateY(-50%); display: flex; justify-content: space-between; opacity: 0; transition: opacity 0.3s; }
-        .slider-container:hover .slider-nav { opacity: 1; }
-        .slider-nav button { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--text-muted); color: var(--text-color); border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; transition: background 0.3s; }
-        .slider-nav button:hover { background: var(--accent-cyan); color: var(--primary-color); }
-
-        /* General Section Styling */
-        .section { padding: 80px 0; text-align: center; }
-        .section-title { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-cyan); }
-        .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 50px auto; }
-        
-        /* Features Section */
-        #features { background: var(--secondary-color); }
-        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
-        .feature-card { background: var(--card-bg); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
-        
-        /* Successful Creators Section */
-        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center;}
-        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; }
-        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
-        
-        /* FAQ Section */
-        #faq { background: var(--secondary-color); }
-        .faq-container { max-width: 800px; margin: 0 auto; text-align: left; }
-        .faq-item { background: var(--primary-color); margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
-        .faq-question { padding: 20px; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .faq-question::after { content: '+'; font-size: 1.8rem; transition: transform 0.3s; }
-        .faq-answer { max-height: 0; overflow: hidden; padding: 0 20px; transition: max-height 0.5s ease, padding 0.5s ease; color: var(--text-muted); border-top: 1px solid var(--secondary-color); }
-        .faq-item.active .faq-answer { max-height: 200px; padding: 20px; }
-        .faq-item.active .faq-question::after { transform: rotate(45deg); }
-
-        /* Footer */
-        footer { padding: 40px 20px; background: #08090f; text-align: center; }
-        footer p { margin: 5px 0; color: var(--text-muted); }
-        footer a { color: var(--accent-cyan); text-decoration: none; }
-        footer .footer-contact { margin-bottom: 20px; }
-
-        /* Desktop Mode: 2-Column Grid */
-        @media (min-width: 768px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .creators-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 18, 18, 0.7); /* Dark overlay for text readability */
+            z-index: -1;
         }
 
-        /* Mobile Responsive Fixes */
-        @media(max-width: 900px) {
-            .slider-container {
-                aspect-ratio: auto; /* Remove fixed aspect ratio on mobile */
-                height: auto;
-            }
-            .slide {
-                flex-direction: column;
-                height: auto;
-            }
-            .slide-image {
-                flex: none; /* Let image have its own aspect ratio */
-                aspect-ratio: 16 / 9;
-                width: 100%;
-            }
-            .slide-content {
-                flex: 1;
-                padding: 30px;
-                text-align: center;
-            }
-            .slide-content h2 {
-                font-size: 1.8rem;
-            }
-            .start-button {
-                align-self: center; /* Center the button on mobile */
-            }
-            .slider-nav {
-                display: none; /* Hide arrows on mobile for a cleaner look */
-            }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+
+        .hero-buttons .btn {
+            margin: 0 10px;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 2px solid var(--primary-color);
         }
         
-        @media(max-width: 767px) {
-            #logo a { font-size: 24px; }
-            .section { padding: 60px 20px; }
-            .section-title { font-size: 2.2rem; }
+        .btn-secondary:hover {
+             background-color: var(--primary-color);
+             color: #000;
+        }
+
+        /* --- Features Section --- */
+        .features {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 60px auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid #2e2e2e;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0; /* For scroll animation */
+            transform: translateY(30px); /* For scroll animation */
+        }
+        
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        
+        /* --- Footer --- */
+        .main-footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 1px solid #2e2e2e;
+            color: var(--text-muted);
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Simple hiding for mobile */
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
         }
 
     </style>
 </head>
 <body>
-    <header>
-        <div class="container header-container">
-            <div id="logo">
-                <a href="#">Shubh<span class="logo-accent">zone</span><div class="logo-icon"></div></a>
-            </div>
+
+    <header class="main-header">
+        <div class="container">
+            <nav class="main-nav">
+                <div class="logo">CreatorLaunch</div>
+                <ul class="nav-links">
+                    <li><a href="#">Explore</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+                <a href="#" class="btn btn-primary">Sign Up</a>
+            </nav>
         </div>
     </header>
 
     <main>
-        <section id="hero-slider">
-            <div class="slider-container" id="slider">
-                <div class="slides-wrapper">
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
-                        <div class="slide-content"><h2>Monetize Every Click</h2><p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
-                        <div class="slide-content"><h2>Connect & Collaborate</h2><p>Join the Shubhzone community chat where creators connect, share tips, and grow together on your YouTube journey.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
-                        <div class="slide-content"><h2>Promote With a Click</h2><p>With one click, promote your videos to the right audience. Our smart tools help you get seen.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
+        <section class="hero">
+            <!-- Replace this with a link to your own video. This is a placeholder from Pexels. -->
+            <video autoplay muted loop playsinline id="bg-video">
+                <source src="https://videos.pexels.com/video-files/857251/857251-hd_1280_720_25fps.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+
+            <div class="hero-content">
+                <h1>Unleash Your Creativity. Share Your Story.</h1>
+                <p>The platform designed to support and grow small creators.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary">Start Now</a>
+                    <a href="#" class="btn btn-secondary">Learn More</a>
                 </div>
-                <div class="slider-nav"><button id="prevBtn">❮</button><button id="nextBtn">❯</button></div>
             </div>
         </section>
 
-        <section id="features" class="section">
+        <section class="features">
             <div class="container">
-                <h2 class="section-title">Why Choose Shubhzone?</h2>
-                <p class="section-subtitle">We provide all the tools you need to succeed as a new creator. Your growth is our mission.</p>
+                <h2 class="section-title">Empower Your Creative Journey</h2>
+                <p class="section-subtitle">
+                    Elevate your content game with tools, insights, and a community that champions your growth. 
+                    Here, fresh talent takes center stage—no barriers, just opportunities.
+                </p>
                 <div class="features-grid">
-                    <div class="feature-card"><h3>Smart Monetization</h3><p>Earn directly from your video uploads and by watching content. A simple and effective way to fund your passion.</p></div>
-                    <div class="feature-card"><h3>Creator Community</h3><p>Engage in our active community chat. Get instant feedback, find collaborators, and never feel stuck again.</p></div>
-                    <div class="feature-card"><h3>Targeted Promotion</h3><p>Use our advertising tools to reach a dedicated audience and boost your channel's visibility and watch hours.</p></div>
-                    <div class="feature-card"><h3>Instant Payouts</h3><p>No long waiting periods. Withdraw your earnings easily and quickly once you meet the minimum threshold.</p></div>
-                    <div class="feature-card"><h3>Dedicated Support</h3><p>Our team is always here to help. Get quick and reliable support for any questions or issues you face.</p></div>
-                    <div class="feature-card"><h3>Growth Analytics</h3><p>Track your video performance with a simple dashboard to understand your audience and grow faster.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="creators" class="section">
-            <div class="container">
-                <h2 class="section-title">Meet Our Successful Creators</h2>
-                <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
-                <div class="creators-grid">
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=a" alt="Rohan Sharma">
-                        <p class="quote">"Shubhzone gave my channel the initial push it needed. The views and earnings are real!"</p>
-                        <div><p class="name">Rohan Sharma</p><span>Gaming Creator</span></div>
+                    <div class="feature-card">
+                        <h3>Instant Reactions</h3>
+                        <p>Get real feedback from a supportive crew. Comments, likes, and shares that help you grow and connect.</p>
                     </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=b" alt="Vikram Singh">
-                        <p class="quote">"Being able to promote my videos so easily helped me reach my first 1000 subscribers."</p>
-                        <div><p class="name">Vikram Singh</p><span>Tech Reviews</span></div>
+                    <div class="feature-card">
+                        <h3>Quick Uploads</h3>
+                        <p>Share your story in seconds. No fuss—just hit upload and go live to reach your first fans instantly.</p>
                     </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=c" alt="Anjali Verma">
-                        <p class="quote">"The community support is incredible. I've learned so much and made great friends here."</p>
-                        <div><p class="name">Anjali Verma</p><span>Vlogging & Lifestyle</span></div>
+                    <div class="feature-card">
+                        <h3>Creator Toolkit</h3>
+                        <p>Unlock guides, tips, and workshops made for new creators. Learn, improve, and stand out from the crowd.</p>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq" class="section">
-            <div class="container">
-                <h2 class="section-title">Have Questions?</h2>
-                <p class="section-subtitle">Here are some of the most common questions we get. If you have more, feel free to contact our support.</p>
-                <div class="faq-container">
-                    <div class="faq-item"><div class="faq-question">How do I start earning?</div><div class="faq-answer"><p>Simply sign up, upload your YouTube video link, and start earning as our community watches it. You can also earn by watching other videos on the platform.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">Is Shubhzone free to use?</div><div class="faq-answer"><p>Yes! Signing up and using our core features for earning and community interaction is completely free. We want to remove all barriers for new creators.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">How does video promotion work?</div><div class="faq-answer"><p>Our promotion service places your video in front of a targeted audience of active users, helping you gain genuine views and increase your channel's authority.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">How can I contact support?</div><div class="faq-answer"><p>You can reach our dedicated support team via the email provided in the footer. We're committed to responding to all queries within 24 hours.</p></div></div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-contact">
-                <p><strong>Owner:</strong> Himanshu Kumar</p>
-                <p><strong>Support Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
-            </div>
-            <p>Shubhzone © 2025 | All Rights Reserved</p>
-        </div>
+    <footer class="main-footer">
+        <p>© 2025 CreatorLaunch. All Rights Reserved.</p>
     </footer>
-    
-<script>
-    // Slider Script
-    const slider = document.getElementById('slider');
-    const slidesWrapper = document.querySelector('.slides-wrapper');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentIndex = 0;
-    const slideCount = document.querySelectorAll('.slide').length;
-    let autoPlayInterval;
-    const goToSlide = (index) => { slidesWrapper.style.transform = `translateX(-${index * (100 / slideCount)}%)`; };
-    const nextSlide = () => { currentIndex = (currentIndex + 1) % slideCount; goToSlide(currentIndex); };
-    const prevSlide = () => { currentIndex = (currentIndex - 1 + slideCount) % slideCount; goToSlide(currentIndex); };
-    const startAutoPlay = () => { autoPlayInterval = setInterval(nextSlide, 3000); };
-    const stopAutoPlay = () => { clearInterval(autoPlayInterval); };
-    if (window.innerWidth > 900) { // Only add arrow functionality and hover on desktop
-        nextBtn.addEventListener('click', nextSlide);
-        prevBtn.addEventListener('click', prevSlide);
-        slider.addEventListener('mouseenter', stopAutoPlay);
-        slider.addEventListener('mouseleave', startAutoPlay);
-    }
-    startAutoPlay();
 
-    // FAQ Accordion Script
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        question.addEventListener('click', () => {
-            const currentlyActive = document.querySelector('.faq-item.active');
-            if (currentlyActive && currentlyActive !== item) {
-                currentlyActive.classList.remove('active');
-            }
-            item.classList.toggle('active');
+    <script>
+        // This script makes the feature cards animate as you scroll to them.
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.feature-card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the card is visible
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
         });
-    });
-</script>
+    </script>
 
 </body>
 </html>
