@@ -1,289 +1,682 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - Monetize, Connect, and Promote</title>
-    
-    <!-- Monetag Verification Code -->
-    <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&display=swap');
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Shubhzone</title>
 
-        :root {
-            --primary-color: #0d0f18;
-            --secondary-color: #1a1c2d;
-            --accent-cyan: #00e5ff;
-            --accent-violet: #8e44ad;
-            --card-bg: rgba(26, 28, 45, 0.9);
-            --text-color: #ffffff;
-            --text-muted: #bdc3c7;
-        }
+    <!-- External Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Main App Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Caveat&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <!-- Font for Advertiser Dashboard -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: var(--primary-color);
-            color: var(--text-color);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 20px;
-        }
-        
-        /* Header & Logo */
-        header {
-            background: rgba(13, 15, 24, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 0;
-            border-bottom: 2px solid var(--accent-cyan);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .header-container { display: flex; justify-content: space-between; align-items: center; }
-        #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
-        #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
-        #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
-
-        /* Hero Slider */
-        #hero-slider { padding: 40px 0; display: flex; justify-content: center; align-items: center; }
-        .slider-container { width: 100%; max-width: 1100px; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        .slides-wrapper { display: flex; height: 100%; width: 300%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
-        .slide { width: calc(100% / 3); height: 100%; display: flex; background: var(--secondary-color); }
-        .slide-image { flex: 1.2; overflow: hidden; }
-        .slide-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .slide:hover .slide-image img { transform: scale(1.05); }
-        .slide-content { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left; }
-        .slide-content h2 { font-size: 2.5rem; color: var(--accent-cyan); margin: 0 0 15px 0; line-height: 1.2; }
-        .slide-content p { font-size: 1rem; color: var(--text-muted); margin-bottom: 30px; }
-        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); align-self: flex-start; }
-        .start-button:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 229, 255, 0.7); }
-        .slider-nav { position: absolute; top: 50%; left: 20px; right: 20px; transform: translateY(-50%); display: flex; justify-content: space-between; opacity: 0; transition: opacity 0.3s; }
-        .slider-container:hover .slider-nav { opacity: 1; }
-        .slider-nav button { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--text-muted); color: var(--text-color); border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; transition: background 0.3s; }
-        .slider-nav button:hover { background: var(--accent-cyan); color: var(--primary-color); }
-
-        /* General Section Styling */
-        .section { padding: 80px 0; text-align: center; }
-        .section-title { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-cyan); }
-        .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 50px auto; }
-        
-        /* Features Section */
-        #features { background: var(--secondary-color); }
-        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
-        .feature-card { background: var(--card-bg); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
-        
-        /* Successful Creators Section */
-        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center;}
-        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; }
-        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
-        
-        /* FAQ Section */
-        #faq { background: var(--secondary-color); }
-        .faq-container { max-width: 800px; margin: 0 auto; text-align: left; }
-        .faq-item { background: var(--primary-color); margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
-        .faq-question { padding: 20px; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .faq-question::after { content: '+'; font-size: 1.8rem; transition: transform 0.3s; }
-        .faq-answer { max-height: 0; overflow: hidden; padding: 0 20px; transition: max-height 0.5s ease, padding 0.5s ease; color: var(--text-muted); border-top: 1px solid var(--secondary-color); }
-        .faq-item.active .faq-answer { max-height: 200px; padding: 20px; }
-        .faq-item.active .faq-question::after { transform: rotate(45deg); }
-
-        /* Footer */
-        footer { padding: 40px 20px; background: #08090f; text-align: center; }
-        footer p { margin: 5px 0; color: var(--text-muted); }
-        footer a { color: var(--accent-cyan); text-decoration: none; }
-        footer .footer-contact { margin-bottom: 20px; }
-
-        /* Desktop Mode: 2-Column Grid */
-        @media (min-width: 768px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .creators-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Mobile Responsive Fixes */
-        @media(max-width: 900px) {
-            .slider-container {
-                aspect-ratio: auto; /* Remove fixed aspect ratio on mobile */
-                height: auto;
-            }
-            .slide {
-                flex-direction: column;
-                height: auto;
-            }
-            .slide-image {
-                flex: none; /* Let image have its own aspect ratio */
-                aspect-ratio: 16 / 9;
-                width: 100%;
-            }
-            .slide-content {
-                flex: 1;
-                padding: 30px;
-                text-align: center;
-            }
-            .slide-content h2 {
-                font-size: 1.8rem;
-            }
-            .start-button {
-                align-self: center; /* Center the button on mobile */
-            }
-            .slider-nav {
-                display: none; /* Hide arrows on mobile for a cleaner look */
-            }
-        }
-        
-        @media(max-width: 767px) {
-            #logo a { font-size: 24px; }
-            .section { padding: 60px 20px; }
-            .section-title { font-size: 2.2rem; }
-        }
-
-    </style>
+    <!-- CSS फ़ाइल को यहाँ लिंक किया गया है -->
+    <link rel="stylesheet" href="style.css"> <!-- Replace with your CSS file name -->
 </head>
 <body>
-    <header>
-        <div class="container header-container">
-            <div id="logo">
-                <a href="#">Shubh<span class="logo-accent">zone</span><div class="logo-icon"></div></a>
+
+    <!-- === SIDEBAR START === -->
+    <div id="main-sidebar" class="main-sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <span id="close-sidebar-btn" class="close-sidebar-btn haptic-trigger">×</span>
+        </div>
+
+        <button id="navigate-to-payment-btn" class="sidebar-option haptic-trigger">
+            <i class="fas fa-money-check-alt" style="margin-right: 10px;"></i>Payment
+        </button>
+        <button id="navigate-to-diamond-btn" class="sidebar-option haptic-trigger">
+            <i class="fas fa-gem" style="margin-right: 10px;"></i>Diamond
+        </button>
+        <button id="navigate-to-leaderboard-btn" class="sidebar-option haptic-trigger">
+            <i class="fas fa-trophy" style="margin-right: 10px;"></i>Leaderboard
+        </button>
+        <button id="navigate-to-advertisement-btn" class="sidebar-option haptic-trigger">
+            <i class="fas fa-bullhorn" style="margin-right: 10px;"></i>Advertisement
+        </button>
+
+        <a href="https://shubhzone.onrender.com" target="_blank" rel="noopener noreferrer" class="premium-features-card haptic-trigger">
+            <div class="premium-image-wrapper">
+                <img src="https://i.ibb.co/0RF4GmTZ/Flux-Dev-A-futuristic-social-media-interface-named-Shubhzone-g-1.jpg" alt="Premium Features Image">
+            </div>
+            <span>Premium Features</span>
+        </a>
+    </div>
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <!-- === SIDEBAR END === -->
+
+
+    <div id="upload-details-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button haptic-trigger" onclick="closeUploadDetailsModal()">×</span>
+            <h3 id="modal-title">Upload Details</h3>
+            <input type="hidden" id="editing-video-id">
+            <div class="input-group">
+                <label for="modal-video-title">Title</label>
+                <input type="text" id="modal-video-title" placeholder="Enter video title">
+            </div>
+            <div class="input-group">
+                <label for="modal-video-description">Description</label>
+                <textarea id="modal-video-description" rows="3" placeholder="Add a description" maxlength="300"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="modal-video-hashtags">Hashtags</label>
+                <input type="text" id="modal-video-hashtags" placeholder="Add hashtags like #trending #viral" maxlength="60">
+            </div>
+            <div class="input-group">
+                <label for="modal-video-url">YouTube Video ID</label>
+                <input type="text" id="modal-video-url" placeholder="Enter YouTube video ID (e.g., dQw4w9WgXcQ)">
+            </div>
+            <div class="category-selector-wrapper">
+                <label>Category</label>
+                <div class="category-selector">
+                    <div class="category-selector-display haptic-trigger" onclick="toggleCategoryOptions()">
+                        <span id="selected-category-text">Select Category</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="category-options" id="category-options"></div>
+                </div>
+            </div>
+            <div class="audience-selector">
+                <label>Audience</label>
+                <div class="audience-options">
+                    <div class="audience-option haptic-trigger" data-audience="all" onclick="selectAudience('all')">
+                        <i class="fas fa-users"></i> All Audiences
+                    </div>
+                    <div class="audience-option haptic-trigger" data-audience="18plus" onclick="selectAudience('18plus')">
+                        <i class="fas fa-user-shield"></i> 18+ Only
+                    </div>
+                </div>
+            </div>
+            <div class="comments-toggle">
+                <label>Allow Comments</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="comments-toggle-input" checked class="haptic-trigger">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button id="modal-save-button" class="save-button haptic-trigger" onclick="handleSave()">Upload Video</button>
+        </div>
+    </div>
+
+    <div id="comments-modal" class="comments-modal-overlay">
+        <div class="comments-modal-content">
+            <div class="comments-header">
+                <h4>Comments</h4>
+                <span class="close-comments-btn haptic-trigger" onclick="closeCommentsModal()">×</span>
+            </div>
+            <ul id="comments-list"></ul>
+            <div class="comment-input-container">
+                <input type="text" id="comment-input" placeholder="Add a comment...">
+                <button id="send-comment-btn" class="haptic-trigger"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-    </header>
+    </div>
 
-    <main>
-        <section id="hero-slider">
-            <div class="slider-container" id="slider">
-                <div class="slides-wrapper">
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
-                        <div class="slide-content"><h2>Monetize Every Click</h2><p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
-                        <div class="slide-content"><h2>Connect & Collaborate</h2><p>Join the Shubhzone community chat where creators connect, share tips, and grow together on your YouTube journey.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
-                        <div class="slide-content"><h2>Promote With a Click</h2><p>With one click, promote your videos to the right audience. Our smart tools help you get seen.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                </div>
-                <div class="slider-nav"><button id="prevBtn">❮</button><button id="nextBtn">❯</button></div>
-            </div>
-        </section>
-
-        <section id="features" class="section">
-            <div class="container">
-                <h2 class="section-title">Why Choose Shubhzone?</h2>
-                <p class="section-subtitle">We provide all the tools you need to succeed as a new creator. Your growth is our mission.</p>
-                <div class="features-grid">
-                    <div class="feature-card"><h3>Smart Monetization</h3><p>Earn directly from your video uploads and by watching content. A simple and effective way to fund your passion.</p></div>
-                    <div class="feature-card"><h3>Creator Community</h3><p>Engage in our active community chat. Get instant feedback, find collaborators, and never feel stuck again.</p></div>
-                    <div class="feature-card"><h3>Targeted Promotion</h3><p>Use our advertising tools to reach a dedicated audience and boost your channel's visibility and watch hours.</p></div>
-                    <div class="feature-card"><h3>Instant Payouts</h3><p>No long waiting periods. Withdraw your earnings easily and quickly once you meet the minimum threshold.</p></div>
-                    <div class="feature-card"><h3>Dedicated Support</h3><p>Our team is always here to help. Get quick and reliable support for any questions or issues you face.</p></div>
-                    <div class="feature-card"><h3>Growth Analytics</h3><p>Track your video performance with a simple dashboard to understand your audience and grow faster.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="creators" class="section">
-            <div class="container">
-                <h2 class="section-title">Meet Our Successful Creators</h2>
-                <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
-                <div class="creators-grid">
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=a" alt="Rohan Sharma">
-                        <p class="quote">"Shubhzone gave my channel the initial push it needed. The views and earnings are real!"</p>
-                        <div><p class="name">Rohan Sharma</p><span>Gaming Creator</span></div>
-                    </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=b" alt="Vikram Singh">
-                        <p class="quote">"Being able to promote my videos so easily helped me reach my first 1000 subscribers."</p>
-                        <div><p class="name">Vikram Singh</p><span>Tech Reviews</span></div>
-                    </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=c" alt="Anjali Verma">
-                        <p class="quote">"The community support is incredible. I've learned so much and made great friends here."</p>
-                        <div><p class="name">Anjali Verma</p><span>Vlogging & Lifestyle</span></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq" class="section">
-            <div class="container">
-                <h2 class="section-title">Have Questions?</h2>
-                <p class="section-subtitle">Here are some of the most common questions we get. If you have more, feel free to contact our support.</p>
-                <div class="faq-container">
-                    <div class="faq-item"><div class="faq-question">How do I start earning?</div><div class="faq-answer"><p>Simply sign up, upload your YouTube video link, and start earning as our community watches it. You can also earn by watching other videos on the platform.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">Is Shubhzone free to use?</div><div class="faq-answer"><p>Yes! Signing up and using our core features for earning and community interaction is completely free. We want to remove all barriers for new creators.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">How does video promotion work?</div><div class="faq-answer"><p>Our promotion service places your video in front of a targeted audience of active users, helping you gain genuine views and increase your channel's authority.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">How can I contact support?</div><div class="faq-answer"><p>You can reach our dedicated support team via the email provided in the footer. We're committed to responding to all queries within 24 hours.</p></div></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-contact">
-                <p><strong>Owner:</strong> Himanshu Kumar</p>
-                <p><strong>Support Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
-            </div>
-            <p>Shubhzone © 2025 | All Rights Reserved</p>
+    <div id="audio-issue-popup" class="modal-overlay">
+        <div class="popup-content">
+            <i class="fas fa-heart heart-icon"></i>
+            <p>Due to a technical issue, if you are unable to hear the audio, please scroll down the video.</p>
+            <button id="audio-issue-ok-btn" class="haptic-trigger">OK</button>
         </div>
-    </footer>
-    
-<script>
-    // Slider Script
-    const slider = document.getElementById('slider');
-    const slidesWrapper = document.querySelector('.slides-wrapper');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentIndex = 0;
-    const slideCount = document.querySelectorAll('.slide').length;
-    let autoPlayInterval;
-    const goToSlide = (index) => { slidesWrapper.style.transform = `translateX(-${index * (100 / slideCount)}%)`; };
-    const nextSlide = () => { currentIndex = (currentIndex + 1) % slideCount; goToSlide(currentIndex); };
-    const prevSlide = () => { currentIndex = (currentIndex - 1 + slideCount) % slideCount; goToSlide(currentIndex); };
-    const startAutoPlay = () => { autoPlayInterval = setInterval(nextSlide, 3000); };
-    const stopAutoPlay = () => { clearInterval(autoPlayInterval); };
-    if (window.innerWidth > 900) { // Only add arrow functionality and hover on desktop
-        nextBtn.addEventListener('click', nextSlide);
-        prevBtn.addEventListener('click', prevSlide);
-        slider.addEventListener('mouseenter', stopAutoPlay);
-        slider.addEventListener('mouseleave', startAutoPlay);
-    }
-    startAutoPlay();
+    </div>
 
-    // FAQ Accordion Script
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        question.addEventListener('click', () => {
-            const currentlyActive = document.querySelector('.faq-item.active');
-            if (currentlyActive && currentlyActive !== item) {
-                currentlyActive.classList.remove('active');
-            }
-            item.classList.toggle('active');
-        });
-    });
-</script>
+    <div class="app-container" id="app-container">
 
+        <div id="splash-screen" class="screen active">
+            <div class="welcome-background-particles"></div>
+            <div class="welcome-top">
+                <h1 class="welcome-text">Welcome ☁️</h1>
+            </div>
+            <div class="welcome-center">
+                <div class="logo-container">
+                    <div class="logo-ring"></div>
+                    <div class="logo-icon-combo">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="orbiting-icons">
+                        <i class="fas fa-microphone orb-icon"></i>
+                        <i class="fas fa-camera orb-icon"></i>
+                        <i class="fas fa-book-open orb-icon"></i>
+                        <i class="fas fa-paint-brush orb-icon"></i>
+                    </div>
+                </div>
+                <h2 class="app-name">Shubhzone</h2>
+                <p class="tagline">Har Hunar ka Ghar</p>
+            </div>
+            <div class="welcome-bottom">
+                <button id="get-started-btn" class="get-started-btn haptic-trigger">Get Started</button>
+                <div id="loading-container" style="display: none;">
+                    <div class="loader"></div>
+                    <p style="margin-top: 10px;">Loading Videos, Please Wait...</p>
+                </div>
+                <p class="creator-credit-new">Made with ❤️ by Udbhav</p>
+            </div>
+        </div>
+
+        <div id="information-screen" class="screen">
+            <div class="screen-header"><span class="header-title">Mera Shubhzone</span></div>
+            <div style="margin-top: 60px; width: 100%; overflow-y: auto; padding-bottom: 20px; padding-left: 20px; padding-right: 20px;">
+                <div class="profile-image-upload">
+                    <img id="profile-image-preview" src="https://via.placeholder.com/120/222/FFFFFF?text=+" alt="Profile Preview">
+                    <label for="profile-image-input" class="profile-image-label haptic-trigger">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="profile-image-input" accept="image/*">
+                </div>
+                <div class="input-group">
+                    <label for="info-name">Name</label>
+                    <input type="text" id="info-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label for="info-mobile">Mobile No.</label>
+                    <input type="tel" id="info-mobile" placeholder="Enter your mobile number">
+                </div>
+                <div class="input-group">
+                    <label for="info-email">Email ID</label>
+                    <input type="email" id="info-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="info-address">Address</label>
+                    <input type="text" id="info-address" placeholder="Enter your address">
+                </div>
+                <div class="input-group">
+                    <label for="info-hobby">Hobby</label>
+                    <input type="text" id="info-hobby" placeholder="e.g., Reading, Gaming, Coding">
+                </div>
+                <div class="input-group">
+                    <label for="info-state">State</label>
+                    <select id="info-state" onchange="checkCustom(this, 'custom-state-input')">
+                        <option value="">Select State</option>
+                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Ladakh">Ladakh</option>
+                        <option value="Lakshadweep">Lakshadweep</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Puducherry">Puducherry</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" id="custom-state-input" class="custom-input" placeholder="Please specify your state">
+                </div>
+                <div class="input-group">
+                    <label for="info-country">Country</label>
+                    <select id="info-country" onchange="checkCustom(this, 'custom-country-input')">
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Japan">Japan</option>
+                        <option value="France">France</option>
+                        <option value="Brazil">Brazil</option>
+                        <option value="China">China</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" id="custom-country-input" class="custom-input" placeholder="Please specify your country">
+                </div>
+                <div class="button-container">
+                    <button id="save-continue-btn" class="continue-btn haptic-trigger" onclick="saveAndContinue()">Continue</button>
+                    <button class="logout-btn haptic-trigger" onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="home-screen" class="screen">
+            <div class="home-top-bar">
+                <div id="home-menu-icon" class="home-menu-icon haptic-trigger">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div id="category-scroller" class="category-scroller">
+                </div>
+            </div>
+
+            <div id="video-swiper">
+                <div id="home-static-message-container" style="display: none;">
+                    <p class="static-message">Sorry, no video is available at the moment. <br> Please upload one!</p>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item active" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <div id="long-video-screen" class="screen">
+             <div id="long-video-top-bar">
+                <div id="long-video-menu-icon" class="home-menu-icon haptic-trigger">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div id="long-video-category-scroller" class="category-scroller"></div>
+            </div>
+
+            <div class="long-video-screen-content">
+                <div id="long-video-carousel-container">
+                    <div id="long-video-carousel-wrapper"></div>
+                </div>
+
+                <div class="long-video-search-container">
+                    <input type="text" id="long-video-search-input" placeholder="Search for videos...">
+                    <button id="long-video-search-btn" class="haptic-trigger"><i class="fas fa-search"></i></button>
+                    <button id="long-video-history-btn" class="haptic-trigger"><i class="fas fa-history"></i></button>
+                </div>
+
+                <div class="long-video-search-results-container" id="long-video-search-results" style="display: none;">
+                    <h4>Search Results</h4>
+                    <div id="long-video-search-results-grid"></div>
+                </div>
+
+                <div id="long-video-grid"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item active" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <div id="history-screen" class="screen">
+            <div id="history-top-bar">
+                <div id="back-from-history-btn" class="home-menu-icon haptic-trigger" onclick="navigateBack()">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <span class="header-title">Watch History</span>
+                <button id="history-date-button" class="haptic-trigger" onclick="showHistoryDate()">Today <i class="fas fa-calendar-alt"></i></button>
+            </div>
+            <div class="history-content">
+                <div class="history-section-title">Recently Watched Shorts</div>
+                <div id="history-shorts-scroller"></div>
+                <div class="history-section-title">Watched Videos</div>
+                <div id="history-long-video-list"></div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <div id="upload-screen" class="screen">
+            <div class="upload-header">
+                <h2>Upload Content</h2>
+                <p>Share your awesome videos with the world</p>
+            </div>
+             <div class="upload-container-new">
+                <button id="upload-short-video-btn" class="upload-action-button haptic-trigger">
+                    <i class="fas fa-bolt" style="margin-right: 10px;"></i> Upload Short Video
+                </button>
+                 <button id="upload-long-video-btn" class="upload-action-button haptic-trigger" style="background-color: #ff8f00;">
+                    <i class="fas fa-film" style="margin-right: 10px;"></i> Upload Long Video
+                </button>
+                <button id="earnsure-btn" class="upload-action-button haptic-trigger" style="background-color: #4CAF50;">Earnsure</button>
+                <div id="upload-screen-ad-container" style="width: 100%; display: flex; justify-content: center; margin-top: 20px; margin-bottom: 20px; flex-shrink: 0;"></div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item active" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <div id="friends-screen" class="screen">
+            <div class="chat-app-container">
+                <header class="app-bar">
+                    <div style="width: 32px;"></div>
+                    <div class="app-logo">ShubZone</div>
+                </header>
+
+                <div class="tab-bar">
+                    <button class="tab-button active" data-tab="add">Add</button>
+                    <button class="tab-button" data-tab="requests">Requests</button>
+                    <button class="tab-button" data-tab="members">Members</button>
+                </div>
+
+                <main class="content-area">
+                    <div class="tab-content" id="add-content"></div>
+                    <div class="tab-content hidden" id="requests-content"></div>
+                    <div class="tab-content hidden" id="members-content"></div>
+                </main>
+
+                <div class="chat-screen" id="chat-screen-overlay">
+                    <header class="chat-app-bar">
+                        <button class="icon-button back-arrow haptic-trigger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28"><path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"/></svg></button>
+                        <div class="profile-info">
+                            <div class="profile-pic"><img src="" alt="Chat User Avatar" id="chat-user-profile-pic"></div>
+                            <div><div class="username" id="chat-username"></div><div class="status" id="chat-user-status"></div></div>
+                        </div>
+                        <button class="icon-button haptic-trigger" id="chat-menu-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 14c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+                    </header>
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-input-bar">
+                         <button class="icon-button haptic-trigger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-3.5-8a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm-5.402 4.043c.125.433.516.757.962.757h2.88a1.002 1.002 0 0 0 .962-.757C15.353 16.994 13.88 16 12 16c-1.88 0-3.353.994-3.902 2.043z"/></svg></button>
+                        <input type="text" class="input-field" placeholder="Message...">
+                        <button class="send-button haptic-trigger" id="send-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style="fill: currentColor;"><path d="M3.478 2.405a.5.5 0 0 0-.926.342l2.854 15.546a.5.5 0 0 0 .926.341l2.854-15.546a.5.5 0 0 0-.926-.342zM3 21.001l18-9-18-9v7.199L10 12l-7 3.199V21.001z"/></svg></button>
+                    </div>
+                </div>
+
+                <div class="modal-overlay" id="chat-menu-modal">
+                    <div class="modal-content modal-list">
+                        <div class="modal-item haptic-trigger" id="chat-menu-view-profile">View Profile</div>
+                        <div class="modal-item haptic-trigger" id="chat-menu-mute-notifications">Mute Notifications</div>
+                        <div class="modal-item danger haptic-trigger" id="chat-menu-block-user">Block User</div>
+                    </div>
+                </div>
+                <div class="modal-overlay" id="message-actions-modal">
+                     <div class="modal-content modal-list">
+                        <div class="modal-item haptic-trigger" id="delete-for-me">Delete for Me</div>
+                        <div class="modal-item danger haptic-trigger" id="delete-for-everyone">Delete for Everyone</div>
+                    </div>
+                </div>
+                <div class="modal-overlay" id="profile-viewer-modal">
+                    <div class="modal-content">
+                        <div class="profile-image-container">
+                            <img id="profile-viewer-image" src="" alt="Profile Picture">
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-alert-overlay" id="custom-alert-overlay">
+                    <div class="custom-alert-content">
+                        <p id="custom-alert-message"></p>
+                    </div>
+                </div>
+                <div class="heart-popup-container" id="heart-popup-container"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item active" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <div id="profile-screen" class="screen">
+            <div id="profile-header-new">
+                <img id="profile-header-avatar" src="https://via.placeholder.com/50/222/FFFFFF?text=+" alt="Avatar">
+                <button id="profile-your-zone-btn" class="haptic-trigger">Your Zone</button>
+            </div>
+
+            <div id="profile-video-toggle-buttons">
+                <button id="profile-show-shorts-btn" class="profile-toggle-btn active haptic-trigger">Short Video</button>
+                <button id="profile-show-longs-btn" class="profile-toggle-btn haptic-trigger">Long Video</button>
+            </div>
+
+            <div id="profile-video-content">
+                <div id="user-short-video-grid"></div>
+                <div id="user-long-video-grid" style="display: none;"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item active" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <div id="description-modal" class="modal-overlay">
+            <div class="description-modal-content">
+                <span id="close-description-btn" class="close-button haptic-trigger">×</span>
+                <div id="description-content" class="description-text"></div>
+            </div>
+        </div>
+
+        <div id="payment-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Payment Request</span>
+            </div>
+            <div id="payment-content" style="width: 100%; padding: 80px 20px 20px;">
+                <!-- Payment form will be populated by JS -->
+            </div>
+        </div>
+
+        <div id="your-zone-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Your Zone</span>
+            </div>
+            <div id="your-zone-content">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+
+        <div id="earnsure-screen" class="screen">
+             <div class="earnsure-header">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <h4 class="header-title">Earnsure</h4>
+                <div class="earnsure-language-toggle" id="earnsure-language-toggle"></div>
+            </div>
+            <div class="earnsure-content-area">
+                <div class="earnsure-ad-container" id="earnsure-top-ad-container">
+                    <div>Ad Placeholder</div>
+                </div>
+                <div class="earnsure-text-content" id="earnsure-text-content">
+                    <!-- Content populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <div id="leaderboard-screen" class="screen">
+            <div class="screen-header transparent">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">👑 Leaderboard</span>
+            </div>
+            <div id="leaderboard-content"></div>
+        </div>
+
+        <div id="advertisement-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Advertiser Panel</span>
+            </div>
+            <div class="container" style="margin-top: 60px; padding-top: 20px;">
+                <div id="uniqueCodeSection" class="section">
+                    <div class="card">
+                        <h2>View Your Campaigns</h2>
+                        <h3>Enter the Unique ID provided by the admin to access your dashboard.</h3>
+                        <div class="form-group">
+                            <label for="uniqueCodeInput">Your Unique ID</label>
+                            <input type="text" id="uniqueCodeInput" placeholder="Enter your ID here">
+                        </div>
+                        <button class="btn" onclick="advertiserFunctions.applyCode()">Apply</button>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <a href="#" class="logout-btn" onclick="advertiserFunctions.showSection('registrationSection')">New Advertiser? Register here.</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="registrationSection" class="section">
+                    <div class="card">
+                        <h2>Welcome, Advertiser!</h2><h3>Let's get you set up in a minute.</h3>
+                        <form>
+                            <div class="form-group"><label for="adv-name">Your Name</label><input type="text" id="adv-name" placeholder="e.g., John Doe" required></div>
+                            <div class="form-group"><label for="adv-businessName">Business Name (Optional)</label><input type="text" id="adv-businessName" placeholder="e.g., John's Cafe"></div>
+                            <div class="form-group"><label for="adv-whatsapp">WhatsApp Number</label><input type="tel" id="adv-whatsapp" placeholder="Include country code, e.g., 919876543210" required></div>
+                            <button type="button" class="btn" onclick="advertiserFunctions.processRegistration()">Continue →</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="planSection" class="section">
+                    <div class="card" style="background-color: transparent; border: none; box-shadow: none;">
+                        <h2 style="color: #fde047;">Our Golden Plans</h2>
+                        <h3>Each plan is crafted to deliver maximum value.</h3>
+                        <div id="planContainer" class="plan-container"></div>
+                        <input type="hidden" id="selectedPlanData" required>
+                        <button type="button" class="btn" onclick="advertiserFunctions.goToForm()" style="margin-top: 30px;">Next Step →</button>
+                    </div>
+                </div>
+
+                <div id="adFormSection" class="section">
+                     <div class="card">
+                        <h2>Campaign Details</h2><h3>Describe the ad you want to run.</h3>
+                         <form id="adSubmissionForm">
+                            <div class="form-group"><label for="adv-adTitle">Ad Title</label><input type="text" id="adv-adTitle" placeholder="e.g., Diwali Special Sale" required></div>
+                            <div class="form-group"><label for="adv-adDesc">Ad Description (Short Message)</label><textarea id="adv-adDesc" placeholder="Your main message for the ad (100-200 characters)" maxlength="200" required></textarea></div>
+                            <div class="form-group"><label for="adv-cta">Call to Action (Button Text)</label><select id="adv-cta" required><option value="Call Now">Call Now</option><option value="Order Now">Order Now</option><option value="WhatsApp Us">WhatsApp Us</option><option value="Learn More">Learn More</option></select></div>
+                            <div class="form-group"><label for="adv-adLink">Destination Link</label><input type="url" id="adv-adLink" placeholder="https://yourwebsite.com or https://wa.me/..." required></div>
+                            <div class="form-group">
+                                <label for="adv-adType">Ad Type</label>
+                                <select id="adv-adType" required onchange="advertiserFunctions.updateImpressionDisclaimer()">
+                                    <option value="banner">Banner Ad</option>
+                                    <option value="image_5s">5-Second Image Ad</option>
+                                    <option value="video">Video Ad</option>
+                                </select>
+                                <p id="impressionDisclaimer"></p>
+                            </div>
+                            <div class="form-group"><label for="adv-contactWhatsapp">Confirm Contact WhatsApp Number</label><input type="tel" id="adv-contactWhatsapp" placeholder="Enter campaign contact number" required></div>
+                            <button type="button" class="btn" onclick="advertiserFunctions.submitAdRequest()">Submit Ad Request</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="dashboardSection" class="section">
+                    <div class="dashboard-header"><h2 id="welcomeMessage">Your Campaigns</h2><p>Select a campaign to view its performance.</p></div>
+                    <button class="btn" onclick="advertiserFunctions.createNewAd()">+ Add New Plan</button>
+                    <div class="card"><div id="campaignListContainer"></div></div>
+                    <div style="text-align:center;"><button class="logout-btn" onclick="advertiserFunctions.resetUser()">This isn't me, reset.</button></div>
+                </div>
+
+                <div id="campaignDetailSection" class="section">
+                    <div class="dashboard-header"><h2 id="detailCampaignTitle">Campaign Performance</h2><p id="detailCampaignPlan">Plan details will load here.</p></div>
+                     <div class="stats-grid">
+                        <div class="stat-card"><div class="label" id="detailAdType">Ad Type</div><div class="value" id="detailFinalImpressions">...</div></div>
+                         <div class="stat-card"><div class="label">Clicks (CTR)</div><div class="value" id="detailClickCount">...</div></div>
+                    </div>
+                    <div class="card"><h3 style="text-align:left; font-weight: 600; margin-bottom: 15px;">Viewer Locations (Sample)</h3><div class="stat-card geo-card"><div class="value" id="detailGeoData">Loading...</div></div></div>
+                    <button class="btn btn-secondary" onclick="advertiserFunctions.goBackToDashboard()" style="margin-top: 30px;">← Back to All Campaigns</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="diamond-members-screen" class="screen">
+            <div class="screen-header transparent">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Diamond Members</span>
+            </div>
+            <div id="diamond-members-content" class="content-area"></div>
+        </div>
+
+        <!-- === यहाँ बदलाव किया गया है: Creator Page Screen की संरचना को सरल किया गया है === -->
+        <div id="creator-diamond-page-screen" class="screen">
+            <div class="screen-header transparent">
+                 <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                 <div id="creator-page-tabs">
+                    <button class="creator-page-tab-btn active haptic-trigger" data-type="short">Short Video</button>
+                    <button class="creator-page-tab-btn haptic-trigger" data-type="long">Long Video</button>
+                 </div>
+                 <div class="header-icon-right"></div> <!-- This is a spacer -->
+            </div>
+
+            <div id="creator-page-functions" class="more-function-container">
+                <div id="more-function-menu" class="more-function-menu">
+                    <!-- === यहाँ बदलाव किया गया है: Rotate बटन हटा दिया गया है === -->
+                    <button id="more-videos-btn" class="function-menu-item haptic-trigger">
+                        <i class="fas fa-list-ul"></i> More Videos
+                    </button>
+                </div>
+                <button id="more-function-btn" class="more-function-btn haptic-trigger">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+
+            <div id="creator-page-content" class="content-area">
+                <!-- JS will populate these views -->
+                <div id="creator-page-short-view" class="creator-page-view active"></div>
+                <div id="creator-page-long-view" class="creator-page-view"></div>
+            </div>
+        </div>
+        <!-- === बदलाव का अंत === -->
+
+        <div id="track-payment-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger" onclick="navigateBack()"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Track Payment</span>
+            </div>
+            <div id="track-payment-content" class="content-area" style="padding-top: 75px; padding-left: 15px; padding-right: 15px;">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+
+        <!-- NEW: रिपोर्ट पेज के लिए कंटेनर जोड़ा गया -->
+        <div id="report-screen" class="screen">
+            <!-- JS will populate this -->
+        </div>
+
+    </div>
+
+    <!-- ======================================================= -->
+    <!-- === TOP-PRIORITY AD OVERLAY (NEW) - START === -->
+    <!-- ======================================================= -->
+    <div id="admin-priority-ad-overlay">
+        <div id="ad-timer"></div>
+        <button id="ad-close-btn">×</button>
+        <div id="ad-content-container">
+            <!-- जावास्क्रिप्ट यहाँ वीडियो या इमेज डालेगा -->
+        </div>
+    </div>
+    <!-- ======================================================= -->
+    <!-- === TOP-PRIORITY AD OVERLAY (NEW) - END === -->
+    <!-- ======================================================= -->
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- JavaScript फ़ाइल को यहाँ लिंक किया गया है -->
+    <script src="script.js"></script> <!-- Replace with your JS file name -->
 </body>
 </html>
