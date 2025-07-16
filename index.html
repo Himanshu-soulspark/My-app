@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - Monetize, Connect, and Promote Your Content</title>
+    <title>Shubhzone - Monetize, Connect, and Promote</title>
     
     <!-- Monetag Verification Code -->
     <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&display=swap');
 
         :root {
             --primary-color: #0d0f18;
@@ -18,7 +18,6 @@
             --accent-violet: #8e44ad;
             --text-color: #ffffff;
             --text-muted: #bdc3c7;
-            --card-bg: rgba(26, 28, 45, 0.8);
         }
 
         body {
@@ -35,91 +34,125 @@
             width: 90%;
             max-width: 1200px;
             margin: auto;
-            overflow: hidden;
             padding: 0 20px;
         }
-
+        
+        /* Header and Logo Styling */
         header {
-            background: rgba(13, 15, 24, 0.7);
+            background: rgba(13, 15, 24, 0.8);
             backdrop-filter: blur(10px);
-            color: var(--text-color);
-            padding: 20px 0;
-            min-height: 70px;
+            padding: 15px 0;
             border-bottom: 2px solid var(--accent-cyan);
             position: sticky;
             top: 0;
             z-index: 1000;
-            width: 100%;
         }
 
-        header a {
-            color: var(--text-color);
-            text-decoration: none;
-            text-transform: uppercase;
-            font-size: 16px;
-            transition: color 0.3s ease;
-        }
-        
-        header a:hover {
-            color: var(--accent-cyan);
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        header ul {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-            float: right;
-        }
-
-        header li {
-            display: inline;
-            padding: 0 15px;
-        }
-
-        header #branding {
-            float: left;
-        }
-
-        header #branding h1 {
-            margin: 0;
+        #logo a {
+            font-family: 'Russo One', sans-serif;
             font-size: 28px;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+
+        #logo .logo-accent {
             color: var(--accent-cyan);
-            font-weight: 700;
+            text-shadow: 0 0 10px var(--accent-cyan);
         }
         
-        /* Hero Section */
-        #hero {
-            min-height: 90vh;
-            background: linear-gradient(rgba(13, 15, 24, 0.8), rgba(13, 15, 24, 0.8)), url('https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg') no-repeat center center/cover;
-            color: var(--text-color);
-            text-align: center;
+        #logo .logo-icon {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-violet);
+            border-radius: 50%;
+            margin-left: 8px;
+            box-shadow: 0 0 10px var(--accent-violet);
+        }
+
+        /* Hero Section with Slider */
+        #hero-slider {
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        
+        .slider-container {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .slides-wrapper {
+            display: flex;
+            height: 100%;
+            width: 300%; /* 3 slides */
+            transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .slide {
+            width: calc(100% / 3);
+            height: 100%;
+            display: flex;
+            background: var(--secondary-color);
+        }
+
+        .slide-image {
+            flex: 1.2; /* Image takes slightly more space */
+            overflow: hidden;
+        }
+
+        .slide-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .slide:hover .slide-image img {
+            transform: scale(1.05);
+        }
+
+        .slide-content {
+            flex: 1;
+            padding: 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            padding: 0 20px;
-            position: relative;
+            text-align: left;
         }
         
-        #hero h1 {
-            font-size: 3.5rem;
+        .slide-content h2 {
+            font-size: 2.5rem;
+            color: var(--accent-cyan);
             margin: 0 0 15px 0;
-            font-weight: 700;
-            text-shadow: 0 0 20px var(--accent-cyan);
+            line-height: 1.2;
         }
-
-        #hero p {
-            font-size: 1.3rem;
-            max-width: 600px;
-            margin-bottom: 30px;
+        
+        .slide-content p {
+            font-size: 1rem;
             color: var(--text-muted);
+            margin-bottom: 30px;
         }
 
-        .cta-button {
+        .start-button {
             display: inline-block;
             background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
             color: var(--text-color);
-            padding: 15px 35px;
+            padding: 12px 30px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -128,123 +161,68 @@
             font-weight: 600;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+            align-self: flex-start;
         }
 
-        .cta-button:hover {
-            transform: scale(1.05);
+        .start-button:hover {
+            transform: translateY(-3px);
             box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
         }
 
-        /* Professional Feature Showcase Sections */
-        .feature-showcase {
-            padding: 80px 0;
+        /* Slider Navigation */
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            transform: translateY(-50%);
             display: flex;
-            align-items: center;
-            gap: 50px;
+            justify-content: space-between;
         }
 
-        .feature-showcase.reverse {
-            flex-direction: row-reverse;
+        .slider-nav button {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--text-muted);
+            color: var(--text-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s;
         }
 
-        .feature-image, .feature-text {
-            flex: 1;
+        .slider-nav button:hover {
+            background: var(--accent-cyan);
+            color: var(--primary-color);
         }
 
-        .feature-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--secondary-color);
-        }
-        
-        .feature-text h2 {
-            font-size: 2.8rem;
-            color: var(--accent-cyan);
-            margin-bottom: 20px;
-            line-height: 1.2;
-        }
-        
-        .feature-text p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-        }
-        
-        /* Alternating background color for sections */
-        .feature-showcase:nth-child(even) {
-            background: var(--secondary-color);
-        }
-
-
-        /* Testimonials */
-        #testimonials {
-            padding: 60px 0;
-            text-align: center;
-        }
-        
-        .section-title {
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            color: var(--accent-cyan);
-        }
-        
-        #testimonials .testimonial-cards {
-            display: flex;
-            gap: 30px;
-            overflow-x: auto;
-            padding-bottom: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .testimonial-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            min-width: 300px;
-            max-width: 350px;
-            border-left: 5px solid var(--accent-violet);
-            text-align: left;
-        }
-        
-        /* Footer */
-        footer {
-            padding: 40px 20px;
-            margin-top: 40px;
-            color: var(--text-muted);
-            background-color: var(--primary-color);
-            text-align: center;
-            border-top: 1px solid var(--secondary-color);
-        }
-        
-        footer a {
-            color: var(--accent-cyan);
-            text-decoration: none;
-        }
-
-
-        /* Responsiveness */
-        @media(max-width: 768px) {
-            header #branding, header nav, header ul {
-                float: none;
-                text-align: center;
-            }
-            
-            header ul { margin-top: 15px; }
-            header li { padding: 0 10px; }
-            
-            #hero h1 { font-size: 2.5rem; }
-            #hero p { font-size: 1rem; }
-            
-            .feature-showcase, .feature-showcase.reverse {
+        /* Responsive Design */
+        @media(max-width: 900px) {
+            .slide {
                 flex-direction: column;
-                text-align: center;
-                padding: 40px 0;
             }
-
-            .feature-text h2 {
-                font-size: 2rem;
+            .slide-image, .slide-content {
+                flex: 1;
+            }
+            .slide-content {
+                padding: 30px;
+                text-align: center;
+            }
+            .slide-content h2 {
+                font-size: 1.8rem;
+            }
+            .start-button {
+                align-self: center;
+            }
+        }
+        
+        @media(max-width: 768px) {
+            #logo a {
+                font-size: 22px;
+            }
+            #hero-slider {
+                padding: 20px 0;
             }
         }
 
@@ -252,106 +230,110 @@
 </head>
 <body>
     <header>
-        <div class="container">
-            <div id="branding">
-                <h1><a href="#">Shubhzone</a></h1>
+        <div class="container header-container">
+            <div id="logo">
+                <a href="#">Shubh<span class="logo-accent">zone</span><div class="logo-icon"></div></a>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#hero">Home</a></li>
-                    <li><a href="#monetize">Monetize</a></li>
-                    <li><a href="#community">Community</a></li>
-                    <li><a href="#promote">Promote</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
 
-    <section id="hero">
-        <div class="container">
-            <h1>Fuel Your YouTube Dreams with Shubhzone</h1>
-            <p>Monetize your time, grow your reach, and unlock your creator journey. We empower emerging creators to earn, connect, and thrive.</p>
-            <a href="#" class="cta-button">Start Creating & Earning</a>
-        </div>
-    </section>
+    <main>
+        <section id="hero-slider">
+            <div class="slider-container" id="slider">
+                <div class="slides-wrapper">
+                    <!-- Slide 1: Monetize -->
+                    <div class="slide">
+                        <div class="slide-image">
+                            <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize your content">
+                        </div>
+                        <div class="slide-content">
+                            <h2>Monetize Every Click</h2>
+                            <p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p>
+                            <a href="#" class="start-button">Start</a>
+                        </div>
+                    </div>
 
-    <!-- Monetize Section -->
-    <section id="monetize" class="feature-showcase">
-        <div class="container feature-content">
-             <div class="feature-image">
-                <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Dashboard showing earnings and video statistics">
-             </div>
-             <div class="feature-text">
-                <h2>🎥 Monetize Every Click</h2>
-                <p>Upload your YouTube videos and get rewarded every time someone watches. Shubhzone turns your content into cash — whether you're watching or being watched.</p>
-             </div>
-        </div>
-    </section>
+                    <!-- Slide 2: Community -->
+                    <div class="slide">
+                        <div class="slide-image">
+                            <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Join the community">
+                        </div>
+                        <div class="slide-content">
+                            <h2>Connect & Collaborate</h2>
+                            <p>Join the Shubhzone community chat where creators connect, share tips, and grow together on your YouTube journey.</p>
+                            <a href="#" class="start-button">Start</a>
+                        </div>
+                    </div>
 
-    <!-- Community Section -->
-    <section id="community" class="feature-showcase reverse" style="background: var(--secondary-color);">
-         <div class="container feature-content">
-             <div class="feature-image">
-                <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community chat interface with multiple users connecting">
-             </div>
-             <div class="feature-text">
-                <h2>💬 Connect & Collaborate</h2>
-                <p>Join the Shubhzone community chat where creators connect, share tips, solve doubts, and grow together. Ask questions, make friends, and never feel alone on your YouTube journey.</p>
-             </div>
-        </div>
-    </section>
-
-    <!-- Promote Section -->
-    <section id="promote" class="feature-showcase">
-        <div class="container feature-content">
-            <div class="feature-image">
-                <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="A digital billboard advertising a video to a targeted audience">
-            </div>
-            <div class="feature-text">
-                <h2>📢 Promote with a Click</h2>
-                <p>With one click, promote your videos to the right audience. Whether you're just starting or scaling up, Shubhzone’s smart promotion tools help you get seen.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="testimonials">
-        <div class="container">
-            <h2 class="section-title">What Our Creators Say</h2>
-            <div class="testimonial-cards">
-                <div class="testimonial-card">
-                    <p>"I gained over 1,000 views in a single week and earned my first payout! It's a game-changer."</p>
-                    <p><strong>- Rohit, Gaming Creator</strong></p>
+                    <!-- Slide 3: Promote -->
+                    <div class="slide">
+                        <div class="slide-image">
+                            <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote your videos">
+                        </div>
+                        <div class="slide-content">
+                            <h2>Promote With a Click</h2>
+                            <p>With one click, promote your videos to the right audience. Our smart tools help you get seen.</p>
+                            <a href="#" class="start-button">Start</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="testimonial-card">
-                    <p>"The community chat is a huge plus. I've learned so much from other creators."</p>
-                    <p><strong>- Priya, DIY Vlogger</strong></p>
-                </div>
-                <div class="testimonial-card">
-                    <p>"Getting paid for watching videos felt too good to be true, but it's real! Win-win!"</p>
-                    <p><strong>- Sameer, Student</strong></p>
+                
+                <div class="slider-nav">
+                    <button id="prevBtn">❮</button>
+                    <button id="nextBtn">❯</button>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p><strong>Owner:</strong> Himanshu Kumar</p>
-            <p><strong>Contact:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
-            <p style="margin-top: 20px;">Shubhzone © 2025 | All Rights Reserved</p>
-        </div>
-    </footer>
-
+        </section>
+    </main>
+    
 <script>
-    // Simple script for smooth scrolling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
+    const slider = document.getElementById('slider');
+    const slidesWrapper = document.querySelector('.slides-wrapper');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let currentIndex = 0;
+    const slideCount = document.querySelectorAll('.slide').length;
+    let autoPlayInterval;
+
+    const goToSlide = (index) => {
+        slidesWrapper.style.transform = `translateX(-${index * (100 / slideCount)}%)`;
+    };
+
+    const nextSlide = () => {
+        currentIndex = (currentIndex + 1) % slideCount;
+        goToSlide(currentIndex);
+    };
+
+    const prevSlide = () => {
+        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+        goToSlide(currentIndex);
+    };
+
+    const startAutoPlay = () => {
+        autoPlayInterval = setInterval(nextSlide, 3000); // Change slide every 3 seconds
+    };
+
+    const stopAutoPlay = () => {
+        clearInterval(autoPlayInterval);
+    };
+
+    // Event Listeners
+    nextBtn.addEventListener('click', () => {
+        nextSlide();
     });
+
+    prevBtn.addEventListener('click', () => {
+        prevSlide();
+    });
+
+    // Pause on hover
+    slider.addEventListener('mouseenter', stopAutoPlay);
+    slider.addEventListener('mouseleave', startAutoPlay);
+
+    // Start the show
+    startAutoPlay();
+
 </script>
 
 </body>
