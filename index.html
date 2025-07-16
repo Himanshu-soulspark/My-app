@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - Earn, Sell, and Watch Videos</title>
+    <title>Shubhzone - Monetize, Connect, and Promote Your Content</title>
     
     <!-- Monetag Verification Code -->
     <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
@@ -25,7 +25,7 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+            background: var(--primary-color);
             color: var(--text-color);
             line-height: 1.7;
             overflow-x: hidden;
@@ -43,8 +43,7 @@
             background: rgba(13, 15, 24, 0.7);
             backdrop-filter: blur(10px);
             color: var(--text-color);
-            padding-top: 20px;
-            padding-bottom: 20px;
+            padding: 20px 0;
             min-height: 70px;
             border-bottom: 2px solid var(--accent-cyan);
             position: sticky;
@@ -85,12 +84,13 @@
             margin: 0;
             font-size: 28px;
             color: var(--accent-cyan);
+            font-weight: 700;
         }
-
+        
         /* Hero Section */
         #hero {
             min-height: 90vh;
-            background: var(--primary-color);
+            background: linear-gradient(rgba(13, 15, 24, 0.8), rgba(13, 15, 24, 0.8)), url('https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg') no-repeat center center/cover;
             color: var(--text-color);
             text-align: center;
             display: flex;
@@ -101,28 +101,11 @@
             position: relative;
         }
         
-        #hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle, rgba(0, 229, 255, 0.1), transparent 70%);
-            animation: pulse 5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.7; }
-            70% { transform: scale(1.2); opacity: 0; }
-            100% { transform: scale(0.95); opacity: 0; }
-        }
-
         #hero h1 {
             font-size: 3.5rem;
             margin: 0 0 15px 0;
             font-weight: 700;
-            text-shadow: 0 0 15px var(--accent-cyan);
+            text-shadow: 0 0 20px var(--accent-cyan);
         }
 
         #hero p {
@@ -152,77 +135,67 @@
             box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
         }
 
-        /* General Sections Styling */
-        .section {
+        /* Professional Feature Showcase Sections */
+        .feature-showcase {
+            padding: 80px 0;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .feature-showcase.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .feature-image, .feature-text {
+            flex: 1;
+        }
+
+        .feature-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--secondary-color);
+        }
+        
+        .feature-text h2 {
+            font-size: 2.8rem;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .feature-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+        
+        /* Alternating background color for sections */
+        .feature-showcase:nth-child(even) {
+            background: var(--secondary-color);
+        }
+
+
+        /* Testimonials */
+        #testimonials {
             padding: 60px 0;
             text-align: center;
         }
-
+        
         .section-title {
             font-size: 2.5rem;
             margin-bottom: 40px;
             color: var(--accent-cyan);
         }
         
-        /* How It Works Section */
-        #how-it-works .steps {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .step-card {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            width: 30%;
-            min-width: 280px;
-            border: 1px solid var(--secondary-color);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .step-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-        }
-        
-        .step-card .icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: var(--accent-cyan);
-        }
-        
-        .step-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        /* Features Section */
-        #features .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-        
-        .feature-item {
-            background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: left;
-        }
-        
-        .feature-item h3 {
-            color: var(--accent-cyan);
-            margin-top: 0;
-        }
-
-        /* Testimonials */
         #testimonials .testimonial-cards {
             display: flex;
             gap: 30px;
             overflow-x: auto;
             padding-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
         .testimonial-card {
@@ -230,62 +203,11 @@
             padding: 25px;
             border-radius: 15px;
             min-width: 300px;
+            max-width: 350px;
             border-left: 5px solid var(--accent-violet);
-        }
-
-        .testimonial-card p.quote {
-            font-style: italic;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--secondary-color);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .testimonial-card .author {
-            font-weight: bold;
-            color: var(--accent-cyan);
-        }
-        
-        /* FAQ Section */
-        .faq-item {
-            background: var(--card-bg);
-            margin-bottom: 10px;
-            border-radius: 10px;
             text-align: left;
         }
-
-        .faq-question {
-            padding: 20px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
         
-        .faq-question::after {
-            content: '+';
-            font-size: 1.5rem;
-            transition: transform 0.3s;
-        }
-        
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            padding: 0 20px;
-            transition: max-height 0.5s ease, padding 0.5s ease;
-            color: var(--text-muted);
-        }
-        
-        .faq-item.active .faq-answer {
-            max-height: 200px; /* Adjust as needed */
-            padding: 0 20px 20px;
-        }
-
-        .faq-item.active .faq-question::after {
-            transform: rotate(45deg);
-        }
-
         /* Footer */
         footer {
             padding: 40px 20px;
@@ -296,19 +218,11 @@
             border-top: 1px solid var(--secondary-color);
         }
         
-        footer p {
-            margin: 5px 0;
-        }
-        
         footer a {
             color: var(--accent-cyan);
             text-decoration: none;
         }
 
-        footer .social-links a {
-            margin: 0 10px;
-            font-size: 1.5rem;
-        }
 
         /* Responsiveness */
         @media(max-width: 768px) {
@@ -317,29 +231,20 @@
                 text-align: center;
             }
             
-            header ul {
-                margin-top: 10px;
-            }
+            header ul { margin-top: 15px; }
+            header li { padding: 0 10px; }
             
-            header li {
-                padding: 0 10px;
-            }
+            #hero h1 { font-size: 2.5rem; }
+            #hero p { font-size: 1rem; }
             
-            #hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            #hero p {
-                font-size: 1rem;
-            }
-            
-            #how-it-works .steps {
+            .feature-showcase, .feature-showcase.reverse {
                 flex-direction: column;
-                align-items: center;
+                text-align: center;
+                padding: 40px 0;
             }
 
-            .step-card {
-                width: 90%;
+            .feature-text h2 {
+                font-size: 2rem;
             }
         }
 
@@ -349,14 +254,14 @@
     <header>
         <div class="container">
             <div id="branding">
-                <h1><a href="#">Shubhzone.shop</a></h1>
+                <h1><a href="#">Shubhzone</a></h1>
             </div>
             <nav>
                 <ul>
                     <li><a href="#hero">Home</a></li>
-                    <li><a href="#how-it-works">How It Works</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#monetize">Monetize</a></li>
+                    <li><a href="#community">Community</a></li>
+                    <li><a href="#promote">Promote</a></li>
                 </ul>
             </nav>
         </div>
@@ -365,108 +270,65 @@
     <section id="hero">
         <div class="container">
             <h1>Fuel Your YouTube Dreams with Shubhzone</h1>
-            <p>Monetize your time, grow your reach, and unlock your creator journey. We empower emerging creators to grow, earn, and thrive.</p>
+            <p>Monetize your time, grow your reach, and unlock your creator journey. We empower emerging creators to earn, connect, and thrive.</p>
             <a href="#" class="cta-button">Start Creating & Earning</a>
         </div>
     </section>
 
-    <section id="how-it-works" class="section">
-        <div class="container">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps">
-                <div class="step-card">
-                    <div class="icon">🎬</div>
-                    <h3>Watch & Earn</h3>
-                    <p>Get paid to watch videos from other creators. Your time is valuable, and we make sure you're rewarded for it.</p>
-                </div>
-                <div class="step-card">
-                    <div class="icon">🚀</div>
-                    <h3>Embed & Promote</h3>
-                    <p>Submit your YouTube videos to our platform. Gain views, grow your audience, and get your content discovered.</p>
-                </div>
-                <div class="step-card">
-                    <div class="icon">💬</div>
-                    <h3>Chat & Get Paid</h3>
-                    <p>Connect with other creators via chat support, collaborate, and receive your earnings through easy, direct payments.</p>
-                </div>
+    <!-- Monetize Section -->
+    <section id="monetize" class="feature-showcase">
+        <div class="container feature-content">
+             <div class="feature-image">
+                <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Dashboard showing earnings and video statistics">
+             </div>
+             <div class="feature-text">
+                <h2>🎥 Monetize Every Click</h2>
+                <p>Upload your YouTube videos and get rewarded every time someone watches. Shubhzone turns your content into cash — whether you're watching or being watched.</p>
+             </div>
+        </div>
+    </section>
+
+    <!-- Community Section -->
+    <section id="community" class="feature-showcase reverse" style="background: var(--secondary-color);">
+         <div class="container feature-content">
+             <div class="feature-image">
+                <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community chat interface with multiple users connecting">
+             </div>
+             <div class="feature-text">
+                <h2>💬 Connect & Collaborate</h2>
+                <p>Join the Shubhzone community chat where creators connect, share tips, solve doubts, and grow together. Ask questions, make friends, and never feel alone on your YouTube journey.</p>
+             </div>
+        </div>
+    </section>
+
+    <!-- Promote Section -->
+    <section id="promote" class="feature-showcase">
+        <div class="container feature-content">
+            <div class="feature-image">
+                <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="A digital billboard advertising a video to a targeted audience">
+            </div>
+            <div class="feature-text">
+                <h2>📢 Promote with a Click</h2>
+                <p>With one click, promote your videos to the right audience. Whether you're just starting or scaling up, Shubhzone’s smart promotion tools help you get seen.</p>
             </div>
         </div>
     </section>
 
-    <section id="features" class="section" style="background: var(--secondary-color);">
+    <section id="testimonials">
         <div class="container">
-            <h2 class="section-title">Why Join Shubhzone?</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <h3>🧠 Smart Monetization</h3>
-                    <p>Turn your views and watch time into real income. We provide a straightforward path to monetizing your content creation efforts from day one.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>🤝 Supportive Creator Ecosystem</h3>
-                    <p>You're not alone. Join a network of emerging creators, share strategies, get instant help via chat, and grow together.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>⚡ Real-Time Payments</h3>
-                    <p>No more waiting for thresholds. Get your earnings with fast, easy, and direct withdrawals. We believe in instant rewards for your hard work.</p>
-                </div>
-                 <div class="feature-item">
-                    <h3>📊 Transparent Analytics</h3>
-                    <p>Track your video performance and earnings with a clear and simple dashboard. Make data-driven decisions to boost your growth.</p>
-                </div>
-                 <div class="feature-item">
-                    <h3>📢 Targeted Advertising</h3>
-                    <p>Promote your videos to a focused audience of viewers and creators who are genuinely interested in new content. Maximize your reach effectively.</p>
-                </div>
-                 <div class="feature-item">
-                    <h3>✅ Free to Join</h3>
-                    <p>Start your journey without any upfront costs. Shubhzone is free for creators, ensuring everyone has an equal opportunity to succeed.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="testimonials" class="section">
-        <div class="container">
-            <h2 class="section-title">Success Stories</h2>
-            <p style="color: var(--text-muted); margin-top: -20px; margin-bottom: 40px;">🚀 Already helping 500+ new creators!</p>
+            <h2 class="section-title">What Our Creators Say</h2>
             <div class="testimonial-cards">
                 <div class="testimonial-card">
-                    <p class="quote">"I was struggling to get my first 100 subscribers. With Shubhzone, I gained over 1,000 views in a single week and earned my first payout! It's a game-changer."</p>
-                    <p class="author">- Rohit, Gaming Creator</p>
+                    <p>"I gained over 1,000 views in a single week and earned my first payout! It's a game-changer."</p>
+                    <p><strong>- Rohit, Gaming Creator</strong></p>
                 </div>
                 <div class="testimonial-card">
-                    <p class="quote">"The platform is so easy to use. I embedded my video, and within days, I saw a real increase in my watch hours. The community chat is a huge plus."</p>
-                    <p class="author">- Priya, DIY Vlogger</p>
+                    <p>"The community chat is a huge plus. I've learned so much from other creators."</p>
+                    <p><strong>- Priya, DIY Vlogger</strong></p>
                 </div>
                 <div class="testimonial-card">
-                    <p class="quote">"Getting paid for watching videos felt too good to be true, but it's real! I support other small creators and earn a little on the side. Win-win!"</p>
-                    <p class="author">- Sameer, Student</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="faq" class="section">
-        <div class="container">
-            <h2 class="section-title">Frequently Asked Questions</h2>
-            <div class="faq-container">
-                <div class="faq-item">
-                    <div class="faq-question">How do I get paid?</div>
-                    <div class="faq-answer">
-                        <p>Payments are made directly to you through easy withdrawal options. Once you reach the minimum payout threshold, you can request a withdrawal from your dashboard. We support various popular payment methods for your convenience.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">Can I advertise my own content?</div>
-                    <div class="faq-answer">
-                        <p>Absolutely! Our platform is designed for it. You can submit your YouTube video links to be included in our watch rotation. This allows you to gain views and promote your channel to our community of active users.</p>
-                    </div>
-                </div>
-                <div class="faq-item">
-                    <div class="faq-question">Is it free to join?</div>
-                    <div class="faq-answer">
-                        <p>Yes, joining Shubhzone as a creator or a viewer is completely free. We believe in providing opportunities without barriers. You can start earning and growing your channel without any subscription fees.</p>
-                    </div>
+                    <p>"Getting paid for watching videos felt too good to be true, but it's real! Win-win!"</p>
+                    <p><strong>- Sameer, Student</strong></p>
                 </div>
             </div>
         </div>
@@ -475,31 +337,19 @@
     <footer>
         <div class="container">
             <p><strong>Owner:</strong> Himanshu Kumar</p>
-            <p><strong>Contact Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
-            <div class="social-links">
-                <!-- Add actual links here -->
-                <a href="#">Facebook</a> |
-                <a href="#">Instagram</a> |
-                <a href="#">Twitter</a>
-            </div>
-            <p style="margin-top: 20px;">Shubhzone © 2025 | <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a></p>
+            <p><strong>Contact:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+            <p style="margin-top: 20px;">Shubhzone © 2025 | All Rights Reserved</p>
         </div>
     </footer>
 
 <script>
-    // FAQ Accordion Script
-    const faqItems = document.querySelectorAll('.faq-item');
-
-    faqItems.forEach(item => {
-        item.addEventListener('click', () => {
-            // Close other items
-            faqItems.forEach(otherItem => {
-                if(otherItem !== item && otherItem.classList.contains('active')) {
-                    otherItem.classList.remove('active');
-                }
+    // Simple script for smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
             });
-            // Toggle current item
-            item.classList.toggle('active');
         });
     });
 </script>
