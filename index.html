@@ -16,6 +16,7 @@
             --secondary-color: #1a1c2d;
             --accent-cyan: #00e5ff;
             --accent-violet: #8e44ad;
+            --card-bg: rgba(26, 28, 45, 0.9);
             --text-color: #ffffff;
             --text-muted: #bdc3c7;
         }
@@ -37,7 +38,7 @@
             padding: 0 20px;
         }
         
-        /* Header and Logo Styling */
+        /* Header & Logo */
         header {
             background: rgba(13, 15, 24, 0.8);
             backdrop-filter: blur(10px);
@@ -47,183 +48,77 @@
             top: 0;
             z-index: 1000;
         }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #logo a {
-            font-family: 'Russo One', sans-serif;
-            font-size: 28px;
-            text-decoration: none;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-        }
-
-        #logo .logo-accent {
-            color: var(--accent-cyan);
-            text-shadow: 0 0 10px var(--accent-cyan);
-        }
         
-        #logo .logo-icon {
-            width: 10px;
-            height: 10px;
-            background: var(--accent-violet);
-            border-radius: 50%;
-            margin-left: 8px;
-            box-shadow: 0 0 10px var(--accent-violet);
-        }
+        .header-container { display: flex; justify-content: space-between; align-items: center; }
+        #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
+        #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
+        #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
 
-        /* Hero Section with Slider */
-        #hero-slider {
-            padding: 40px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 80vh;
-        }
+        /* Hero Slider */
+        #hero-slider { padding: 40px 0; display: flex; justify-content: center; align-items: center; }
+        .slider-container { width: 100%; max-width: 1100px; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+        .slides-wrapper { display: flex; height: 100%; width: 300%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
+        .slide { width: calc(100% / 3); height: 100%; display: flex; background: var(--secondary-color); }
+        .slide-image { flex: 1.2; overflow: hidden; }
+        .slide-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .slide:hover .slide-image img { transform: scale(1.05); }
+        .slide-content { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left; }
+        .slide-content h2 { font-size: 2.5rem; color: var(--accent-cyan); margin: 0 0 15px 0; line-height: 1.2; }
+        .slide-content p { font-size: 1rem; color: var(--text-muted); margin-bottom: 30px; }
+        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); align-self: flex-start; }
+        .start-button:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 229, 255, 0.7); }
+        .slider-nav { position: absolute; top: 50%; left: 20px; right: 20px; transform: translateY(-50%); display: flex; justify-content: space-between; opacity: 0; transition: opacity 0.3s; }
+        .slider-container:hover .slider-nav { opacity: 1; }
+        .slider-nav button { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--text-muted); color: var(--text-color); border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; transition: background 0.3s; }
+        .slider-nav button:hover { background: var(--accent-cyan); color: var(--primary-color); }
+
+        /* General Section Styling */
+        .section { padding: 80px 0; text-align: center; }
+        .section-title { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-cyan); }
+        .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 50px auto; }
         
-        .slider-container {
-            width: 100%;
-            max-width: 1100px;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .slides-wrapper {
-            display: flex;
-            height: 100%;
-            width: 300%; /* 3 slides */
-            transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1);
-        }
-
-        .slide {
-            width: calc(100% / 3);
-            height: 100%;
-            display: flex;
-            background: var(--secondary-color);
-        }
-
-        .slide-image {
-            flex: 1.2; /* Image takes slightly more space */
-            overflow: hidden;
-        }
-
-        .slide-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .slide:hover .slide-image img {
-            transform: scale(1.05);
-        }
-
-        .slide-content {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: left;
-        }
+        /* Features Section */
+        #features { background: var(--secondary-color); }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; text-align: left; }
+        .feature-card { background: var(--card-bg); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
         
-        .slide-content h2 {
-            font-size: 2.5rem;
-            color: var(--accent-cyan);
-            margin: 0 0 15px 0;
-            line-height: 1.2;
-        }
+        /* Successful Creators Section */
+        .creators-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; }
+        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
+        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; }
+        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
         
-        .slide-content p {
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-        }
+        /* FAQ Section */
+        #faq { background: var(--secondary-color); }
+        .faq-container { max-width: 800px; margin: 0 auto; text-align: left; }
+        .faq-item { background: var(--primary-color); margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
+        .faq-question { padding: 20px; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-question::after { content: '+'; font-size: 1.8rem; transition: transform 0.3s; }
+        .faq-answer { max-height: 0; overflow: hidden; padding: 0 20px; transition: max-height 0.5s ease, padding 0.5s ease; color: var(--text-muted); border-top: 1px solid var(--secondary-color); }
+        .faq-item.active .faq-answer { max-height: 200px; padding: 20px; }
+        .faq-item.active .faq-question::after { transform: rotate(45deg); }
 
-        .start-button {
-            display: inline-block;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
-            color: var(--text-color);
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
-            align-self: flex-start;
-        }
+        /* Footer */
+        footer { padding: 40px 20px; background: #08090f; text-align: center; }
+        footer p { margin: 5px 0; color: var(--text-muted); }
+        footer a { color: var(--accent-cyan); text-decoration: none; }
+        footer .footer-contact { margin-bottom: 20px; }
 
-        .start-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
-        }
-
-        /* Slider Navigation */
-        .slider-nav {
-            position: absolute;
-            top: 50%;
-            left: 20px;
-            right: 20px;
-            transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .slider-nav button {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--text-muted);
-            color: var(--text-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .slider-nav button:hover {
-            background: var(--accent-cyan);
-            color: var(--primary-color);
-        }
-
-        /* Responsive Design */
+        /* Responsive */
         @media(max-width: 900px) {
-            .slide {
-                flex-direction: column;
-            }
-            .slide-image, .slide-content {
-                flex: 1;
-            }
-            .slide-content {
-                padding: 30px;
-                text-align: center;
-            }
-            .slide-content h2 {
-                font-size: 1.8rem;
-            }
-            .start-button {
-                align-self: center;
-            }
+            .slide { flex-direction: column; }
+            .slide-image, .slide-content { flex: 1; }
+            .slide-content { padding: 30px; text-align: center; }
+            .slide-content h2 { font-size: 1.8rem; }
+            .start-button { align-self: center; }
         }
-        
         @media(max-width: 768px) {
-            #logo a {
-                font-size: 22px;
-            }
-            #hero-slider {
-                padding: 20px 0;
-            }
+            #logo a { font-size: 24px; }
+            .section { padding: 60px 0; }
+            .section-title { font-size: 2.2rem; }
         }
 
     </style>
@@ -241,99 +136,121 @@
         <section id="hero-slider">
             <div class="slider-container" id="slider">
                 <div class="slides-wrapper">
-                    <!-- Slide 1: Monetize -->
                     <div class="slide">
-                        <div class="slide-image">
-                            <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize your content">
-                        </div>
-                        <div class="slide-content">
-                            <h2>Monetize Every Click</h2>
-                            <p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p>
-                            <a href="#" class="start-button">Start</a>
-                        </div>
+                        <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
+                        <div class="slide-content"><h2>Monetize Every Click</h2><p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p><a href="#" class="start-button">Start</a></div>
                     </div>
-
-                    <!-- Slide 2: Community -->
                     <div class="slide">
-                        <div class="slide-image">
-                            <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Join the community">
-                        </div>
-                        <div class="slide-content">
-                            <h2>Connect & Collaborate</h2>
-                            <p>Join the Shubhzone community chat where creators connect, share tips, and grow together on your YouTube journey.</p>
-                            <a href="#" class="start-button">Start</a>
-                        </div>
+                        <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
+                        <div class="slide-content"><h2>Connect & Collaborate</h2><p>Join the Shubhzone community chat where creators connect, share tips, and grow together on your YouTube journey.</p><a href="#" class="start-button">Start</a></div>
                     </div>
-
-                    <!-- Slide 3: Promote -->
                     <div class="slide">
-                        <div class="slide-image">
-                            <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote your videos">
-                        </div>
-                        <div class="slide-content">
-                            <h2>Promote With a Click</h2>
-                            <p>With one click, promote your videos to the right audience. Our smart tools help you get seen.</p>
-                            <a href="#" class="start-button">Start</a>
-                        </div>
+                        <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
+                        <div class="slide-content"><h2>Promote With a Click</h2><p>With one click, promote your videos to the right audience. Our smart tools help you get seen.</p><a href="#" class="start-button">Start</a></div>
                     </div>
                 </div>
-                
-                <div class="slider-nav">
-                    <button id="prevBtn">❮</button>
-                    <button id="nextBtn">❯</button>
+                <div class="slider-nav"><button id="prevBtn">❮</button><button id="nextBtn">❯</button></div>
+            </div>
+        </section>
+
+        <section id="features" class="section">
+            <div class="container">
+                <h2 class="section-title">Why Choose Shubhzone?</h2>
+                <p class="section-subtitle">We provide all the tools you need to succeed as a new creator. Your growth is our mission.</p>
+                <div class="features-grid">
+                    <div class="feature-card"><h3>Smart Monetization</h3><p>Earn directly from your video uploads and by watching content. A simple and effective way to fund your passion.</p></div>
+                    <div class="feature-card"><h3>Creator Community</h3><p>Engage in our active community chat. Get instant feedback, find collaborators, and never feel stuck again.</p></div>
+                    <div class="feature-card"><h3>Targeted Promotion</h3><p>Use our advertising tools to reach a dedicated audience and boost your channel's visibility and watch hours.</p></div>
+                    <div class="feature-card"><h3>Instant Payouts</h3><p>No long waiting periods. Withdraw your earnings easily and quickly once you meet the minimum threshold.</p></div>
+                    <div class="feature-card"><h3>Dedicated Support</h3><p>Our team is always here to help. Get quick and reliable support for any questions or issues you face.</p></div>
+                    <div class="feature-card"><h3>Growth Analytics</h3><p>Track your video performance with a simple dashboard to understand your audience and grow faster.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="creators" class="section">
+            <div class="container">
+                <h2 class="section-title">Meet Our Successful Creators</h2>
+                <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
+                <div class="creators-grid">
+                    <div class="creator-card">
+                        <img src="https://i.pravatar.cc/100?u=a" alt="Creator 1">
+                        <p class="quote">"Shubhzone gave my channel the initial push it needed. The views and earnings are real!"</p>
+                        <p class="name">Rohan Sharma</p>
+                        <span>Gaming Creator</span>
+                    </div>
+                    <div class="creator-card">
+                        <img src="https://i.pravatar.cc/100?u=b" alt="Creator 2">
+                        <p class="quote">"The community support is incredible. I've learned so much and made great friends here."</p>
+                        <p class="name">Anjali Verma</p>
+                        <span>Vlogging & Lifestyle</span>
+                    </div>
+                    <div class="creator-card">
+                        <img src="https://i.pravatar.cc/100?u=c" alt="Creator 3">
+                        <p class="quote">"Being able to promote my videos so easily helped me reach my first 1000 subscribers."</p>
+                        <p class="name">Vikram Singh</p>
+                        <span>Tech Reviews</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="section">
+            <div class="container">
+                <h2 class="section-title">Have Questions?</h2>
+                <p class="section-subtitle">Here are some of the most common questions we get. If you have more, feel free to contact our support.</p>
+                <div class="faq-container">
+                    <div class="faq-item"><div class="faq-question">How do I start earning?</div><div class="faq-answer"><p>Simply sign up, upload your YouTube video link, and start earning as our community watches it. You can also earn by watching other videos on the platform.</p></div></div>
+                    <div class="faq-item"><div class="faq-question">Is Shubhzone free to use?</div><div class="faq-answer"><p>Yes! Signing up and using our core features for earning and community interaction is completely free. We want to remove all barriers for new creators.</p></div></div>
+                    <div class="faq-item"><div class="faq-question">How does video promotion work?</div><div class="faq-answer"><p>Our promotion service places your video in front of a targeted audience of active users, helping you gain genuine views and increase your channel's authority.</p></div></div>
+                    <div class="faq-item"><div class="faq-question">How can I contact support?</div><div class="faq-answer"><p>You can reach our dedicated support team via the email provided in the footer. We're committed to responding to all queries within 24 hours.</p></div></div>
                 </div>
             </div>
         </section>
     </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-contact">
+                <p><strong>Owner:</strong> Himanshu Kumar</p>
+                <p><strong>Support Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+            </div>
+            <p>Shubhzone © 2025 | All Rights Reserved</p>
+        </div>
+    </footer>
     
 <script>
+    // Slider Script
     const slider = document.getElementById('slider');
     const slidesWrapper = document.querySelector('.slides-wrapper');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-
     let currentIndex = 0;
     const slideCount = document.querySelectorAll('.slide').length;
     let autoPlayInterval;
-
-    const goToSlide = (index) => {
-        slidesWrapper.style.transform = `translateX(-${index * (100 / slideCount)}%)`;
-    };
-
-    const nextSlide = () => {
-        currentIndex = (currentIndex + 1) % slideCount;
-        goToSlide(currentIndex);
-    };
-
-    const prevSlide = () => {
-        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
-        goToSlide(currentIndex);
-    };
-
-    const startAutoPlay = () => {
-        autoPlayInterval = setInterval(nextSlide, 3000); // Change slide every 3 seconds
-    };
-
-    const stopAutoPlay = () => {
-        clearInterval(autoPlayInterval);
-    };
-
-    // Event Listeners
-    nextBtn.addEventListener('click', () => {
-        nextSlide();
-    });
-
-    prevBtn.addEventListener('click', () => {
-        prevSlide();
-    });
-
-    // Pause on hover
+    const goToSlide = (index) => { slidesWrapper.style.transform = `translateX(-${index * (100 / slideCount)}%)`; };
+    const nextSlide = () => { currentIndex = (currentIndex + 1) % slideCount; goToSlide(currentIndex); };
+    const prevSlide = () => { currentIndex = (currentIndex - 1 + slideCount) % slideCount; goToSlide(currentIndex); };
+    const startAutoPlay = () => { autoPlayInterval = setInterval(nextSlide, 3000); };
+    const stopAutoPlay = () => { clearInterval(autoPlayInterval); };
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
     slider.addEventListener('mouseenter', stopAutoPlay);
     slider.addEventListener('mouseleave', startAutoPlay);
-
-    // Start the show
     startAutoPlay();
 
+    // FAQ Accordion Script
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+            const currentlyActive = document.querySelector('.faq-item.active');
+            if (currentlyActive && currentlyActive !== item) {
+                currentlyActive.classList.remove('active');
+            }
+            item.classList.toggle('active');
+        });
+    });
 </script>
 
 </body>
