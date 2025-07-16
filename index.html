@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shubhzone - Monetize, Connect, and Promote</title>
     
-    <!-- Monetag Verification Code -->
-    <meta name="monetag" content="e1e636a7c64132b332b01ba4526c6f38">
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&display=swap');
 
@@ -35,7 +32,7 @@
             width: 90%;
             max-width: 1200px;
             margin: auto;
-            padding: 0 15px;
+            padding: 0 20px;
         }
         
         /* Header & Logo */
@@ -50,118 +47,81 @@
         }
         
         .header-container { display: flex; justify-content: space-between; align-items: center; }
-        #logo a { font-family: 'Russo One', sans-serif; font-size: 26px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
+        #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
         #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
         #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
 
-        /* Hero Section (Replaces Slider for a simpler look) */
-        #hero {
-            padding: 50px 0;
+        /* Dedication Section */
+        #dedication {
             text-align: center;
-            background-image: linear-gradient(rgba(13, 15, 24, 0.8), rgba(13, 15, 24, 1)), url('https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg');
-            background-size: cover;
-            background-position: center;
+            padding: 30px 20px;
+            background: var(--secondary-color);
+            border-bottom: 2px solid var(--accent-violet);
         }
-        #hero h2 {
-            font-size: 2.5rem;
+        #dedication h1 {
+            margin: 0;
+            font-size: 1.5rem;
             color: var(--accent-cyan);
-            margin: 0 0 15px 0;
-        }
-        #hero p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .start-button {
-            display: inline-block;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
-            color: var(--text-color);
-            padding: 12px 30px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 1.1rem;
             font-weight: 600;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
         }
-        .start-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.7);
-        }
-
-        /* General Section Styling */
-        .section {
-            padding: 60px 0;
-            text-align: center;
-        }
-        .section-title {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            color: var(--accent-cyan);
-        }
-        .section-subtitle {
-            font-size: 1rem;
+        #dedication p {
+            margin: 5px 0 0 0;
             color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 40px auto;
+            font-size: 1rem;
         }
         
-        /* Features Section - UPDATED for 2-column mobile layout */
-        #features {
-            background: var(--primary-color); /* Matches the reference image background */
+        /* Main content forced into 16:9 aspect ratio */
+        .aspect-ratio-box {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (9 / 16 = 0.5625) */
+            background: var(--primary-color);
+            overflow: hidden;
         }
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Always 2 columns */
-            gap: 15px; /* Gap between cards */
-            text-align: left;
+
+        .aspect-ratio-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            overflow-y: auto; /* Allow scrolling within the box */
         }
-        .feature-card {
-            background: transparent; /* No card background */
-            padding: 15px;
-            border-left: 3px solid var(--accent-cyan); /* Neon border on the left */
-        }
-        .feature-card h3 {
-            margin-top: 0;
-            margin-bottom: 8px;
-            font-size: 1.2rem;
-        }
+        
+        /* General Section Styling */
+        .section { padding: 60px 20px; text-align: center; }
+        .section-title { font-size: 2.5rem; margin-bottom: 10px; color: var(--accent-cyan); }
+        .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 40px auto; height: 4.8em; /* 3 lines * 1.6 line-height */ overflow: hidden; }
+        
+        /* Features Section */
+        #features { background: var(--secondary-color); }
+        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
+        .feature-card { background: var(--card-bg); padding: 25px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); }
+        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
         .feature-card p {
             margin: 0;
-            font-size: 0.9rem;
+            height: 4.8em; /* 3 lines * 1.6 line-height */
+            overflow: hidden;
             color: var(--text-muted);
         }
         
-        /* Creators Section */
-        #creators { background: var(--secondary-color); }
-        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; }
-        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; }
-        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
-
         /* Footer */
         footer { padding: 40px 20px; background: #08090f; text-align: center; }
         footer p { margin: 5px 0; color: var(--text-muted); }
+        footer a { color: var(--accent-cyan); text-decoration: none; }
 
-        /* Desktop specific styles */
+        /* Desktop Mode: 2-Column Grid */
         @media (min-width: 768px) {
-            .container {
-                padding: 0 20px;
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
-            #hero h2 { font-size: 3rem; }
-            .section-title { font-size: 2.8rem; }
-            .section-subtitle { font-size: 1.1rem; }
-            .features-grid { gap: 30px; }
-            .feature-card { padding: 25px; }
-            .feature-card h3 { font-size: 1.5rem; }
-            .feature-card p { font-size: 1rem; }
-            .creators-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        
+        @media(max-width: 767px) {
+            #logo a { font-size: 24px; }
+            .section { padding: 50px 20px; }
+            .section-title { font-size: 2rem; }
+            #dedication h1 { font-size: 1.2rem; }
         }
 
     </style>
@@ -175,54 +135,49 @@
         </div>
     </header>
 
-    <main>
-        <section id="hero">
-            <div class="container">
-                <h2>Monetize Every Click</h2>
-                <p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p>
-                <a href="#" class="start-button">Start</a>
-            </div>
-        </section>
+    <div id="dedication">
+        <h1>समर्पित</h1>
+        <p>मेरी प्यारी मम्मी, पापा, मामा जी और मेरे भाई शुधांशु को।</p>
+    </div>
 
-        <section id="features" class="section">
-            <div class="container">
-                <h2 class="section-title">Why Choose Shubhzone?</h2>
-                <p class="section-subtitle">We provide all the tools you need to succeed as a new creator. Your growth is our mission.</p>
-                <div class="features-grid">
-                    <div class="feature-card"><h3>Smart Monetization</h3><p>Earn directly from your video uploads and by watching content. A simple and effective way to fund your passion.</p></div>
-                    <div class="feature-card"><h3>Creator Community</h3><p>Engage in our active community chat. Get instant feedback, find collaborators, and never feel stuck again.</p></div>
-                    <div class="feature-card"><h3>Targeted Promotion</h3><p>Use our advertising tools to reach a dedicated audience and boost your channel's visibility and watch hours.</p></div>
-                    <div class="feature-card"><h3>Instant Payouts</h3><p>No long waiting periods. Withdraw your earnings easily and quickly once you meet the minimum threshold.</p></div>
-                    <div class="feature-card"><h3>Dedicated Support</h3><p>Our team is always here to help. Get quick and reliable support for any questions or issues you face.</p></div>
-                    <div class="feature-card"><h3>Growth Analytics</h3><p>Track your video performance with a simple dashboard to understand your audience and grow faster.</p></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="creators" class="section">
-            <div class="container">
-                <h2 class="section-title">Meet Our Successful Creators</h2>
-                <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
-                <div class="creators-grid">
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=a" alt="Creator 1">
-                        <p class="quote">"Shubhzone gave my channel the initial push it needed. The views and earnings are real!"</p>
-                        <p class="name">Rohan S.</p>
+    <div class="aspect-ratio-box">
+        <div class="aspect-ratio-content">
+            <main>
+                <section id="features" class="section">
+                    <div class="container">
+                        <h2 class="section-title">Why Choose Shubhzone?</h2>
+                        <p class="section-subtitle">We provide all the tools you need to succeed as a new creator. Your growth is our primary mission.</p>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <h3>Smart Monetization</h3>
+                                <p>Earn from your video uploads and by watching content. A simple and effective way to fund your great passion.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Creator Community</h3>
+                                <p>Engage in our active community chat. Get feedback, find collaborators, and never feel stuck again.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Targeted Promotion</h3>
+                                <p>Use our advertising tools to reach a dedicated audience and boost your channel's visibility and watch hours.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Instant Payouts</h3>
+                                <p>No long waiting periods. Withdraw your earnings easily and quickly once you meet the minimum threshold.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Dedicated Support</h3>
+                                <p>Our team is always here to help you out. Get quick and reliable support for any questions or issues you face.</p>
+                            </div>
+                            <div class="feature-card">
+                                <h3>Growth Analytics</h3>
+                                <p>Track your video performance with a simple dashboard to understand your audience and grow much faster.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=b" alt="Creator 2">
-                        <p class="quote">"Being able to promote my videos so easily helped me reach my first 1000 subscribers."</p>
-                        <p class="name">Vikram Singh</p>
-                    </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=c" alt="Creator 3">
-                        <p class="quote">"The community support is incredible. I've learned so much and made great friends here."</p>
-                        <p class="name">Anjali V.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+                </section>
+            </main>
+        </div>
+    </div>
 
     <footer>
         <div class="container">
