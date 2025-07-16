@@ -3,310 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreatorLaunch - Unleash Your Creativity</title>
+    <title>Shubhzone - Where Your Zone is Auspicious</title>
     <style>
-        /* --- Google Font --- */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-        /* --- Basic Styles --- */
         :root {
-            --primary-color: #00f5c3; /* Vibrant Teal/Cyan */
+            --primary-color: #00e5ff; /* Cyan-Sky Blue */
             --dark-bg: #121212;
-            --card-bg: #1e1e1e;
+            --light-bg: #1e1e1e;
             --text-color: #ffffff;
-            --text-muted: #a0a0a0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --secondary-text: #b3b3b3;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
             background-color: var(--dark-bg);
             color: var(--text-color);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1100px;
+            width: 90%;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* --- Header / Navigation --- */
-        .main-header {
             padding: 20px 0;
         }
 
-        .main-nav {
+        /* Header */
+        header {
+            background: var(--light-bg);
+            padding: 15px 0;
+            border-bottom: 2px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .logo {
-            font-size: 1.5rem;
+            font-size: 2em;
             font-weight: 700;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color);
         }
 
         .nav-links a {
-            color: var(--text-muted);
+            color: var(--text-color);
             text-decoration: none;
+            margin-left: 25px;
+            font-size: 1.1em;
             transition: color 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: var(--text-color);
+            color: var(--primary-color);
         }
 
-        .btn {
-            padding: 10px 25px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: #000;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(0, 245, 195, 0.2);
-        }
-
-        /* --- Hero Section with Background Video --- */
+        /* Hero Section */
         .hero {
-            position: relative;
-            height: 80vh;
+            min-height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 0 20px;
-            overflow: hidden;
-        }
-
-        #bg-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -2;
-            transform: translateX(-50%) translateY(-50%);
-        }
-        
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(18, 18, 18, 0.7); /* Dark overlay for text readability */
-            z-index: -1;
+            padding: 40px 20px;
+            background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1522204523234-8729aa6e3d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80') no-repeat center center/cover;
         }
 
         .hero-content h1 {
             font-size: 3.5rem;
-            margin-bottom: 20px;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
             line-height: 1.2;
         }
 
         .hero-content p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            color: var(--secondary-text);
+        }
+
+        .cta-button {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
             font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .hero-buttons .btn {
-            margin: 0 10px;
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 229, 255, 0.2);
         }
 
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--text-color);
-            border: 2px solid var(--primary-color);
-        }
-        
-        .btn-secondary:hover {
-             background-color: var(--primary-color);
-             color: #000;
-        }
-
-        /* --- Features Section --- */
-        .features {
-            padding: 100px 0;
+        /* Sections */
+        .section {
+            padding: 60px 0;
+            text-align: center;
         }
 
         .section-title {
-            text-align: center;
             font-size: 2.5rem;
-            margin-bottom: 15px;
+            color: var(--primary-color);
+            margin-bottom: 40px;
         }
-        
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 60px auto;
+
+        .section-dark {
+            background-color: var(--dark-bg);
+        }
+
+        .section-light {
+            background-color: var(--light-bg);
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
+            text-align: left;
         }
 
         .feature-card {
-            background-color: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            border: 1px solid #2e2e2e;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            opacity: 0; /* For scroll animation */
-            transform: translateY(30px); /* For scroll animation */
-        }
-        
-        .feature-card.visible {
-            opacity: 1;
-            transform: translateY(0);
+            background: var(--dark-bg);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--primary-color);
+            transition: transform 0.3s;
         }
 
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .feature-card h3 {
+            font-size: 1.5rem;
             color: var(--primary-color);
             margin-bottom: 15px;
-            font-size: 1.4rem;
         }
 
         .feature-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
+            color: var(--secondary-text);
         }
-        
-        /* --- Footer --- */
-        .main-footer {
+
+        /* Placeholder for Videos */
+        .video-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--secondary-text);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--light-bg);
+            color: var(--secondary-text);
+            padding: 30px 0;
             text-align: center;
-            padding: 40px 20px;
-            margin-top: 60px;
-            border-top: 1px solid #2e2e2e;
-            color: var(--text-muted);
+            border-top: 1px solid #333;
         }
 
-        /* --- Responsive Styles --- */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none; /* Simple hiding for mobile */
-            }
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
+        footer p {
+            margin: 5px 0;
         }
 
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="container">
-            <nav class="main-nav">
-                <div class="logo">CreatorLaunch</div>
-                <ul class="nav-links">
-                    <li><a href="#">Explore</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Blog</a></li>
-                </ul>
-                <a href="#" class="btn btn-primary">Sign Up</a>
+    <!-- Header Section -->
+    <header>
+        <div class="container navbar">
+            <div class="logo">Shubhzone</div>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#creators">For Creators</a>
+                <a href="#advertisers">Advertise</a>
+                <a href="#">Login</a>
             </nav>
         </div>
     </header>
 
+    <!-- Hero Section -->
     <main>
         <section class="hero">
-            <!-- Replace this with a link to your own video. This is a placeholder from Pexels. -->
-            <video autoplay muted loop playsinline id="bg-video">
-                <source src="https://videos.pexels.com/video-files/857251/857251-hd_1280_720_25fps.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-
             <div class="hero-content">
-                <h1>Unleash Your Creativity. Share Your Story.</h1>
-                <p>The platform designed to support and grow small creators.</p>
-                <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary">Start Now</a>
-                    <a href="#" class="btn btn-secondary">Learn More</a>
+                <h1>Shubhzone: Not Just a Website, It's a Revolution!</h1>
+                <p>We provide a launchpad for small, talented YouTube creators. Here, your every video is seen, celebrated, and leads you towards success.</p>
+                <a href="#" class="cta-button">Join Today</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section section-light">
+            <div class="container">
+                <h2 class="section-title">How It Works?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h3>For Creators</h3>
+                        <p>Simply submit the link to your YouTube video on our platform. The more users watch your video, the more you profit. Bring your work to the world!</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>For Users</h3>
+                        <p>Watch videos from new and undiscovered creators. Earn exciting rewards and benefits for watching videos and being active on the platform. Earn while being entertained!</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Community Chat</h3>
+                        <p>Connect with other creators and users with our community chat feature. Share ideas, collaborate, and build a strong network. (Feature coming soon!)</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="features">
+        <!-- Featured Creators Section -->
+        <section id="creators" class="section section-dark">
             <div class="container">
-                <h2 class="section-title">Empower Your Creative Journey</h2>
-                <p class="section-subtitle">
-                    Elevate your content game with tools, insights, and a community that champions your growth. 
-                    Here, fresh talent takes center stage—no barriers, just opportunities.
-                </p>
+                <h2 class="section-title">Our Top Creators</h2>
                 <div class="features-grid">
                     <div class="feature-card">
-                        <h3>Instant Reactions</h3>
-                        <p>Get real feedback from a supportive crew. Comments, likes, and shares that help you grow and connect.</p>
+                        <div class="video-placeholder">Video 1 Will Appear Here</div>
+                        <h3>Creator Name 1</h3>
+                        <p>Check out the amazing content in this video.</p>
                     </div>
                     <div class="feature-card">
-                        <h3>Quick Uploads</h3>
-                        <p>Share your story in seconds. No fuss—just hit upload and go live to reach your first fans instantly.</p>
+                        <div class="video-placeholder">Video 2 Will Appear Here</div>
+                        <h3>Creator Name 2</h3>
+                        <p>Entertainment is guaranteed in this video.</p>
                     </div>
                     <div class="feature-card">
-                        <h3>Creator Toolkit</h3>
-                        <p>Unlock guides, tips, and workshops made for new creators. Learn, improve, and stand out from the crowd.</p>
+                        <div class="video-placeholder">Video 3 Will Appear Here</div>
+                        <h3>Creator Name 3</h3>
+                        <p>A blend of knowledge and entertainment.</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Advertisement Section -->
+        <section id="advertisers" class="section section-light">
+            <div class="container">
+                <h2 class="section-title">Advertise Your Brand</h2>
+                <p style="color: var(--secondary-text); max-width: 700px; margin: 0 auto 30px auto;">Reach millions of young users directly. Shubhzone is the best platform to connect your brand with the right audience.</p>
+                <a href="#" class="cta-button">Contact Us</a>
             </div>
         </section>
     </main>
 
-    <footer class="main-footer">
-        <p>© 2025 CreatorLaunch. All Rights Reserved.</p>
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Shubhzone. All Rights Reserved.</p>
+            <p>Owner: <strong>Himanshu Kumar</strong></p>
+            <p><a href="#">Privacy Policy</a> | <a href="#">Terms & Conditions</a></p>
+        </div>
     </footer>
-
-    <script>
-        // This script makes the feature cards animate as you scroll to them.
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.feature-card');
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, {
-                threshold: 0.1 // Trigger when 10% of the card is visible
-            });
-
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-        });
-    </script>
 
 </body>
 </html>
