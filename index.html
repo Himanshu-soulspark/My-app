@@ -54,104 +54,86 @@
         #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
         #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
 
-        /* Hero Slider */
-        #hero-slider { padding: 40px 0; display: flex; justify-content: center; align-items: center; }
-        .slider-container { width: 100%; max-width: 1100px; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        .slides-wrapper { display: flex; height: 100%; width: 300%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
-        .slide { width: calc(100% / 3); height: 100%; display: flex; background: var(--secondary-color); }
-        .slide-image { flex: 1.2; overflow: hidden; }
-        .slide-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .slide:hover .slide-image img { transform: scale(1.05); }
-        .slide-content { flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: left; }
-        .slide-content h2 { font-size: 2.5rem; color: var(--accent-cyan); margin: 0 0 15px 0; line-height: 1.2; }
-        .slide-content p { font-size: 1rem; color: var(--text-muted); margin-bottom: 30px; }
-        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); align-self: flex-start; }
+        /* Hero Section */
+        #hero {
+            padding: 40px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            background: url('https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg') no-repeat center center/cover;
+            min-height: 400px;
+        }
+
+        .hero-content {
+            background: rgba(13, 15, 24, 0.7);
+            backdrop-filter: blur(5px);
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 550px;
+        }
+        
+        .hero-content h2 { font-size: 2.5rem; color: var(--accent-cyan); margin: 0 0 15px 0; line-height: 1.2; }
+        .hero-content p { font-size: 1rem; color: var(--text-muted); margin-bottom: 30px; }
+        .start-button { display: inline-block; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet)); color: var(--text-color); padding: 12px 30px; border: none; border-radius: 50px; cursor: pointer; text-decoration: none; font-size: 1.1rem; font-weight: 600; transition: transform 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); }
         .start-button:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 229, 255, 0.7); }
-        .slider-nav { position: absolute; top: 50%; left: 20px; right: 20px; transform: translateY(-50%); display: flex; justify-content: space-between; opacity: 0; transition: opacity 0.3s; }
-        .slider-container:hover .slider-nav { opacity: 1; }
-        .slider-nav button { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--text-muted); color: var(--text-color); border-radius: 50%; width: 50px; height: 50px; font-size: 24px; cursor: pointer; transition: background 0.3s; }
-        .slider-nav button:hover { background: var(--accent-cyan); color: var(--primary-color); }
 
         /* General Section Styling */
         .section { padding: 80px 0; text-align: center; }
         .section-title { font-size: 2.8rem; margin-bottom: 10px; color: var(--accent-cyan); }
         .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 50px auto; }
         
-        /* Features Section */
+        /* Features Section - UPDATED */
         #features { background: var(--secondary-color); }
-        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
-        .feature-card { background: var(--card-bg); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
-        
-        /* Successful Creators Section */
-        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Always 2 columns */
+            gap: 20px; /* Reduced gap for mobile */
+            text-align: left;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-cyan);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.3rem; }
+        .feature-card p { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* Creators Section */
+        .creators-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Start with 1 column on mobile */
+            gap: 30px;
+        }
         .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; display: flex; flex-direction: column; align-items: center;}
         .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
         .creator-card .quote { font-style: italic; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; }
         .creator-card .name { font-weight: 700; font-size: 1.2rem; }
         
-        /* FAQ Section */
-        #faq { background: var(--secondary-color); }
-        .faq-container { max-width: 800px; margin: 0 auto; text-align: left; }
-        .faq-item { background: var(--primary-color); margin-bottom: 10px; border-radius: 8px; overflow: hidden; }
-        .faq-question { padding: 20px; font-size: 1.1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .faq-question::after { content: '+'; font-size: 1.8rem; transition: transform 0.3s; }
-        .faq-answer { max-height: 0; overflow: hidden; padding: 0 20px; transition: max-height 0.5s ease, padding 0.5s ease; color: var(--text-muted); border-top: 1px solid var(--secondary-color); }
-        .faq-item.active .faq-answer { max-height: 200px; padding: 20px; }
-        .faq-item.active .faq-question::after { transform: rotate(45deg); }
-
         /* Footer */
         footer { padding: 40px 20px; background: #08090f; text-align: center; }
         footer p { margin: 5px 0; color: var(--text-muted); }
         footer a { color: var(--accent-cyan); text-decoration: none; }
         footer .footer-contact { margin-bottom: 20px; }
-
-        /* Desktop Mode: 2-Column Grid */
-        @media (min-width: 768px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .creators-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Mobile Responsive Fixes */
-        @media(max-width: 900px) {
-            .slider-container {
-                aspect-ratio: auto; /* Remove fixed aspect ratio on mobile */
-                height: auto;
-            }
-            .slide {
-                flex-direction: column;
-                height: auto;
-            }
-            .slide-image {
-                flex: none; /* Let image have its own aspect ratio */
-                aspect-ratio: 16 / 9;
-                width: 100%;
-            }
-            .slide-content {
-                flex: 1;
-                padding: 30px;
-                text-align: center;
-            }
-            .slide-content h2 {
-                font-size: 1.8rem;
-            }
-            .start-button {
-                align-self: center; /* Center the button on mobile */
-            }
-            .slider-nav {
-                display: none; /* Hide arrows on mobile for a cleaner look */
-            }
-        }
         
+        /* Media Queries for larger screens */
+        @media(min-width: 768px) {
+            .creators-grid {
+                 grid-template-columns: repeat(3, 1fr); /* 3 columns for creators on tablets and up */
+            }
+             .features-grid {
+                gap: 30px; /* Increase gap on larger screens */
+            }
+        }
+
         @media(max-width: 767px) {
             #logo a { font-size: 24px; }
             .section { padding: 60px 20px; }
             .section-title { font-size: 2.2rem; }
+            .hero-content h2 { font-size: 2rem; }
         }
 
     </style>
@@ -166,23 +148,13 @@
     </header>
 
     <main>
-        <section id="hero-slider">
-            <div class="slider-container" id="slider">
-                <div class="slides-wrapper">
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
-                        <div class="slide-content"><h2>Monetize Every Click</h2><p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
-                        <div class="slide-content"><h2>Connect & Collaborate</h2><p>Join the Shubhzone community chat where creators connect, share tips, and grow together on your YouTube journey.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
-                        <div class="slide-content"><h2>Promote With a Click</h2><p>With one click, promote your videos to the right audience. Our smart tools help you get seen.</p><a href="#" class="start-button">Start</a></div>
-                    </div>
+        <section id="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Monetize Every Click</h2>
+                    <p>Upload your YouTube videos and turn your content into cash — whether you're watching or being watched.</p>
+                    <a href="#" class="start-button">Start</a>
                 </div>
-                <div class="slider-nav"><button id="prevBtn">❮</button><button id="nextBtn">❯</button></div>
             </div>
         </section>
 
@@ -224,19 +196,6 @@
                 </div>
             </div>
         </section>
-
-        <section id="faq" class="section">
-            <div class="container">
-                <h2 class="section-title">Have Questions?</h2>
-                <p class="section-subtitle">Here are some of the most common questions we get. If you have more, feel free to contact our support.</p>
-                <div class="faq-container">
-                    <div class="faq-item"><div class="faq-question">How do I start earning?</div><div class="faq-answer"><p>Simply sign up, upload your YouTube video link, and start earning as our community watches it. You can also earn by watching other videos on the platform.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">Is Shubhzone free to use?</div><div class="faq-answer"><p>Yes! Signing up and using our core features for earning and community interaction is completely free. We want to remove all barriers for new creators.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">How does video promotion work?</div><div class="faq-answer"><p>Our promotion service places your video in front of a targeted audience of active users, helping you gain genuine views and increase your channel's authority.</p></div></div>
-                    <div class="faq-item"><div class="faq-question">How can I contact support?</div><div class="faq-answer"><p>You can reach our dedicated support team via the email provided in the footer. We're committed to responding to all queries within 24 hours.</p></div></div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <footer>
@@ -249,41 +208,5 @@
         </div>
     </footer>
     
-<script>
-    // Slider Script
-    const slider = document.getElementById('slider');
-    const slidesWrapper = document.querySelector('.slides-wrapper');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    let currentIndex = 0;
-    const slideCount = document.querySelectorAll('.slide').length;
-    let autoPlayInterval;
-    const goToSlide = (index) => { slidesWrapper.style.transform = `translateX(-${index * (100 / slideCount)}%)`; };
-    const nextSlide = () => { currentIndex = (currentIndex + 1) % slideCount; goToSlide(currentIndex); };
-    const prevSlide = () => { currentIndex = (currentIndex - 1 + slideCount) % slideCount; goToSlide(currentIndex); };
-    const startAutoPlay = () => { autoPlayInterval = setInterval(nextSlide, 3000); };
-    const stopAutoPlay = () => { clearInterval(autoPlayInterval); };
-    if (window.innerWidth > 900) { // Only add arrow functionality and hover on desktop
-        nextBtn.addEventListener('click', nextSlide);
-        prevBtn.addEventListener('click', prevSlide);
-        slider.addEventListener('mouseenter', stopAutoPlay);
-        slider.addEventListener('mouseleave', startAutoPlay);
-    }
-    startAutoPlay();
-
-    // FAQ Accordion Script
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        question.addEventListener('click', () => {
-            const currentlyActive = document.querySelector('.faq-item.active');
-            if (currentlyActive && currentlyActive !== item) {
-                currentlyActive.classList.remove('active');
-            }
-            item.classList.toggle('active');
-        });
-    });
-</script>
-
 </body>
 </html>
