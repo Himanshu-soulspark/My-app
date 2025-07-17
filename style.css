@@ -1,5 +1,5 @@
 /* ================================================= */
-/* === Shubhzone App Styles (Code 2) - FINAL v2 === */
+/* === Shubhzone App Styles (Code 2) - FINAL v4 === */
 /* ================================================= */
 
 /* Design Style Guide */
@@ -42,11 +42,6 @@ body {
     color: var(--text-primary);
     margin: 0;
     padding: 0;
-    /* ★★★ ज़रूरी बदलाव सिर्फ़ यहाँ है ★★★ */
-    /* नीचे की तीन लाइनें हटा दी गई हैं ताकि ऐप ऊपर से शुरू हो */
-    /* display: flex; (हटा दिया गया) */
-    /* justify-content: center; (हटा दिया गया) */
-    /* align-items: center; (हटा दिया गया) */
     width: 100vw;
     min-height: 100vh;
     overflow: hidden;
@@ -55,7 +50,7 @@ body {
 
 .app-container {
     width: 100%;
-    height: var(--app-height, 100vh); /* यह लाइन वैसी ही रहेगी जैसी पहले थी */
+    height: var(--app-height, 100vh);
     max-width: 420px;
     display: flex;
     flex-direction: column;
@@ -1305,14 +1300,6 @@ input:checked + .slider:before {
     transition: bottom 0.4s ease;
 }
 
-#home-screen.ad-visible .video-meta-overlay {
-    bottom: 155px;
-}
-#home-screen.ad-visible .video-actions-overlay {
-    bottom: 170px;
-}
-
-
 .video-meta-overlay .uploader-info {
     display: flex;
     align-items: center;
@@ -2527,15 +2514,6 @@ input:checked + .slider:before {
     height: 100%;
 }
 
-#creator-long-banner-ad-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-    flex-shrink: 0;
-}
-
 .paused-ad-container {
     position: absolute;
     left: 15px;
@@ -2588,7 +2566,7 @@ input:checked + .slider:before {
     position: absolute;
     top: 80px;
     right: 15px;
-    z-index: 20;
+    z-index: 2001;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -2640,38 +2618,6 @@ input:checked + .slider:before {
 .function-menu-item:hover {
     background-color: var(--primary-neon);
     color: var(--background);
-}
-
-.fullscreen-timed-ad {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 10001;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.fullscreen-timed-ad .ad-content {
-    position: relative;
-}
-.fullscreen-timed-ad .close-ad-btn {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: var(--error-red);
-    color: white;
-    border: 2px solid white;
-    font-size: 1.2em;
-    line-height: 26px;
-    text-align: center;
-    cursor: pointer;
-    z-index: 10;
 }
 
 #payment-screen {
@@ -3175,7 +3121,6 @@ input:checked + .slider:before {
 
 @media (min-width: 768px) {
     body {
-        /* ★★★ यह वाला बॉडी डेस्कटॉप के लिए है, यहाँ सेंटरिंग सही काम करती है ★★★ */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -3196,3 +3141,84 @@ input:checked + .slider:before {
         margin: auto;
     }
 }
+
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ वीडियो रोटेशन के लिए CSS स्टाइल ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+
+#creator-page-long-view .main-video-card-wrapper.rotated {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: #000;
+    z-index: 2000;
+    transition: all 0.4s ease-in-out;
+}
+
+#creator-page-long-view .main-video-card-wrapper.rotated .main-video-card {
+    transform: rotate(90deg);
+    width: 100vh;
+    height: 100vw;
+    max-width: 100vh;
+    max-height: 100vw;
+    border-radius: 0;
+}
+
+/* ================================================= */
+/* ★★★★★★★ NEW ADVERTISEMENT STYLES (v4) - START ★★★★★★★ */
+/* ================================================= */
+
+/* ग्रिड और लिस्ट में बैनर विज्ञापनों के लिए स्टाइल */
+.long-video-grid-ad,
+.friend-list-ad,
+#upload-screen-ad-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+    min-height: 250px; /* 300x250 बैनर के लिए */
+    background-color: var(--secondary-background);
+    border: 1px dashed var(--text-secondary);
+}
+
+/* ★★★ यह नया और ज़रूरी स्टाइल है ★★★ */
+/* लॉन्ग वीडियो प्लेयर के अंदर दिखने वाले बैनर के लिए स्टाइल */
+#in-player-timed-ad {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 60;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.5);
+    padding: 5px 0;
+    backdrop-filter: blur(4px);
+}
+/* क्लोज बटन के लिए स्टाइल */
+#in-player-timed-ad span {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    border: 1px solid white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    line-height: 22px;
+    cursor: pointer;
+    z-index: 61;
+    font-size: 1.2em;
+}
+
+
+/* ================================================= */
+/* ★★★★★★★ NEW ADVERTISEMENT STYLES (v4) - END ★★★★★★★ */
+/* ================================================= */
