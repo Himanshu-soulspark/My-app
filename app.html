@@ -663,5 +663,17 @@
 
     <!-- JavaScript फ़ाइल को यहाँ लिंक किया गया है -->
     <script src="script.js"></script> <!-- Replace with your JS file name -->
+
+    <!-- ★★★ यह है सबसे ज़रूरी बदलाव ★★★ -->
+    <!-- यह छोटा स्क्रिप्ट आपकी ऐप की ऊंचाई को सही करने के लिए है -->
+    <script>
+        const setAppHeight = () => {
+            const doc = document.documentElement;
+            doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+        };
+        window.addEventListener('resize', setAppHeight);
+        setAppHeight();
+    </script>
+    
 </body>
 </html>
