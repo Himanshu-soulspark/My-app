@@ -46,6 +46,11 @@ const userActionAds = ['popunder', 'interstitial', 'socialBar', 'directLink'];
 
 // यह फंक्शन क्लिक होने पर विज्ञापन दिखाने की कोशिश करेगा
 function handleUserInteractionForAds() {
+    if (!appState.isAppReadyForAds) {
+        console.log("App not ready for ads yet. Interaction ignored.");
+        return;
+    }
+
     if (appState.isAdActive || document.querySelector('.modal-overlay.active, .comments-modal-overlay.active')) {
         return;
     }
@@ -560,6 +565,7 @@ let appState = {
     lastPriorityAdShownTimestamp: 0,
     lastUserActionAdTimestamp: 0,
     userActionAdIndex: 0, 
+    isAppReadyForAds: false, // <-- यहाँ बदलाव किया गया है
     
     appTimeTrackerInterval: null, watchTimeInterval: null,
     priorityAd: { data: null, timerInterval: null },
@@ -1786,8 +1792,13 @@ const startAppLogic = async () => {
     sessionStorage.removeItem('lastScreenBeforeAd');
     sessionStorage.removeItem('lastScrollPositionBeforeAd');
     
-    // विज्ञापन टाइमर शुरू करें
     initializeAdTimers();
+
+    // 3 सेकंड बाद विज्ञापनों को एक्टिव करें
+    setTimeout(() => {
+        appState.isAppReadyForAds = true;
+        console.log("App is now ready for user interaction ads.");
+    }, 3000); // 3-second delay
 };
 
 function setupLongVideoScreen() {
