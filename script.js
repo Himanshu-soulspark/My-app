@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v2 === */
+/* === Shubhzone App Script (Code 2) - FINAL v5 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -27,456 +27,188 @@ const storage = firebase.storage();
 const analytics = firebase.analytics();
 
 
-// =================================================
-// === Ad Logic - START (अंतिम और स्थिर संस्करण) ===
-// =================================================
+// =======================================================================
+// ★★★ ADVERTISEMENT LOGIC - START (v5) ★★★
+// =======================================================================
 
-const adsterraAds = {
-    directLink: 'https://www.profitableratecpm.com/tq7jxrf5v?key=6c0e753b930c66f90b622d51e426e9d8',
-    socialBar: '//pl27114870.profitableratecpm.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js'
-};
-
-const monetagAds = {
-    interstitial: { scriptUrl: `https://groleegni.net/401/9572500` },
-    popunder: { zoneId: 9578563, scriptUrl: '//madurird.com/tag.min.js' },
-};
-
-// विज्ञापनों का सही और अंतिम क्रम
-const userActionAds = ['popunder', 'interstitial', 'socialBar', 'directLink'];
-
-// यह फंक्शन क्लिक होने पर विज्ञापन दिखाने की कोशिश करेगा
-function handleUserInteractionForAds() {
-    if (appState.isAdActive || document.querySelector('.modal-overlay.active, .comments-modal-overlay.active')) {
-        return;
-    }
-
-    const now = Date.now();
-    
-    // पहला विज्ञापन (Pop-under) बिना कूलडाउन के दिखाने के लिए विशेष नियम
-    if (appState.lastUserActionAdTimestamp === 0) {
-         // यह ऐप में पहला विज्ञापन होगा, इसलिए इसे तुरंत दिखाएं
-    } else if (now - appState.lastUserActionAdTimestamp < 90000) { // सख्त 90 सेकंड का कूलडाउन
-        console.log(`User action ad suppressed due to 90-second cooldown. Time left: ${((90000 - (now - appState.lastUserActionAdTimestamp))/1000).toFixed(1)}s`);
-        return;
-    }
-
-    const adTypeToShow = userActionAds[appState.userActionAdIndex];
-    console.log(`User interaction is triggering ad: ${adTypeToShow}`);
-    
-    appState.isAdActive = true;
-    appState.lastUserActionAdTimestamp = now; // टाइमर तुरंत रीसेट करें
-
-    try {
-        switch (adTypeToShow) {
-            case 'popunder':
-                const script = document.createElement('script');
-                script.src = monetagAds.popunder.scriptUrl;
-                script.dataset.zone = monetagAds.popunder.zoneId;
-                script.async = true;
-                document.body.appendChild(script);
-                setTimeout(() => { if (document.body.contains(script)) document.body.removeChild(script); }, 15000);
-                break;
-            case 'interstitial':
-                injectTemporaryScriptAd(monetagAds.interstitial.scriptUrl);
-                break;
-            case 'socialBar':
-                injectTemporaryScriptAd(adsterraAds.socialBar);
-                break;
-            case 'directLink':
-                window.open(adsterraAds.directLink, '_blank');
-                break;
-        }
-        // अगले विज्ञापन के लिए इंडेक्स अपडेट करें
-        appState.userActionAdIndex = (appState.userActionAdIndex + 1) % userActionAds.length;
-
-    } catch (error) {
-        console.error(`Error showing ${adTypeToShow} ad on user action:`, error);
-    } finally {
-        setTimeout(() => { appState.isAdActive = false; }, 2000);
-    }
-}
-
-
-// यह सिर्फ स्क्रिप्ट-आधारित विज्ञापनों को इंजेक्ट करता है
-function injectTemporaryScriptAd(scriptSrc) {
-    const adHost = document.createElement('div');
-    adHost.style.display = 'none';
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = scriptSrc;
-    script.async = true;
-    adHost.appendChild(script);
-    document.body.appendChild(adHost);
-    setTimeout(() => {
-        if (document.body.contains(adHost)) document.body.removeChild(adHost);
-    }, 25000);
-}
-
-// यह फंक्शन 'initializeAdTimers is not defined' एरर को ठीक करने के लिए है।
-function initializeAdTimers() {
-    // विज्ञापन दिखाने का लॉजिक उपयोगकर्ता के क्लिक पर आधारित है,
-    // इसलिए यहां अलग से टाइमर की जरूरत नहीं है। यह सिर्फ एरर को ठीक करता है।
-    console.log("Ad timer system initialized. Ads will show on user interaction after a 90-second cooldown.");
-}
-// =================================================
-// === Ad Logic - END ===
-// =================================================
-
-
-// =================================================
-// === TOP-PRIORITY AD LOGIC - START ===
-// =================================================
-let priorityAdPlayer = null;
-let countdownInterval = null;
-
-async function fetchActivePriorityAd() {
-    try {
-        const adRef = db.collection('advertisements').where('isPriority', '==', true).limit(1);
-        const snapshot = await adRef.get();
-        if (snapshot.empty) {
-            console.log("No active priority ad found.");
-            return null;
-        }
-        const adDoc = snapshot.docs[0];
-        console.log("Active priority ad fetched:", adDoc.id);
-        return { id: adDoc.id, ...adDoc.data() };
-    } catch (error) {
-        console.error("Error fetching priority ad:", error);
-        return null;
-    }
-}
-
-function showPriorityAd() {
-    const now = Date.now();
-    if (now - appState.lastPriorityAdShownTimestamp < 90000) {
-        console.log("Priority ad suppressed due to its own cooldown.");
-        return;
-    }
-
-    if (appState.isAdActive) {
-        console.log("Priority ad suppressed due to another active ad.");
-        return;
-    }
-    if (!appState.priorityAd.data) {
-        console.log("Cannot show priority ad: No data available.");
-        return;
-    }
-    const overlay = document.getElementById('admin-priority-ad-overlay');
-    const timerEl = document.getElementById('ad-timer');
-    const closeBtn = document.getElementById('ad-close-btn');
-    const contentContainer = document.getElementById('ad-content-container');
-    if (!overlay || !timerEl || !closeBtn || !contentContainer) {
-        console.error("Priority ad HTML elements not found.");
-        return;
-    }
-    if (activePlayerId && players[activePlayerId] && typeof players[activePlayerId].pauseVideo === 'function') {
-        pauseActivePlayer();
-    }
-    
-    appState.lastPriorityAdShownTimestamp = now;
-    overlay.style.display = 'flex';
-    closeBtn.style.display = 'none';
-    timerEl.style.display = 'block';
-    contentContainer.innerHTML = '';
-    const ad = appState.priorityAd.data;
-    if (ad.type === 'video' && ad.content) {
-        priorityAdPlayer = new YT.Player('ad-content-container', {
-            height: '100%', width: '100%', videoId: ad.content,
-            playerVars: { 'autoplay': 1, 'controls': 0, 'rel': 0, 'showinfo': 0, 'mute': 0, 'origin': window.location.origin },
-            events: { 'onReady': () => { startAdTimer(); } }
-        });
-    } else if (ad.type === 'image' && ad.content) {
-        const img = document.createElement('img');
-        img.src = ad.content;
-        Object.assign(img.style, { width: '100%', height: '100%', objectFit: 'contain' });
-        contentContainer.appendChild(img);
-        startAdTimer();
-    } else {
-        console.error("Invalid priority ad data:", ad);
-        hidePriorityAd();
-    }
-}
-
-function startAdTimer() {
-    const ad = appState.priorityAd.data;
-    const timerEl = document.getElementById('ad-timer');
-    const closeBtn = document.getElementById('ad-close-btn');
-    let timeLeft = (ad.type === 'video') ? 30 : 5;
-    timerEl.textContent = timeLeft;
-    if (countdownInterval) clearInterval(countdownInterval);
-    countdownInterval = setInterval(() => {
-        timeLeft -= 1;
-        timerEl.textContent = timeLeft;
-        if (timeLeft <= 0) {
-            clearInterval(countdownInterval);
-            timerEl.style.display = 'none';
-            closeBtn.style.display = 'block';
-            if (priorityAdPlayer && typeof priorityAdPlayer.stopVideo === 'function') {
-                priorityAdPlayer.stopVideo();
-            }
-        }
-    }, 1000);
-}
-
-function hidePriorityAd() {
-    const overlay = document.getElementById('admin-priority-ad-overlay');
-    const contentContainer = document.getElementById('ad-content-container');
-    if (overlay) overlay.style.display = 'none';
-    if (contentContainer) contentContainer.innerHTML = '';
-    if (priorityAdPlayer && typeof priorityAdPlayer.destroy === 'function') {
-        priorityAdPlayer.destroy();
-        priorityAdPlayer = null;
-    }
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-    }
-}
-// =================================================
-// === TOP-PRIORITY AD LOGIC - END ===
-// =================================================
-
-// =================================================
-// === नया विज्ञापन सिस्टम (NEW AD SYSTEM) - START ===
-// =================================================
-
-async function showStartupAdvertisement() {
-    return new Promise(async (resolve) => {
-        const now = new Date().getTime();
-
-        const seventeenMinutesInMillis = 17 * 60 * 1000;
-        const lastAdInfo = JSON.parse(localStorage.getItem('startupAdInfo')) || { timestamp: 0, index: -1 };
-
-        if (now - lastAdInfo.timestamp < seventeenMinutesInMillis && lastAdInfo.timestamp !== 0) {
-            console.log("Startup Ad: 17 मिनट पूरे नहीं हुए हैं। विज्ञापन नहीं दिखाया जाएगा।");
-            resolve();
-            return;
-        }
-
-        const userState = appState.currentUser.state;
-        if (!userState) {
-            console.log("Startup Ad: उपयोगकर्ता की 'state' जानकारी उपलब्ध नहीं है। विज्ञापन नहीं दिखाया जाएगा।");
-            resolve();
-            return;
-        }
-        
-        if (appState.isAdActive) {
-            console.log("Startup Ad: कोई और विज्ञापन पहले से ही सक्रिय है।");
-            resolve();
-            return;
-        }
-
-        try {
-            console.log(`Startup Ad: '${userState}' के लिए विज्ञापन फ़ेच किए जा रहे हैं।`);
-            const snapshot = await db.collection('advertisements')
-                                     .where('location', '==', userState)
-                                     .get();
-
-            if (snapshot.empty) {
-                console.log(`Startup Ad: '${userState}' के लिए Firestore में कोई विज्ञापन नहीं मिला।`);
-                resolve();
-                return;
-            }
-
-            appState.isAdActive = true; 
-            const ads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            let nextAdIndex = (lastAdInfo.index + 1) % ads.length;
-            const adToShow = ads[nextAdIndex];
-
-            console.log(`Startup Ad: विज्ञापन दिखाया जा रहा है - ID: ${adToShow.id}, Index: ${nextAdIndex}`);
-            
-            await displayFullScreenAd(adToShow, () => {
-                localStorage.setItem('startupAdInfo', JSON.stringify({ timestamp: now, index: nextAdIndex }));
-                appState.isAdActive = false;
-                resolve();
-            });
-
-        } catch (error) {
-            console.error("Startup Ad: विज्ञापन फ़ेच करने या दिखाने में त्रुटि:", error);
-            appState.isAdActive = false;
-            resolve();
-        }
-    });
-}
-
-
-async function displayFullScreenAd(adData, onCloseCallback) {
-    const overlay = document.createElement('div');
-    overlay.id = 'startup-ad-overlay';
-    Object.assign(overlay.style, {
-        position: 'fixed', top: '0', left: '0', width: '100%', height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.95)', zIndex: '99999', display: 'flex',
-        justifyContent: 'center', alignItems: 'center', flexDirection: 'column'
-    });
-
-    const adCard = document.createElement('div');
-    adCard.id = 'startup-ad-card';
-    Object.assign(adCard.style, {
-        width: '100%', maxWidth: '420px', aspectRatio: '9 / 16',
-        backgroundColor: '#000', borderRadius: '12px', position: 'relative',
-        display: 'flex', flexDirection: 'column', overflow: 'hidden',
-        border: '2px solid var(--primary-neon)'
-    });
-
-    const adContent = document.createElement('div');
-    Object.assign(adContent.style, { flexGrow: '1', width: '100%', height: '100%' });
-
-    let adPlayer = null;
-
-    if (adData.type === 'video' && adData.videoId) {
-        const playerDivId = `ad_player_${Date.now()}`;
-        const playerDiv = document.createElement('div');
-        playerDiv.id = playerDivId;
-        adContent.appendChild(playerDiv);
-        adPlayer = new YT.Player(playerDivId, {
-            videoId: adData.videoId,
-            width: '100%', height: '100%',
-            playerVars: { 'autoplay': 1, 'controls': 0, 'rel': 0, 'showinfo': 0, 'mute': 0 },
-            events: { 'onReady': (event) => event.target.playVideo() }
-        });
-    } else if (adData.type === 'image' && adData.content) {
-        const img = document.createElement('img');
-        
-        const imageUrlMatch = adData.content.match(/src="([^"]+)"/);
-        const finalUrl = imageUrlMatch ? imageUrlMatch[1] : '';
-
-        if (finalUrl) {
-            img.src = finalUrl;
-            img.onerror = () => {
-                console.error("विज्ञापन इमेज लोड करने में विफल:", finalUrl);
-                img.style.display = 'none';
-                adContent.innerHTML = '<p style="color:white;text-align:center;padding:20px;">Image failed to load.</p>';
-            };
-            Object.assign(img.style, { width: '100%', height: '100%', objectFit: 'cover' });
-            adContent.appendChild(img);
-        } else {
-            console.error("विज्ञापन इमेज का URL HTML कंटेंट में नहीं मिला:", adData.content);
-            adContent.innerHTML = '<p style="color:white;text-align:center;padding:20px;">Invalid ad content.</p>';
-        }
-    } else {
-        console.error("Startup Ad: विज्ञापन डेटा अमान्य है।");
-        onCloseCallback();
-        return;
-    }
-
-    const topBar = document.createElement('div');
-    Object.assign(topBar.style, {
-        position: 'absolute', top: '0', left: '0', width: '100%',
-        padding: '10px', display: 'flex', justifyContent: 'space-between',
-        alignItems: 'center', background: 'linear-gradient(to bottom, rgba(0,0,0,0.7), transparent)', pointerEvents: 'none'
-    });
-    const adsLabel = document.createElement('span');
-    adsLabel.textContent = 'Ads';
-    Object.assign(adsLabel.style, { color: '#fff', fontWeight: 'bold', fontSize: '1.2em' });
-    
-    const timer = document.createElement('span');
-    timer.id = 'startup-ad-timer';
-    Object.assign(timer.style, {
-        color: '#fff', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '15px',
-        padding: '5px 10px', fontSize: '1em',
-        border: '1px solid #fff'
-    });
-    topBar.appendChild(adsLabel);
-    topBar.appendChild(timer);
-
-    const bottomBar = document.createElement('div');
-    Object.assign(bottomBar.style, {
-        width: '100%', padding: '10px', textAlign: 'center',
-        background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)',
-        color: '#fff', position: 'absolute', bottom: '0', left: '0', pointerEvents: 'none'
-    });
-    const adLink = document.createElement('a');
-    const destinationHref = (adData.link && !adData.link.startsWith('http')) ? `//${adData.link}` : adData.link || '#';
-    adLink.href = destinationHref;
-    adLink.target = '_blank';
-    adLink.textContent = adData.destinationUrl || adData.link || 'Visit Site';
-    Object.assign(adLink.style, { color: 'var(--primary-neon)', textDecoration: 'underline', pointerEvents: 'auto' });
-    bottomBar.appendChild(adLink);
-
-    adCard.appendChild(adContent);
-    adCard.appendChild(topBar);
-    adCard.appendChild(bottomBar);
-    overlay.appendChild(adCard);
-    document.body.appendChild(overlay);
-
-    startAdCountdown(adData, overlay, timer, adPlayer, onCloseCallback);
-}
-
-
-function startAdCountdown(adData, overlay, timerElement, adPlayer, onCloseCallback) {
-    const duration = adData.type === 'video' ? 30 : 5;
-    let timeLeft = duration;
-    timerElement.textContent = timeLeft;
-
-    const interval = setInterval(() => {
-        timeLeft--;
-        timerElement.textContent = timeLeft;
-        if (timeLeft <= 0) {
-            clearInterval(interval);
-            if (adPlayer && typeof adPlayer.stopVideo === 'function') {
-                adPlayer.stopVideo();
-            }
-            timerElement.style.display = 'none';
-
-            const closeBtn = document.createElement('span');
-            closeBtn.innerHTML = '&times;';
-            Object.assign(closeBtn.style, {
-                position: 'absolute', top: '10px', right: '10px', fontSize: '2em',
-                color: '#fff', cursor: 'pointer', zIndex: '100',
-                width: '40px', height: '40px', lineHeight: '40px', textAlign: 'center',
-                background: 'rgba(0,0,0,0.5)', borderRadius: '50%', pointerEvents: 'auto'
-            });
-            
-            closeBtn.onclick = () => {
-                handleAdClosure(adData.id, overlay);
-                onCloseCallback();
-            };
-            
-            const topBar = overlay.querySelector('div[style*="justify-content: space-between"]');
-            topBar.appendChild(closeBtn);
-        }
-    }, 1000);
-}
-
-
-async function handleAdClosure(adId, overlay) {
-    console.log(`Startup Ad: विज्ञापन बंद किया गया - ID: ${adId}`);
-
-    try {
-        const adStatRef = db.collection('advertisementStats').doc(adId);
-        await adStatRef.set({
-            closedCount: firebase.firestore.FieldValue.increment(1)
-        }, { merge: true });
-        console.log(`Startup Ad: '${adId}' के लिए क्लोज काउंट सफलतापूर्वक बढ़ाया गया।`);
-    } catch (error) {
-        console.error("Startup Ad: विज्ञापन का स्टैट्स अपडेट करने में त्रुटि:", error);
-    }
-
-    if (overlay && document.body.contains(overlay)) {
-        document.body.removeChild(overlay);
-    }
-}
-// =================================================
-// === नया विज्ञापन सिस्टम (NEW AD SYSTEM) - END ===
-// =================================================
-
-
-// =================================================
-// === Helper Functions - START ===
-// =================================================
+/**
+ * एक सामान्य फ़ंक्शन जो दिए गए कंटेनर में विज्ञापन स्क्रिप्ट को इंजेक्ट करता है।
+ * @param {HTMLElement} container - वह HTML एलिमेंट जिसमें विज्ञापन डालना है।
+ * @param {string} optionsScriptContent - `atOptions` वाला स्क्रिप्ट का टेक्स्ट।
+ * @param {string} invokeScriptSrc - `invoke.js` वाली स्क्रिप्ट का URL।
+ * @returns {Promise<boolean>} - विज्ञापन लोड होने पर true या विफल होने पर false रिजॉल्व करता है।
+ */
 function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
-    if (!container) return;
-    container.innerHTML = '';
-    const adOptionsScript = document.createElement('script');
-    adOptionsScript.type = 'text/javascript';
-    adOptionsScript.text = optionsScriptContent;
-    const adInvokeScript = document.createElement('script');
-    adInvokeScript.type = 'text/javascript';
-    adInvokeScript.src = invokeScriptSrc;
-    adInvokeScript.async = true;
-    container.appendChild(adOptionsScript);
-    container.appendChild(adInvokeScript);
+    return new Promise((resolve) => {
+        if (!container) {
+            console.warn("[AD] Ad container not found. Cannot inject ad.");
+            return resolve(false);
+        }
+        container.innerHTML = ''; // पुराने विज्ञापन को साफ़ करें
+
+        const adOptionsScript = document.createElement('script');
+        adOptionsScript.type = 'text/javascript';
+        adOptionsScript.text = optionsScriptContent;
+
+        const adInvokeScript = document.createElement('script');
+        adInvokeScript.type = 'text/javascript';
+        adInvokeScript.src = invokeScriptSrc;
+        adInvokeScript.async = true;
+
+        adInvokeScript.onload = () => {
+            console.log(`[AD] Script loaded successfully from: ${invokeScriptSrc}`);
+            resolve(true);
+        };
+        adInvokeScript.onerror = (err) => {
+            console.error(`[AD] Script failed to load from: ${invokeScriptSrc}`, err);
+            resolve(false);
+        };
+
+        container.appendChild(adOptionsScript);
+        container.appendChild(adInvokeScript);
+    });
 }
+
+/**
+ * 300x250 बैनर विज्ञापन को इंजेक्ट करता है।
+ * @param {HTMLElement} container - विज्ञापन के लिए कंटेनर।
+ */
+async function showMainBannerAd(container) {
+    if (!container) return;
+    
+    const bannerOptions = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
+    const bannerSrc = "//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
+    
+    await injectAdScript(container, bannerOptions, bannerSrc);
+}
+
+/**
+ * लॉन्ग वीडियो प्लेयर पर समय-समय पर दिखने वाले निचले बैनर का प्रबंधन करता है।
+ */
+function manageLongVideoPlayerBanner() {
+    clearAllAdTimers(); 
+
+    const playerWrapper = document.querySelector('#creator-page-long-view .main-video-card');
+    if (!playerWrapper) return;
+    
+    const existingAd = document.getElementById('in-player-timed-ad');
+    if (existingAd) existingAd.remove();
+
+    const adContainer = document.createElement('div');
+    adContainer.id = 'in-player-timed-ad';
+
+    const adSlot = document.createElement('div');
+    adSlot.style.width = '300px';
+    adSlot.style.height = '250px';
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.innerHTML = '&times;';
+    closeBtn.className = 'in-player-ad-close-btn'; // CSS के लिए क्लास
+    
+    closeBtn.onclick = (e) => {
+        e.stopPropagation();
+        clearInterval(appState.adState.timers.longVideoPlayerBanner);
+        adContainer.remove();
+    };
+
+    adContainer.appendChild(adSlot);
+    adContainer.appendChild(closeBtn);
+    playerWrapper.appendChild(adContainer);
+
+    const showAndHideAd = () => {
+        const isRotated = playerWrapper.closest('.main-video-card-wrapper')?.classList.contains('rotated');
+        if (isRotated) {
+            clearInterval(appState.adState.timers.longVideoPlayerBanner);
+            adContainer.remove();
+            return;
+        }
+
+        showMainBannerAd(adSlot);
+        adContainer.style.display = 'flex';
+
+        setTimeout(() => {
+            adContainer.style.display = 'none';
+        }, 5000); // 5 सेकंड के लिए दिखाएं
+    };
+    
+    appState.adState.timers.longVideoPlayerBanner = setInterval(showAndHideAd, 30000); // हर 30 सेकंड में लूप चलाएं
+}
+
+
+/**
+ * ★★★ UPDATED Fullscreen Ad Loop (v5) ★★★
+ * हर 40 सेकंड में क्रम से एक विज्ञापन दिखाता है: Redirect -> Social -> Interstitial
+ */
+function manageFullscreenAdLoop() {
+    clearInterval(appState.adState.timers.fullscreenAdLoop);
+
+    const showNextAd = () => {
+        const { sequence, currentIndex } = appState.adState.fullscreenAd;
+        const adType = sequence[currentIndex];
+
+        console.log(`[AD] Running Fullscreen Ad Cycle. Interval: 40s. Next ad type: ---> ${adType.toUpperCase()} <---`);
+
+        switch (adType) {
+            case 'direct':
+                console.log("[AD] Attempting to open Direct Link...");
+                const newWindow = window.open('https://otieu.com/4/9583472', '_blank');
+                if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                    console.warn("[AD] Direct Link was blocked by the browser's popup blocker.");
+                } else {
+                    console.log("[AD] Direct Link opened successfully.");
+                }
+                break;
+            
+            case 'social':
+                console.log("[AD] Injecting Social Bar script...");
+                const socialScript = document.createElement('script');
+                socialScript.type = 'text/javascript';
+                socialScript.src = '//decreaselackadmit.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js';
+                document.body.appendChild(socialScript);
+                break;
+
+            case 'interstitial':
+                console.log("[AD] Injecting Interstitial script...");
+                const interstitialScript = document.createElement('script');
+                interstitialScript.src = 'https://groleegni.net/401/9572500';
+                try {
+                    (document.body || document.documentElement).appendChild(interstitialScript);
+                } catch(e) {
+                    console.error("[AD] Interstitial ad injection failed:", e);
+                }
+                break;
+        }
+
+        appState.adState.fullscreenAd.currentIndex = (currentIndex + 1) % sequence.length;
+    };
+    
+    // ★★★ UPDATED (v5) ★★★ अंतराल को 40 सेकंड कर दिया गया है।
+    appState.adState.timers.fullscreenAdLoop = setInterval(showNextAd, 40000);
+}
+
+
+/**
+ * सभी सक्रिय वीडियो-संबंधित विज्ञापन टाइमर्स को साफ़ करता है।
+ */
+function clearAllAdTimers() {
+    if (appState.adState.timers.longVideoPlayerBanner) {
+        clearInterval(appState.adState.timers.longVideoPlayerBanner);
+        appState.adState.timers.longVideoPlayerBanner = null;
+    }
+    
+    const timedBottomAd = document.getElementById('in-player-timed-ad');
+    if (timedBottomAd) timedBottomAd.remove();
+}
+
+
+// =======================================================================
+// ★★★ ADVERTISEMENT LOGIC - END (v5) ★★★
+// =======================================================================
+
+
+// =================================================
+// ★★★ Helper Functions - START (यह सेक्शन ज़रूरी है और रहेगा) ★★★
+// =================================================
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -529,7 +261,7 @@ function formatNumber(num) {
     return num;
 }
 // =================================================
-// === Helper Functions - END ===
+// ★★★ Helper Functions - END ★★★
 // =================================================
 
 // ऐप का ग्लोबल स्टेट
@@ -553,16 +285,18 @@ let appState = {
     creatorPagePlayers: {
         short: null,
         long: null,
-        fullscreenAdTimer: null,
-        pausedAdTimer: null
     },
-    isAdActive: false, 
-    lastPriorityAdShownTimestamp: 0,
-    lastUserActionAdTimestamp: 0,
-    userActionAdIndex: 0, 
-    
+    adState: {
+        timers: {
+            longVideoPlayerBanner: null,
+            fullscreenAdLoop: null,
+        },
+        fullscreenAd: {
+            sequence: ['direct', 'social', 'interstitial'], // नया विज्ञापन क्रम
+            currentIndex: 0
+        },
+    },
     appTimeTrackerInterval: null, watchTimeInterval: null,
-    priorityAd: { data: null, timerInterval: null },
     videoWatchTrackers: {},
 };
 
@@ -608,7 +342,7 @@ const closeDescriptionBtn = document.getElementById('close-description-btn');
 const categories = [ "Entertainment", "Comedy", "Music", "Dance", "Education", "Travel", "Food", "DIY", "Sports", "Gaming", "News", "Lifestyle" ];
 const earnsureContent = {
     en: `<div class="earnsure-section"><h4>🙌 Welcome to Shubhzone!</h4><p>This isn’t just an app — it’s a family. A place where your creativity, hard work, and time are truly valued.</p></div><div class="earnsure-section"><h4>📢 No Monetization Barriers Here!</h4><ul><li>✅ No need for thousands of subscribers</li><li>✅ No view-count pressure</li><li>✅ No complicated conditions</li></ul><p>Just a simple, transparent ad-revenue sharing system that works for real creators.</p></div><div class="earnsure-section"><h4>💸 How does earning work?</h4><p>📊 Shubhzone shares its total Ad Revenue like this:</p><ul><li>👉 40% goes to Creators</li><li>👉 20% goes to Viewers</li></ul><p>👁 Your income is based on your watch time and views.</p><p>📅 The earnings are updated weekly, so you’re always in the loop!</p><p>📉 Yes, the income amount may vary… But ☑️ your payment is 100% guaranteed.</p></div><div class="earnsure-section"><h4>📝 How to Request Your Payment?</h4><ol><li>Go to the Menu and open Payment System</li><li>Fill in your correct payment details</li><li>Click on Request</li><li>And ⏱️ receive your payment within 2 days!</li></ol><p>📂 You’ll also see a full breakdown of your earnings in the Payment Section.</p><p>⚠️ If you enter incorrect details, the app will not be responsible for failed transfers.</p></div><div class="earnsure-section"><h4>💵 When Does Payout Start?</h4><p>As soon as your total earnings reach ₹9000 (around $110 USD), ✅ your payout calculation starts. After that, you can request a payout anytime you want — no waiting.</p></div><div class="earnsure-section"><h4>🎯 Double Income Strategy — YouTube + Shubhzone = Double Profit!</h4><p>If you already upload videos on YouTube, you can bring your viewers to Shubhzone too:</p><ul><li>📍 They earn here as viewers (20% of ad revenue)</li><li>📍 And you earn twice — 👉 From YouTube 👉 And from Shubhzone</li></ul><p>🔁 Same content, double earning – smart move, right?</p></div><div class="earnsure-section"><h4>💬 A Final Note…</h4><p>🙏 If your only goal is to "just make money," then honestly — this platform may not be for you.</p><p>Shubhzone is for true creators, for people who want to grow with a supportive platform. We are building this space not with ads, but with trust and creativity.</p><p>💡 We’ll never let your effort go to waste. Your earning starts from your very first video — no delays.</p></div><div class="earnsure-section"><h4>💖 Shubhzone is not just an app,</h4><p>It’s a movement — to empower creators like YOU.</p></div><div class="earnsure-section"><h4>🎁 Let’s grow this family together.</h4><p>✌️ Your growth = Our success. And we are always here to support you. ✨</p></div><div class="earnsure-section"><h4>📌 So why wait? Let’s begin this journey — with trust, with vision, with Shubhzone! 💫</h4></div>`,
-    hi: `<div class="earnsure-section"><h4>🙌 Shubhzone में आपका स्वागत है!</h4><p>यह कोई आम App नहीं, बल्कि एक परिवार है — जहाँ हर creator की मेहनत, क्रिएटिविटी और समय की क़ीमत समझी जाती है।</p></div><div class="earnsure-section"><h4>📢 कोई Monetization Barrier नहीं!</h4><ul><li>✅ ना सब्सक्राइबर की ज़रूरत</li><li>✅ ना हज़ारों views का बोझ</li><li>✅ ना किसी तरह की शर्तें</li></ul><p>बस एकदम साफ-सुथरा और भरोसेमंद सिस्टम जो काम करता है सिर्फ Ad Revenue Sharing पर।</p></div><div class="earnsure-section"><h4>💸 कमाई का सिस्टम:</h4><p>📊 Shubhzone अपने कुल Ad Revenue का:</p><ul><li>👉 40% Creators को देता है</li><li>👉 20% Viewers को देता है</li></ul><p>👁 आपकी कमाई पूरी तरह आपके Watch Time और Views पर निर्भर करती है।</p><p>📅 और अच्छी बात ये है कि कमाई हर हफ्ते Update होती है।</p><p>📉 हाँ, Amount थोड़ा कम हो सकता है... लेकिन ☑️ आपका पैसा मिलना 100% Confirm है!</p></div><div class="earnsure-section"><h4>📝 पेमेंट कैसे मिलेगा?</h4><ol><li>App के Menu में जाएं और Payment System खोलें</li><li>अपनी सही Payment Details भरें</li><li>Request Submit करें</li><li>और ⏱️ 2 दिनों के अंदर पैसा आपके अकाउंट में पहुँच जाएगा!</li></ol><p>📂 आपकी Earnings का पूरा Calculation आपको Payment Section में दिखाई देगा।</p><p>⚠️ अगर आपने जानकारी गलत भरी है तो उसके लिए App ज़िम्मेदार नहीं होगा।</p></div><div class="earnsure-section"><h4>🤑 शुरुआत कब से?</h4><p>💵 जैसे ही आपकी कुल कमाई ₹9000 (लगभग $110 USD) पहुँचती है, आपका payout process शुरू हो जाता है। उसके बाद आप कभी भी पैसा निकाल सकते हैं, कोई रुकावट नहीं।</p></div><div class="earnsure-section"><h4>🎯 अब बात करें डबल कमाई की — YouTube + Shubhzone = Double Benefit!</h4><p>अगर आप पहले से YouTube पर वीडियो बनाते हैं, तो आप अपने ही यूज़र्स को Shubhzone पर ला सकते हैं:</p><ul><li>📍 इससे उन्हें भी फायदा होगा (20% Viewer Earning)</li><li>📍 और आपको डबल कमाई मिलेगी — 👉 YouTube से भी 👉 And from Shubhzone</li></ul><p>🔁 एक ही कंटेंट से दो जगह से कमाई — समझदारी का सौदा!</p></div><div class="earnsure-section"><h4>💬 एक आख़िरी बात…</h4><p>🙏 अगर आप सिर्फ पैसा कमाने की सोचकर इस प्लेटफॉर्म पर आ रहे हैं, तो शायद यह जगह आपके लिए नहीं बनी है।</p><p>🔗 हम यहाँ creators को आगे बढ़ाने, उनकी creativity को सम्मान देने, और एक safe और सच्‍चा माहौल देने के लिए हैं।</p><p>💡 हम आपकी मेहनत को कभी ज़ाया नहीं जाने देंगे। यहाँ कमाई की शुरुआत आपके पहले ही वीडियो से हो जाती है।</p></div><div class="earnsure-section"><h4>💖 Shubhzone एक App नहीं,</h4><p>एक Movement है — हमारे और आपके सपनों को उड़ान देने के लिए।</p></div><div class="earnsure-section"><h4>🎁 आइए, साथ मिलकर इस परिवार को बड़ा बनाएं।</h4><p>✌️ आपकी growth = हमारी सफलता। 💬 कोई सवाल हो तो हम हमेशा आपके साथ हैं।</p></div><div class="earnsure-section"><h4>📌 सो क्यों इंतज़ार करें? आइए इस सफ़र की शुरुआत करें — भरोसे के साथ, विज़न के साथ, शुभज़ोन के साथ! ✨</h4></div>`
+    hi: `<div class="earnsure-section"><h4>🙌 Shubhzone में आपका स्वागत है!</h4><p>यह कोई आम App नहीं, बल्कि एक परिवार है — जहाँ हर creator की मेहनत, क्रिएटिविटी और समय की क़ीमत समझी जाती है।</p></div><div class="earnsure-section"><h4>📢 कोई Monetization Barrier नहीं!</h4><ul><li>✅ ना सब्सक्राइबर की ज़रूरत</li><li>✅ ना हज़ारों views का बोझ</li><li>✅ ना किसी तरह की शर्तें</li></ul><p>बस एकदम साफ-सुथरा और भरोसेमंद सिस्टम जो काम करता है सिर्फ Ad Revenue Sharing पर।</p></div><div class="earnsure-section"><h4>💸 कमाई का सिस्टम:</h4><p>📊 Shubhzone अपने कुल Ad Revenue का:</p><ul><li>👉 40% Creators को देता है</li><li>👉 20% Viewers को देता है</li></ul><p>👁 आपकी कमाई पूरी तरह आपके Watch Time और Views पर निर्भर करती है।</p><p>📅 और अच्छी बात ये है कि कमाई हर हफ्ते Update होती है।</p><p>📉 हाँ, Amount थोड़ा कम हो सकता है... लेकिन ☑️ आपका पैसा मिलना 100% Confirm है!</p></div><div class="earnsure-section"><h4>📝 पेमेंट कैसे मिलेगा?</h4><ol><li>App के Menu में जाएं और Payment System खोलें</li><li>अपनी सही Payment Details भरें</li><li>Request Submit करें</li><li>और ⏱️ 2 दिनों के अंदर पैसा आपके अकाउंट में पहुँच जाएगा!</li></ol><p>📂 आपकी Earnings का पूरा Calculation आपको Payment Section में दिखाई देगा।</p><p>⚠️ अगर आपने जानकारी गलत भरी है तो उसके लिए App ज़िम्मेदार नहीं होगा।</p></div><div class="earnsure-section"><h4>🤑 शुरुआत कब से?</h4><p>💵 जैसे ही आपकी कुल कमाई ₹9000 (लगभग $110 USD) पहुँचती है, आपका payout process शुरू हो जाता है। उसके बाद आप कभी भी पैसा निकाल सकते हैं, कोई रुकावट नहीं।</p></div><div class="earnsure-section"><h4>🎯 अब बात करें डबल कमाई की — YouTube + Shubhzone = Double Benefit!</h4><p>अगर आप पहले से YouTube पर वीडियो बनाते हैं, तो आप अपने ही यूज़र्स को Shubhzone पर ला सकते हैं:</p><ul><li>📍 इससे उन्हें भी फायदा होगा (20% Viewer Earning)</li><li>📍 और आपको डबल कमाई मिलेगी — 👉 YouTube से भी 👉 And from Shubhzone</li></ul><p>🔁 एक ही कंटेंट से दो जगह से कमाई — समझदारी का सौदा!</p></div><div class="earnsure-section"><h4>💬 एक आख़िरी बात…</h4><p>🙏 अगर आप सिर्फ पैसा कमाने की सोचकर इस प्लेटफॉर्म पर आ रहे हैं, तो शायद यह जगह आपके लिए नहीं बनी है।</p><p>🔗 हम यहाँ creators को आगे बढ़ाने, उनकी creativity को सम्मान देने, और एक safe और सच्‍चा माहौल देने के लिए हैं।</p><p>💡 हम आपकी मेहनत को कभी ज़ाया नहीं जाने देंगे। यहाँ कमाई की शुरुआत आपके पहले ही वीडियो से हो जाती है।</p></div><div class="earnsure-section"><h4>💖 Shubhzone एक App नहीं,</h4><p>एक Movement है — हमारे और आपके सपनों को उड़ान देने के लिए।</p></div><div class="earnsure-section"><h4>🎁 आइए, साथ मिलकर इस परिवार को बड़ा बनाएं।</h4><p>✌️ आपकी ग्रोथ = हमारी सफलता। 💬 कोई सवाल हो तो हम हमेशा आपके साथ हैं।</p></div><div class="earnsure-section"><h4>📌 सो क्यों इंतज़ार करें? आइए इस सफ़र की शुरुआत करें — भरोसे के साथ, विज़न के साथ, शुभज़ोन के साथ! ✨</h4></div>`
 };
 let currentEarnsureLanguage = 'en';
 
@@ -626,14 +360,17 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.navigationStack.push(nextScreenId);
     }
     
+    if (appState.currentScreen === 'creator-diamond-page-screen' || appState.currentScreen === 'home-screen') {
+        clearAllAdTimers();
+    }
+    
     if (appState.currentScreen === 'home-screen') {
         if (activePlayerId && players[activePlayerId]) pauseActivePlayer();
     }
     if (appState.currentScreen === 'creator-diamond-page-screen') {
-        stopCreatorPageAdCycle();
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
-        appState.creatorPagePlayers = { short: null, long: null, fullscreenAdTimer: null, pausedAdTimer: null };
+        appState.creatorPagePlayers = { short: null, long: null };
     }
     activePlayerId = null;
     
@@ -662,17 +399,23 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
 
 function navigateBack() {
     if (appState.navigationStack.length <= 1) return;
+    
+    if (appState.currentScreen === 'creator-diamond-page-screen') {
+        clearAllAdTimers();
+    }
+
     appState.navigationStack.pop();
     const previousScreenId = appState.navigationStack[appState.navigationStack.length - 1];
 
-    if (appState.currentScreen === 'home-screen') {
-        // No action needed
-    }
     if (appState.currentScreen === 'creator-diamond-page-screen') {
-        stopCreatorPageAdCycle();
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
-        appState.creatorPagePlayers = { short: null, long: null, fullscreenAdTimer: null, pausedAdTimer: null };
+        appState.creatorPagePlayers = { short: null, long: null };
+        
+        const videoWrapper = document.querySelector('#creator-page-long-view .main-video-card-wrapper');
+        if (videoWrapper && videoWrapper.classList.contains('rotated')) {
+            videoWrapper.classList.remove('rotated');
+        }
     }
     
     activateScreen(previousScreenId);
@@ -726,6 +469,8 @@ let appInitializationComplete = false;
 function initializeApp() {
     if (appInitializationComplete) return;
     appInitializationComplete = true;
+
+    manageFullscreenAdLoop();
 
     lastScreenBeforeAd = sessionStorage.getItem('lastScreenBeforeAd');
     const lastScrollPosition = sessionStorage.getItem('lastScrollPositionBeforeAd');
@@ -1050,6 +795,7 @@ function renderCategories() {
 function renderVideoSwiper(itemsToRender) {
     if (!videoSwiper) return;
     videoSwiper.innerHTML = '';
+    
     players = {};
     if (videoObserver) videoObserver.disconnect();
     if (!itemsToRender || itemsToRender.length === 0) {
@@ -1059,7 +805,8 @@ function renderVideoSwiper(itemsToRender) {
         }
     } else {
         if (homeStaticMessageContainer) homeStaticMessageContainer.style.display = 'none';
-        itemsToRender.forEach((video) => {
+        
+        itemsToRender.forEach((video, index) => {
             const slide = document.createElement('div');
             slide.className = 'video-slide';
             slide.dataset.videoId = video.id;
@@ -1115,6 +862,7 @@ function renderVideoSwiper(itemsToRender) {
     }
 }
 
+
 function onYouTubeIframeAPIReady() {
     isYouTubeApiReady = true;
     if (window.pendingAppStartResolve) {
@@ -1127,7 +875,7 @@ function onYouTubeIframeAPIReady() {
 }
 
 function initializePlayers() {
-    const visibleSlides = Array.from(videoSwiper.querySelectorAll('.video-slide'));
+    const visibleSlides = Array.from(videoSwiper.querySelectorAll('.video-slide:not(.native-ad-slide)'));
     visibleSlides.forEach((slide) => {
         const videoId = slide.dataset.videoId;
         const videoData = fullVideoList.find(v => v.id === videoId);
@@ -1190,6 +938,7 @@ function onPlayerStateChange(event) {
         addVideoToHistory(videoId);
         startWatchTimeTracker();
         startVideoViewTracker(videoId, 'short');
+        
         if (userHasInteracted) {
              if (typeof event.target.unMute === 'function' && event.target.isMuted()) {
                 event.target.unMute();
@@ -1204,6 +953,7 @@ function onPlayerStateChange(event) {
         stopVideoViewTracker(videoId);
     }
 }
+
 
 function addVideoToHistory(videoId) {
     if (!videoId) return;
@@ -1286,6 +1036,10 @@ function setupVideoObserver() {
 
     const handleIntersection = (entries) => {
         entries.forEach(entry => {
+            if (entry.target.classList.contains('native-ad-slide')) {
+                return;
+            }
+
             const videoId = entry.target.dataset.videoId;
             if (!videoId || !players[videoId]) return;
 
@@ -1311,7 +1065,7 @@ function setupVideoObserver() {
 
         setTimeout(() => {
             if (!activePlayerId) {
-                const firstVideoSlide = document.querySelector('.video-slide');
+                const firstVideoSlide = document.querySelector('.video-slide:not(.native-ad-slide)');
                 if (firstVideoSlide && isElementVisible(firstVideoSlide, videoSwiper)) {
                     const firstVideoId = firstVideoSlide.dataset.videoId;
                     if(firstVideoId) {
@@ -1322,6 +1076,7 @@ function setupVideoObserver() {
         }, 500);
     }
 }
+
 
 async function openCommentsModal(videoId, videoOwnerUid) {
     appState.activeComments = { videoId, videoOwnerUid };
@@ -1764,19 +1519,10 @@ const startAppLogic = async () => {
     const loadingContainer = document.getElementById('loading-container');
     if (getStartedBtn) getStartedBtn.style.display = 'none';
     if (loadingContainer) loadingContainer.style.display = 'flex';
-
-    await showStartupAdvertisement();
-
+    
     renderCategories();
     renderCategoriesInBar();
     await refreshAndRenderFeed();
-    
-    const activeAd = await fetchActivePriorityAd();
-    if (activeAd) {
-        appState.priorityAd.data = activeAd;
-        showPriorityAd();
-        appState.priorityAd.timerInterval = setInterval(showPriorityAd, 30 * 60 * 1000);
-    }
     
     const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
     const lastScreen = lastScreenBeforeAd || 'home-screen';
@@ -1785,9 +1531,6 @@ const startAppLogic = async () => {
     
     sessionStorage.removeItem('lastScreenBeforeAd');
     sessionStorage.removeItem('lastScrollPositionBeforeAd');
-    
-    // विज्ञापन टाइमर शुरू करें
-    initializeAdTimers();
 };
 
 function setupLongVideoScreen() {
@@ -1877,12 +1620,20 @@ function populateLongVideoGrid(category = 'All') {
              grid.appendChild(card);
         }
     } else {
-        longVideos.forEach(video => {
+        longVideos.forEach((video, index) => {
             const card = createLongVideoCard(video);
             grid.appendChild(card);
+
+            if ((index + 1) % 3 === 0) {
+                const adContainer = document.createElement('div');
+                adContainer.className = 'long-video-grid-ad';
+                grid.appendChild(adContainer);
+                showMainBannerAd(adContainer);
+            }
         });
     }
 }
+
 
 function performLongVideoSearch() {
     const input = document.getElementById('long-video-search-input');
@@ -2038,24 +1789,13 @@ function deleteFromHistory(videoId) {
     }
 }
 
-function stopFullscreenAdLoop() {
-    if (appState.longVideoPlayer && appState.longVideoPlayer.fullscreenAdTimer) {
-        clearInterval(appState.longVideoPlayer.fullscreenAdTimer);
-        appState.longVideoPlayer.fullscreenAdTimer = null;
-    }
-    document.getElementById('fullscreen-ad-overlay')?.remove();
-}
-
-
 function injectEarnsureAd(targetElementId) {
     const adContainer = document.getElementById(targetElementId);
     if (!adContainer) {
         console.warn(`Ad container with ID '${targetElementId}' not found.`);
         return;
     }
-    const options = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604','format' : 'iframe','height' : 250,'width' : 300,'params' : {}};`;
-    const src = "//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-    injectAdScript(adContainer, options, src);
+    showMainBannerAd(adContainer);
 }
 
 function populateEarnsureContent(lang) {
@@ -2081,6 +1821,7 @@ function initializeEarnsureScreen() {
         contentArea.appendChild(textContent);
     }
     injectEarnsureAd('earnsure-top-ad-container');
+    
     populateEarnsureContent(currentEarnsureLanguage);
     const languageToggle = document.getElementById('earnsure-language-toggle');
     if (languageToggle) {
@@ -2114,6 +1855,7 @@ function initializeEarnsureScreen() {
         };
     }
 }
+
 
 function populateYourZoneScreen() {
     const content = document.getElementById('your-zone-content');
@@ -2307,26 +2049,39 @@ async function populateMembersList() {
         const friendPromises = friendIds.map(id => db.collection('users').doc(id).get());
         const friendDocs = await Promise.all(friendPromises);
 
-        const friendsHtml = friendDocs
+        let finalHtml = '';
+        const friends = friendDocs
             .map(doc => ({ id: doc.id, ...doc.data() }))
-            .filter(friend => friend.name) 
-            .map(friend => `
+            .filter(friend => friend.name);
+
+        friends.forEach((friend, index) => {
+            finalHtml += `
                 <div class="holographic-card" onclick="startChat('${friend.id}', '${escapeHTML(friend.name)}', '${escapeHTML(friend.avatar)}')">
                     <div class="profile-pic"><img src="${escapeHTML(friend.avatar) || 'https://via.placeholder.com/60'}" alt="avatar"></div>
                     <div class="info">
                         <div class="name">${escapeHTML(friend.name)}</div>
                         <div class="subtext">Tap to chat</div>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            
+            if ((index + 1) % 5 === 0) {
+                const adId = `friend-ad-${index}`;
+                finalHtml += `<div id="${adId}" class="friend-list-ad"></div>`;
+                setTimeout(() => {
+                    const adContainer = document.getElementById(adId);
+                    if (adContainer) showMainBannerAd(adContainer);
+                }, 100);
+            }
+        });
         
-        membersContent.innerHTML = friendsHtml || '<p class="static-message">Could not load friends list.</p>';
+        membersContent.innerHTML = finalHtml || '<p class="static-message">Could not load friends list.</p>';
 
     } catch (error) {
         console.error("Error fetching members:", error);
         membersContent.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load your friends.</p>';
     }
 }
+
 
 async function populateAddFriendsList() {
     const addContent = document.querySelector('#friends-screen #add-content');
@@ -2529,7 +2284,7 @@ function toggleProfileVideoView(viewType) {
 }
 
 // =======================================================
-// === DIAMOND MEMBERS & CREATOR PAGE LOGIC - START ===
+// ★★★ DIAMOND MEMBERS & CREATOR PAGE LOGIC - START ★★★
 // =======================================================
 
 async function populateDiamondMembersScreen() {
@@ -2618,6 +2373,8 @@ async function initializeCreatorDiamondPage(creatorId, startWith = 'short', vide
             const activeView = document.getElementById(`creator-page-${tab.dataset.type}-view`);
             if (activeView) activeView.classList.add('active');
             
+            clearAllAdTimers(); 
+
             const otherType = tab.dataset.type === 'short' ? 'long' : 'short';
             if(appState.creatorPagePlayers[otherType] && typeof appState.creatorPagePlayers[otherType].pauseVideo === 'function') {
                 appState.creatorPagePlayers[otherType].pauseVideo();
@@ -2625,8 +2382,29 @@ async function initializeCreatorDiamondPage(creatorId, startWith = 'short', vide
             if(appState.creatorPagePlayers[tab.dataset.type] && typeof appState.creatorPagePlayers[tab.dataset.type].playVideo === 'function') {
                 appState.creatorPagePlayers[tab.dataset.type].playVideo();
             }
+
+            const videoWrapper = document.querySelector('#creator-page-long-view .main-video-card-wrapper');
+            if (videoWrapper && videoWrapper.classList.contains('rotated')) {
+                videoWrapper.classList.remove('rotated');
+            }
         };
     });
+    
+    const menu = document.getElementById('more-function-menu');
+    const existingRotateBtn = document.getElementById('rotate-video-btn');
+    if (existingRotateBtn) {
+        existingRotateBtn.remove();
+    }
+
+    const rotateBtn = document.createElement('button');
+    rotateBtn.id = 'rotate-video-btn';
+    rotateBtn.className = 'function-menu-item haptic-trigger';
+    rotateBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Rotate`;
+    rotateBtn.onclick = toggleVideoRotation;
+    
+    if (menu) {
+        menu.appendChild(rotateBtn);
+    }
     
     const videos = fullVideoList.filter(v => v.uploaderUid === creatorId && v.audience !== '18plus');
     const shortVideos = videos.filter(v => v.videoLengthType !== 'long');
@@ -2664,9 +2442,7 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
             <div class="main-video-card-wrapper">
                 <div class="main-video-card">
                     <div id="creator-page-player-${type}"></div>
-                    <div id="creator-paused-ad-container-${type}" class="paused-ad-container"></div>
                 </div>
-                <div id="creator-long-banner-ad-container" style="display: ${type === 'long' ? 'flex' : 'none'};"></div>
             </div>
             <div class="side-video-list-scroller">${videoListHtml}</div>
         </div>
@@ -2674,15 +2450,6 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
     
     if (videos.length > 0 && isYouTubeApiReady) {
         initializeCreatorPagePlayer(firstVideo.videoUrl, `creator-page-player-${type}`, type);
-    }
-    
-    if (type === 'long') {
-        const adContainer = document.getElementById('creator-long-banner-ad-container');
-        if (adContainer) {
-            const options = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
-            const src = "//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-            injectAdScript(adContainer, options, src);
-        }
     }
 }
 
@@ -2708,8 +2475,6 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         events: {
             'onReady': (event) => { 
                 event.target.playVideo(); 
-                const iframe = event.target.getIframe();
-                iframe.addEventListener('fullscreenchange', () => handleFullscreenChange(type));
             },
             'onStateChange': onPlayerStateChange
         }
@@ -2742,22 +2507,27 @@ function toggleCreatorVideoList() {
     }
 }
 
-function toggleFullscreenMode() {
-    const activeView = document.querySelector('.creator-page-view.active');
-    if (!activeView) return;
-    const type = activeView.id.includes('long') ? 'long' : 'short';
-    const player = appState.creatorPagePlayers[type];
-    if (player) {
-        const iframe = player.getIframe();
-        if (iframe.requestFullscreen) {
-            iframe.requestFullscreen();
-        } else if (iframe.mozRequestFullScreen) {
-            iframe.mozRequestFullScreen();
-        } else if (iframe.webkitRequestFullscreen) {
-            iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) {
-            iframe.msRequestFullscreen();
+function toggleVideoRotation() {
+    const longVideoView = document.getElementById('creator-page-long-view');
+    
+    if (longVideoView && longVideoView.classList.contains('active')) {
+        const videoWrapper = longVideoView.querySelector('.main-video-card-wrapper');
+        const moreFunctionsMenu = document.getElementById('more-function-menu');
+        if (videoWrapper) {
+            videoWrapper.classList.toggle('rotated');
+            
+            clearAllAdTimers();
+
+            if (!videoWrapper.classList.contains('rotated')) {
+                 manageLongVideoPlayerBanner();
+            }
+
+            if (moreFunctionsMenu) {
+                moreFunctionsMenu.classList.remove('open');
+            }
         }
+    } else {
+        alert("Rotation is only available for long videos.");
     }
 }
 
@@ -2765,6 +2535,13 @@ function toggleFullscreenMode() {
 function handleCreatorPlayerStateChange(event) {
     const player = event.target;
     const playerState = event.data;
+    const iframe = player.getIframe();
+    
+    if (!iframe.closest('#creator-page-long-view')) {
+         clearAllAdTimers();
+         return;
+    }
+
     const videoData = player.getVideoData();
     const videoUrl = videoData.video_id;
 
@@ -2772,99 +2549,20 @@ function handleCreatorPlayerStateChange(event) {
     if (!currentVideo) return;
     const dbVideoId = currentVideo.id;
 
-    const activeView = document.querySelector('.creator-page-view.active');
-    if (!activeView) return;
-    const type = activeView.id.includes('long') ? 'long' : 'short';
-
-    const pausedAdContainer = document.getElementById(`creator-paused-ad-container-${type}`);
-
     if (playerState === YT.PlayerState.PLAYING) {
-        if (pausedAdContainer) pausedAdContainer.style.display = 'none';
-        if (document.fullscreenElement) {
-            startFullscreenAdLoop();
+        const videoWrapper = iframe.closest('.main-video-card-wrapper');
+        if (!videoWrapper || !videoWrapper.classList.contains('rotated')) {
+            manageLongVideoPlayerBanner();
         }
-        startVideoViewTracker(dbVideoId, type);
-    } else if (playerState === YT.PlayerState.PAUSED) {
-        stopFullscreenAdLoop();
-        stopVideoViewTracker(dbVideoId);
+        startVideoViewTracker(dbVideoId, 'long');
     } else {
-        stopFullscreenAdLoop();
+        clearAllAdTimers();
         stopVideoViewTracker(dbVideoId);
     }
 }
-
-function handleFullscreenChange(type) {
-    const player = appState.creatorPagePlayers[type];
-    if (document.fullscreenElement) {
-        if (player && typeof player.getPlayerState === 'function' && player.getPlayerState() === YT.PlayerState.PLAYING) {
-            startFullscreenAdLoop();
-        }
-    } else {
-        stopFullscreenAdLoop();
-        const pausedAdContainer = document.getElementById(`creator-paused-ad-container-${type}`);
-        if(pausedAdContainer) pausedAdContainer.style.display = 'none';
-    }
-}
-
-function startFullscreenAdLoop() {
-    stopFullscreenAdLoop();
-    appState.creatorPagePlayers.fullscreenAdTimer = setInterval(() => {
-        const player = appState.creatorPagePlayers.long;
-        if (document.fullscreenElement && player && player.getPlayerState() === YT.PlayerState.PLAYING) {
-            const adOverlay = document.createElement('div');
-            adOverlay.className = 'fullscreen-timed-ad';
-            
-            const adContent = document.createElement('div');
-            adContent.className = 'ad-content';
-            
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'close-ad-btn';
-            closeBtn.innerHTML = '×';
-            closeBtn.onclick = () => adOverlay.remove();
-            
-            adContent.appendChild(closeBtn);
-            adOverlay.appendChild(adContent);
-            document.body.appendChild(adOverlay);
-            
-            const options = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
-            const src = "//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-            injectAdScript(adContent, options, src);
-
-            setTimeout(() => {
-                if(adOverlay && document.body.contains(adOverlay)) adOverlay.remove();
-            }, 1500);
-        } else {
-            stopFullscreenAdLoop();
-        }
-    }, 30000);
-}
-
-function stopFullscreenAdLoop() {
-    if (appState.creatorPagePlayers.fullscreenAdTimer) {
-        clearInterval(appState.creatorPagePlayers.fullscreenAdTimer);
-        appState.creatorPagePlayers.fullscreenAdTimer = null;
-    }
-    const existingAd = document.querySelector('.fullscreen-timed-ad');
-    if (existingAd) existingAd.remove();
-}
-
-
-function stopCreatorPageAdCycle() {
-    stopFullscreenAdLoop();
-    const pausedAd = document.getElementById('creator-paused-ad-container-long');
-    if (pausedAd) {
-        pausedAd.style.display = 'none';
-        pausedAd.innerHTML = '';
-    }
-    const bannerAd = document.getElementById('creator-long-banner-ad-container');
-    if(bannerAd) {
-        bannerAd.innerHTML = '';
-    }
-}
-
 
 // =======================================================
-// === PAYMENT & TRACKING LOGIC - START ===
+// ★★★ PAYMENT & TRACKING LOGIC - START ★★★
 // =======================================================
 
 function initializePaymentScreen() {
@@ -3100,7 +2798,7 @@ function formatSecondsToHMS(secs) {
 }
 
 // =======================================================
-// === ADVERTISER DASHBOARD LOGIC - START ===
+// ★★★ ADVERTISER DASHBOARD LOGIC - START ★★★
 // =======================================================
 const advertiserFunctions = {
     planData: [ { name: 'Basic', cost: 100, impressions: { banner: 1000, image_5s: 500, video: 100 } }, { name: 'Starter', cost: 250, impressions: { banner: 3000, image_5s: 1500, video: 300 } }, { name: 'Lite', cost: 500, impressions: { banner: 6000, image_5s: 3000, video: 700 } }, { name: 'Bronze', cost: 1000, impressions: { banner: 12000, image_5s: 6000, video: 1500 } }, { name: 'Silver', cost: 2000, impressions: { banner: 25000, image_5s: 12000, video: 3000 } }, { name: 'Gold', cost: 3000, impressions: { banner: 40000, image_5s: 20000, video: 5000 } }, { name: 'Platinum', cost: 5000, impressions: { banner: 75000, image_5s: 38000, video: 9000 } }, { name: 'Diamond', cost: 7500, impressions: { banner: 115000, image_5s: 60000, video: 13000 } }, { name: 'Titanium', cost: 9000, impressions: { banner: 150000, image_5s: 80000, video: 16000 } }, { name: 'Dymond Elite', cost: 10000, impressions: { banner: 175000, image_5s: 100000, video: 20000 } } ],
@@ -3261,11 +2959,7 @@ function initializeAdvertisementPage() {
     }
 }
 // =======================================================
-// === ADVERTISER DASHBOARD LOGIC - END ===
-// =======================================================
-
-// =======================================================
-// === REPORT & VIEW COUNT LOGIC - START ===
+// ★★★ REPORT & VIEW COUNT LOGIC - START ★★★
 // =======================================================
 function initializeReportScreen() {
     const screen = document.getElementById('report-screen');
@@ -3362,7 +3056,7 @@ async function incrementCustomViewCount(videoId) {
     }
 }
 // =======================================================
-// === REPORT & VIEW COUNT LOGIC - END ===
+// ★★★ REPORT & VIEW COUNT LOGIC - END ★★★
 // =======================================================
 
 
@@ -3396,7 +3090,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    document.getElementById('ad-close-btn')?.addEventListener('click', hidePriorityAd);
     initializeApp();
     const getStartedBtn = document.getElementById('get-started-btn');
     if (getStartedBtn) {
@@ -3404,13 +3097,11 @@ document.addEventListener('DOMContentLoaded', () => {
         getStartedBtn.addEventListener('click', startAppLogic);
     }
 
-    // सभी बटनों पर क्लिक करने पर विज्ञापन ट्रिगर होगा
     if (appContainer) {
         appContainer.addEventListener('click', (event) => { 
             userHasInteracted = true; 
             
             if (event.target.closest('.haptic-trigger')) {
-                handleUserInteractionForAds();
                 provideHapticFeedback(); 
             }
         });
@@ -3450,7 +3141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const uploadScreenAdContainer = document.getElementById('upload-screen-ad-container');
         if (uploadScreenAdContainer) {
-            injectEarnsureAd('upload-screen-ad-container');
+            showMainBannerAd(uploadScreenAdContainer);
         }
     }
 
@@ -3473,7 +3164,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('more-function-btn')?.addEventListener('click', () => {
         document.getElementById('more-function-menu').classList.toggle('open');
     });
-    document.getElementById('rotate-video-btn')?.addEventListener('click', toggleFullscreenMode);
     document.getElementById('more-videos-btn')?.addEventListener('click', toggleCreatorVideoList);
 
 
