@@ -46,22 +46,19 @@ const userActionAds = ['popunder', 'interstitial', 'socialBar', 'directLink'];
 
 // यह फंक्शन क्लिक होने पर विज्ञापन दिखाने की कोशिश करेगा
 function handleUserInteractionForAds() {
-    if (!appState.isAppReadyForAds) {
-        console.log("App not ready for ads yet. Interaction ignored.");
+    // === बदलाव: विज्ञापन सिर्फ तैयार होने पर और सही स्क्रीन पर चलेंगे ===
+    if (!appState.isAppReadyForAds || appState.currentScreen === 'splash-screen' || appState.currentScreen === 'information-screen') {
         return;
     }
-    
+
     if (appState.isAdActive || document.querySelector('.modal-overlay.active, .comments-modal-overlay.active')) {
         return;
     }
 
     const now = Date.now();
     
-    // पहला विज्ञापन (Pop-under) बिना कूलडाउन के दिखाने के लिए विशेष नियम
-    if (appState.lastUserActionAdTimestamp === 0) {
-         // यह ऐप में पहला विज्ञापन होगा, इसलिए इसे तुरंत दिखाएं
-    } else if (now - appState.lastUserActionAdTimestamp < 90000) { // सख्त 90 सेकंड का कूलडाउन
-        console.log(`User action ad suppressed due to 90-second cooldown. Time left: ${((90000 - (now - appState.lastUserActionAdTimestamp))/1000).toFixed(1)}s`);
+    if (appState.lastUserActionAdTimestamp !== 0 && (now - appState.lastUserActionAdTimestamp < 90000)) { // सख्त 90 सेकंड का कूलडाउन
+        console.log(`User action ad suppressed due to 90-second cooldown.`);
         return;
     }
 
@@ -91,7 +88,6 @@ function handleUserInteractionForAds() {
                 window.open(adsterraAds.directLink, '_blank');
                 break;
         }
-        // अगले विज्ञापन के लिए इंडेक्स अपडेट करें
         appState.userActionAdIndex = (appState.userActionAdIndex + 1) % userActionAds.length;
 
     } catch (error) {
@@ -117,10 +113,7 @@ function injectTemporaryScriptAd(scriptSrc) {
     }, 25000);
 }
 
-// यह फंक्शन 'initializeAdTimers is not defined' एरर को ठीक करने के लिए है।
 function initializeAdTimers() {
-    // विज्ञापन दिखाने का लॉजिक उपयोगकर्ता के क्लिक पर आधारित है,
-    // इसलिए यहां अलग से टाइमर की जरूरत नहीं है। यह सिर्फ एरर को ठीक करता है।
     console.log("Ad timer system initialized. Ads will show on user interaction after a 90-second cooldown.");
 }
 // =================================================
@@ -1759,7 +1752,6 @@ function closeAudioIssuePopup() {
     document.getElementById('audio-issue-popup').classList.remove('active');
 }
 
-// === यहाँ बदलाव किया गया है ===
 let appStartLogicHasRun = false;
 const startAppLogic = async () => {
     if (appStartLogicHasRun && appState.currentScreen !== 'splash-screen' && appState.currentScreen !== 'information-screen') {
@@ -1810,8 +1802,9 @@ const startAppLogic = async () => {
     setTimeout(() => {
         appState.isAppReadyForAds = true;
         console.log("App is now ready for user interaction ads.");
-    }, 3000); // 3-second delay
+    }, 3000); 
 };
+
 
 function setupLongVideoScreen() {
     populateLongVideoCategories();
