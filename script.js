@@ -50,7 +50,7 @@ function handleUserInteractionForAds() {
         console.log("App not ready for ads yet. Interaction ignored.");
         return;
     }
-
+    
     if (appState.isAdActive || document.querySelector('.modal-overlay.active, .comments-modal-overlay.active')) {
         return;
     }
@@ -565,7 +565,7 @@ let appState = {
     lastPriorityAdShownTimestamp: 0,
     lastUserActionAdTimestamp: 0,
     userActionAdIndex: 0, 
-    isAppReadyForAds: false, // <-- यहाँ बदलाव किया गया है
+    isAppReadyForAds: false,
     
     appTimeTrackerInterval: null, watchTimeInterval: null,
     priorityAd: { data: null, timerInterval: null },
@@ -1759,6 +1759,7 @@ function closeAudioIssuePopup() {
     document.getElementById('audio-issue-popup').classList.remove('active');
 }
 
+// === यहाँ बदलाव किया गया है ===
 let appStartLogicHasRun = false;
 const startAppLogic = async () => {
     if (appStartLogicHasRun && appState.currentScreen !== 'splash-screen' && appState.currentScreen !== 'information-screen') {
@@ -1771,23 +1772,34 @@ const startAppLogic = async () => {
     if (getStartedBtn) getStartedBtn.style.display = 'none';
     if (loadingContainer) loadingContainer.style.display = 'flex';
 
-    await showStartupAdvertisement();
-
-    renderCategories();
-    renderCategoriesInBar();
-    await refreshAndRenderFeed();
-    
-    const activeAd = await fetchActivePriorityAd();
-    if (activeAd) {
-        appState.priorityAd.data = activeAd;
-        showPriorityAd();
-        appState.priorityAd.timerInterval = setInterval(showPriorityAd, 30 * 60 * 1000);
-    }
-    
-    const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
+    // स्टेप 1: सबसे पहले UI दिखाएँ और होम स्क्रीन पर नेविगेट करें
     const lastScreen = lastScreenBeforeAd || 'home-screen';
+    navigateTo(lastScreen, null, parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10));
     
-    navigateTo(lastScreen, null, lastScrollPosition);
+    // नेविगेशन बार के 'active' स्टेट को सही करें
+    document.querySelectorAll('.bottom-nav').forEach(navBar => {
+         navBar.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+         const currentItem = navBar.querySelector(`.nav-item[data-nav="home"]`);
+         if(currentItem) currentItem.classList.add('active');
+    });
+
+    // स्टेप 2: अब बाकी सब कुछ बैकग्राउंड में लोड करें
+    try {
+        await showStartupAdvertisement();
+
+        renderCategories();
+        renderCategoriesInBar();
+        await refreshAndRenderFeed();
+        
+        const activeAd = await fetchActivePriorityAd();
+        if (activeAd) {
+            appState.priorityAd.data = activeAd;
+            showPriorityAd();
+            appState.priorityAd.timerInterval = setInterval(showPriorityAd, 30 * 60 * 1000);
+        }
+    } catch (error) {
+        console.error("Error during background loading:", error);
+    }
     
     sessionStorage.removeItem('lastScreenBeforeAd');
     sessionStorage.removeItem('lastScrollPositionBeforeAd');
