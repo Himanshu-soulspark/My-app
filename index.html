@@ -95,16 +95,16 @@
         .slide-content h2 { font-family: 'Russo One', sans-serif; font-size: 3rem; color: var(--text-color); margin: 0 0 15px 0; text-shadow: 0 0 15px var(--accent-cyan);}
         .slide-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
         
-        /* === बदलाव यहाँ किया गया है: बटन के लिए स्टाइल === */
+        /* === बदलाव यहाँ किया गया है: बटन का स्टाइल एडजस्ट किया गया === */
         .cta-button {
             display: inline-block;
             background: var(--accent-cyan);
             color: var(--primary-color);
-            padding: 12px 30px;
+            padding: 10px 25px; /* चौड़ाई और ऊंचाई एडजस्ट की गई */
             border-radius: 5px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem; /* फॉन्ट साइज़ एडजस्ट किया गया */
             margin-top: 10px;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
@@ -209,6 +209,13 @@
             .section-title { font-size: 2.2rem; }
             .slide-content h2 { font-size: 2rem; }
             .slide-content p { font-size: 1rem; }
+            
+            /* === बदलाव यहाँ किया गया है: मोबाइल के लिए बटन का स्टाइल === */
+            .cta-button {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            /* === बदलाव समाप्त === */
         }
 
     </style>
@@ -237,19 +244,17 @@
         <section id="hero-slider">
             <div class="slider-container" id="slider">
                 <div class="slides-wrapper">
-                    <!-- === बदलाव यहाँ किया गया है: बटन जोड़ा गया === -->
+                    <!-- === HTML में कोई बदलाव नहीं किया गया है, सिर्फ CSS बदला है === -->
                     <div class="slide">
                         <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
                         <div class="slide-overlay"></div>
                         <div class="slide-content"><h2>Monetize Every Single Click</h2><p>Your effort is valued from the very first view. Start your journey with us.</p><a href="app.html" class="cta-button">Start</a></div>
                     </div>
-                    <!-- === बदलाव यहाँ किया गया है: बटन जोड़ा गया === -->
                     <div class="slide">
                         <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
                          <div class="slide-overlay"></div>
                         <div class="slide-content"><h2>A Community That Cares</h2><p>This isn’t just an app — it’s a family where your creativity and time are truly valued.</p><a href="app.html" class="cta-button">Start</a></div>
                     </div>
-                    <!-- === बदलाव यहाँ किया गया है: बटन जोड़ा गया === -->
                     <div class="slide">
                         <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
                          <div class="slide-overlay"></div>
