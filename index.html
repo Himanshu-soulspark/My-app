@@ -95,6 +95,26 @@
         .slide-content h2 { font-family: 'Russo One', sans-serif; font-size: 3rem; color: var(--text-color); margin: 0 0 15px 0; text-shadow: 0 0 15px var(--accent-cyan);}
         .slide-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
         
+        /* === बदलाव यहाँ किया गया है: बटन के लिए स्टाइल === */
+        .cta-button {
+            display: inline-block;
+            background: var(--accent-cyan);
+            color: var(--primary-color);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.7);
+        }
+        /* === बदलाव समाप्त === */
+
         /* --- General Section Styling --- */
         .section { padding: 80px 20px; text-align: center; }
         .section-title { font-size: 2.8rem; margin-bottom: 15px; color: var(--accent-cyan); font-family: 'Russo One', sans-serif; }
@@ -205,7 +225,6 @@
                     <li><a href="#why-choose">Features</a></li>
                     <li><a href="#">Shayari</a></li>
                     <li><a href="#faq">FAQ</a></li>
-                    <!-- === बदलाव यहाँ किया गया है === -->
                     <li><a href="app.html" style="background: var(--accent-cyan); color: var(--primary-color); padding: 8px 20px; border-radius: 5px; font-weight: 700;">Start App</a></li>
                 </ul>
             </nav>
@@ -218,20 +237,23 @@
         <section id="hero-slider">
             <div class="slider-container" id="slider">
                 <div class="slides-wrapper">
+                    <!-- === बदलाव यहाँ किया गया है: बटन जोड़ा गया === -->
                     <div class="slide">
                         <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
                         <div class="slide-overlay"></div>
-                        <div class="slide-content"><h2>Monetize Every Single Click</h2><p>Your effort is valued from the very first view. Start your journey with us.</p></div>
+                        <div class="slide-content"><h2>Monetize Every Single Click</h2><p>Your effort is valued from the very first view. Start your journey with us.</p><a href="app.html" class="cta-button">Start</a></div>
                     </div>
+                    <!-- === बदलाव यहाँ किया गया है: बटन जोड़ा गया === -->
                     <div class="slide">
                         <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
                          <div class="slide-overlay"></div>
-                        <div class="slide-content"><h2>A Community That Cares</h2><p>This isn’t just an app — it’s a family where your creativity and time are truly valued.</p></div>
+                        <div class="slide-content"><h2>A Community That Cares</h2><p>This isn’t just an app — it’s a family where your creativity and time are truly valued.</p><a href="app.html" class="cta-button">Start</a></div>
                     </div>
+                    <!-- === बदलाव यहाँ किया गया है: बटन जोड़ा गया === -->
                     <div class="slide">
                         <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
                          <div class="slide-overlay"></div>
-                        <div class="slide-content"><h2>Grow Without Limits</h2><p>Promote your content, analyze your growth, and collaborate with creators.</p></div>
+                        <div class="slide-content"><h2>Grow Without Limits</h2><p>Promote your content, analyze your growth, and collaborate with creators.</p><a href="app.html" class="cta-button">Start</a></div>
                     </div>
                 </div>
             </div>
