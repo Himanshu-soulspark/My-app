@@ -132,38 +132,12 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 40px 20px 20px 20px;
-    background: linear-gradient(to bottom, #87CEEB, #FFD700, #FFA500, #FF69B4, #F44336, #4CAF50);
+    background-color: var(--background);
     box-sizing: border-box;
     text-align: center;
     overflow: hidden;
     position: relative;
 }
-
-@keyframes bokeh {
-    0% { transform: scale(0.5) translateY(0); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: scale(1.2) translateY(-150px); opacity: 0; }
-}
-
-.welcome-background-particles {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.welcome-background-particles::before, .welcome-background-particles::after {
-    content: '';
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    filter: blur(20px);
-    animation: bokeh 15s infinite;
-}
-.welcome-background-particles::before { top: 70%; left: 10%; animation-delay: 0s; }
-.welcome-background-particles::after { top: 30%; right: 10%; animation-delay: -5s; }
 
 .welcome-top, .welcome-center, .welcome-bottom {
     z-index: 2;
@@ -181,8 +155,8 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 3.5em;
     font-weight: 700;
-    color: var(--text-primary);
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    color: var(--primary-neon);
+    text-shadow: 0 0 10px rgba(var(--primary-neon-rgb), 0.5);
     margin: 0;
 }
 
@@ -220,15 +194,14 @@ body {
 .logo-icon-combo {
     width: 90%;
     height: 90%;
-    background: rgba(0,0,0,0.2);
+    background: var(--background);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 4em;
-    color: var(--text-primary);
+    color: var(--primary-neon);
     position: relative;
-    backdrop-filter: blur(5px);
 }
 .logo-icon-combo .fa-play {
     transform: translateX(4px);
@@ -243,16 +216,15 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+    text-shadow: 0 0 8px rgba(var(--primary-neon-rgb), 0.3);
 }
 #splash-screen .tagline {
     font-family: 'Roboto', sans-serif;
     font-size: 1.2em;
     font-style: italic;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     margin-top: 5px;
     letter-spacing: 1px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
     padding: 0;
 }
 #splash-screen .tagline::after {
@@ -260,7 +232,7 @@ body {
     display: block;
     width: 20px;
     height: 3px;
-    background: var(--text-primary);
+    background: var(--text-secondary);
     margin: 5px auto 0;
     border-radius: 3px;
 }
@@ -284,7 +256,7 @@ body {
     margin-top: -20px;
     font-size: 1.5em;
     color: var(--text-primary);
-    background: rgba(0,0,0,0.3);
+    background: rgba(var(--secondary-background-rgb), 0.5);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -309,18 +281,17 @@ body {
 
 .get-started-btn {
     padding: 12px 35px;
-    border: 1px solid rgba(var(--text-primary-rgb), 0.5);
+    border: none;
     border-radius: 50px;
-    background: rgba(var(--text-primary-rgb), 0.2);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: var(--text-primary);
+    background: var(--primary-neon);
+    color: var(--background);
     font-family: 'Roboto', sans-serif;
     font-size: 1.2em;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(var(--primary-neon-rgb), 0.5);
 }
 
 #loading-container {
@@ -335,7 +306,7 @@ body {
 .loader {
     border: 4px solid rgba(var(--text-primary-rgb), 0.3);
     border-radius: 50%;
-    border-top: 4px solid var(--text-primary);
+    border-top: 4px solid var(--primary-neon);
     width: 30px;
     height: 30px;
     animation: spin 1s linear infinite;
@@ -346,15 +317,15 @@ body {
 }
 
 .get-started-btn:hover {
-    background: rgba(var(--text-primary-rgb), 0.4);
+    background: rgba(var(--primary-neon-rgb), 0.8);
     transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(var(--primary-neon-rgb), 0.7);
 }
 
 .creator-credit-new {
     font-family: 'Caveat', cursive;
     font-size: 1.1em;
-    color: rgba(var(--text-primary-rgb), 0.8);
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    color: rgba(var(--text-secondary-rgb), 0.8);
     margin: 0;
 }
 
@@ -1195,10 +1166,22 @@ input:checked + .slider:before {
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
+/* ★★★ नया बदलाव: क्रिएटर प्रोफाइल आइकन के लिए स्टाइल ★★★ */
+.action-icon-container[data-action="creator"] .icon { 
+    color: var(--text-primary);
+}
+.action-icon-container[data-action="creator"] .count {
+    font-size: 0.8em;
+}
+.action-icon-container[data-action="view"] .icon {
+    color: var(--text-primary);
+}
+.action-icon-container[data-action="view"] .count {
+    font-size: 0.9em;
+    font-weight: 700;
+}
 .action-icon-container[data-action="like"] .icon { color: var(--text-primary); }
 .action-icon-container[data-action="like"] .icon.liked { color: var(--primary-neon); }
-.action-icon-container[data-action="diamond"] .icon { color: var(--text-primary); }
-.action-icon-container[data-action="diamond"]:hover .icon { color: var(--primary-neon); }
 .action-icon-container[data-action="comment"] .icon { color: var(--primary-neon); }
 .action-icon-container:hover .icon {
     transform: scale(1.1);
@@ -1857,22 +1840,8 @@ input:checked + .slider:before {
     gap: 12px;
 }
 
-.long-video-info-container .diamond-icon {
-    font-size: 2em;
-    flex-shrink: 0;
-}
-
-.long-video-info-container .action-icon-container {
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.long-video-info-container .action-icon-container:hover {
-    transform: scale(1.1);
-}
-
-
 .long-video-details {
+    flex-grow: 1; /* ★★★ नया बदलाव: ताकि यह बची हुई जगह ले ले ★★★ */
     display: flex;
     flex-direction: column;
     gap: 3px;
@@ -1892,6 +1861,30 @@ input:checked + .slider:before {
     font-size: 0.9em;
     color: var(--text-secondary);
 }
+
+/* ★★★ नया बदलाव: लॉन्ग वीडियो कार्ड पर कमेंट आइकन के लिए स्टाइल ★★★ */
+.long-video-comment-icon {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    flex-shrink: 0; /* इसे सिकुड़ने से रोकता है */
+    padding: 5px;
+}
+.long-video-comment-icon:hover {
+    color: var(--primary-neon);
+}
+.long-video-comment-icon.disabled {
+    color: var(--text-disabled);
+    cursor: not-allowed;
+}
+.long-video-comment-icon.disabled:hover {
+    color: var(--text-disabled);
+}
+
 
 .description-button {
     display: none;
@@ -2354,80 +2347,21 @@ input:checked + .slider:before {
     border: 1px dashed var(--text-secondary);
 }
 
-#creator-diamond-page-screen .content-area {
+#creator-page-screen .content-area {
     overflow: hidden;
     height: calc(100% - 60px);
     padding: 0;
     padding-top: 60px;
 }
 
-#diamond-members-screen .content-area {
-    padding-top: 75px;
-    overflow-y: auto;
-    height: 100%;
-}
-
-.diamond-member-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 15px;
-}
-
-.diamond-member-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background-color: rgba(var(--secondary-background-rgb), 0.5);
-    border: 1px solid rgba(var(--primary-neon-rgb), 0.2);
-    border-radius: 12px;
-    padding: 12px 15px;
-    backdrop-filter: blur(5px);
-    transition: all 0.2s ease;
-}
-.diamond-member-item:hover {
-    border-color: var(--primary-neon);
-}
-
-.diamond-member-item .avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--primary-neon);
-    flex-shrink: 0;
-}
-
-.diamond-member-item .name {
-    flex-grow: 1;
-    font-size: 1.1em;
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.diamond-member-item .open-btn {
-    background-color: var(--primary-neon);
-    color: var(--background);
-    border: none;
-    border-radius: 8px;
-    padding: 8px 20px;
-    font-size: 1em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.diamond-member-item .open-btn:hover {
-    opacity: 0.8;
-}
-
-#creator-diamond-page-screen .screen-header {
+#creator-page-screen .screen-header {
     justify-content: space-between;
 }
-#creator-diamond-page-screen .header-icon-left {
+#creator-page-screen .header-icon-left {
     position: static;
     transform: none;
 }
-#creator-diamond-page-screen .header-icon-right {
+#creator-page-screen .header-icon-right {
     width: 40px; 
 }
 
@@ -2618,6 +2552,9 @@ input:checked + .slider:before {
 .function-menu-item:hover {
     background-color: var(--primary-neon);
     color: var(--background);
+}
+#creator-page-comment-btn {
+    display: none;
 }
 
 #payment-screen {
@@ -3142,7 +3079,7 @@ input:checked + .slider:before {
     }
 }
 
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 /* ★★★ वीडियो रोटेशन के लिए CSS स्टाइल ★★★ */
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
@@ -3201,7 +3138,7 @@ input:checked + .slider:before {
     backdrop-filter: blur(4px);
 }
 /* क्लोज बटन के लिए स्टाइल */
-#in-player-timed-ad span {
+.in-player-ad-close-btn {
     position: absolute;
     top: -10px;
     right: -10px;
@@ -3221,4 +3158,4 @@ input:checked + .slider:before {
 
 /* ================================================= */
 /* ★★★★★★★ NEW ADVERTISEMENT STYLES (v4) - END ★★★★★★★ */
-/* ================================================= */
+/* ================================================= */```
