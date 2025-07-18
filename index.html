@@ -1,442 +1,647 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - A Platform for Real Creators</title>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Russo+One&display=swap');
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Shubhzone</title>
 
-        :root {
-            --primary-color: #0d0f18;
-            --secondary-color: #1a1c2d;
-            --accent-cyan: #00e5ff;
-            --accent-violet: #8e44ad;
-            --card-bg: #1a1c2d;
-            --text-color: #ffffff;
-            --text-muted: #bdc3c7;
-        }
+    <!-- External Fonts and Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Main App Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Caveat&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+    <!-- Font for Advertiser Dashboard -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: var(--primary-color);
-            color: var(--text-color);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
 
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: auto;
-            padding: 0 20px;
-        }
-        
-        /* --- Header & Logo --- */
-        header {
-            background: rgba(13, 15, 24, 0.8);
-            backdrop-filter: blur(10px);
-            padding: 15px 0;
-            border-bottom: 2px solid var(--accent-cyan);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .header-container { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        #logo a { font-family: 'Russo One', sans-serif; font-size: 28px; text-decoration: none; color: var(--text-color); display: flex; align-items: center; }
-        #logo .logo-accent { color: var(--accent-cyan); text-shadow: 0 0 10px var(--accent-cyan); }
-        #logo .logo-icon { width: 10px; height: 10px; background: var(--accent-violet); border-radius: 50%; margin-left: 8px; box-shadow: 0 0 10px var(--accent-violet); }
-
-        /* --- Navigation Menu --- */
-        #main-nav ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-        #main-nav a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: color 0.3s ease;
-        }
-        #main-nav a:hover {
-            color: var(--accent-cyan);
-        }
-        #mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        /* --- Hero Slider --- */
-        #hero-slider { padding: 40px 0; }
-        .slider-container { width: 100%; max-width: 1100px; margin: auto; aspect-ratio: 16 / 9; position: relative; overflow: hidden; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
-        .slides-wrapper { display: flex; height: 100%; width: 300%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
-        .slide { width: calc(100% / 3); height: 100%; display: flex; background: var(--secondary-color); position: relative; }
-        .slide-image { position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: 1; }
-        .slide-image img { width: 100%; height: 100%; object-fit: cover; }
-        .slide-overlay { position: absolute; top:0; left:0; width: 100%; height: 100%; background: rgba(13, 15, 24, 0.6); z-index: 2;}
-        .slide-content { position: relative; z-index: 3; padding: 40px; display: flex; flex-direction: column; justify-content: center; text-align: center; width:100%; }
-        .slide-content h2 { font-family: 'Russo One', sans-serif; font-size: 3rem; color: var(--text-color); margin: 0 0 15px 0; text-shadow: 0 0 15px var(--accent-cyan);}
-        .slide-content p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
-        
-        /* === बदलाव यहाँ किया गया है: बटन को छोटा बनाया गया है === */
-        .cta-button {
-            display: inline-block;
-            background: var(--accent-cyan);
-            color: var(--primary-color);
-            padding: 6px 18px; /* चौड़ाई और ऊंचाई कम कर दी गई है */
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600; /* फॉन्ट का वजन थोड़ा कम किया गया */
-            font-size: 0.9rem; /* फॉन्ट साइज़ छोटा किया गया */
-            margin-top: 10px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
-        }
-        .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
-        }
-        /* === बदलाव समाप्त === */
-
-        /* --- General Section Styling --- */
-        .section { padding: 80px 20px; text-align: center; }
-        .section-title { font-size: 2.8rem; margin-bottom: 15px; color: var(--accent-cyan); font-family: 'Russo One', sans-serif; }
-        .section-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 50px auto; }
-        
-        /* --- Why Choose Us Section --- */
-        #why-choose { background: var(--secondary-color); }
-        .features-grid { display: grid; grid-template-columns: 1fr; gap: 30px; text-align: left; }
-        .feature-card { display: flex; flex-direction: column; background: var(--primary-color); padding: 30px; border-radius: 10px; border-left: 4px solid var(--accent-cyan); transition: transform 0.3s, box-shadow 0.3s; }
-        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0, 229, 255, 0.1); }
-        .feature-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.5rem; }
-        .feature-card p {
-            margin: 0;
-            height: 5.1em; /* 3 lines * 1.7 line-height */
-            overflow: hidden;
-        }
-
-        /* --- How It Works / FAQ Accordion --- */
-        #how-it-works, #faq { background: var(--primary-color); }
-        #dedication { background: var(--secondary-color); padding-bottom: 60px; }
-        .faq-container { max-width: 800px; margin: 0 auto; text-align: left; }
-        .faq-item { background: var(--secondary-color); margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #2c2f48; }
-        .faq-question { padding: 20px; font-size: 1.2rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-        .faq-question::after { content: '+'; font-size: 1.8rem; transition: transform 0.3s; color: var(--accent-cyan); }
-        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.5s ease; }
-        .faq-answer-content { padding: 0 20px 20px 20px; color: var(--text-muted); border-top: 1px solid #2c2f48; }
-        .faq-item.active .faq-answer { max-height: 500px; }
-        .faq-item.active .faq-question::after { transform: rotate(45deg); }
-        .faq-answer-content ul { padding-left: 20px; }
-        .faq-answer-content li { margin-bottom: 10px; }
-
-        /* --- Creators Section --- */
-        #creators { background: #0d0f18; }
-        .creators-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        .creator-card { background: var(--card-bg); padding: 25px; border-radius: 15px; text-align: center; }
-        .creator-card img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-cyan); object-fit: cover; margin-bottom: 15px; }
-        .creator-card .quote {
-            font-style: italic;
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            height: 5.1em; /* 3 lines * 1.7 line-height */
-            overflow: hidden;
-        }
-        .creator-card .name { font-weight: 700; font-size: 1.2rem; }
-
-        /* --- Final Note Section --- */
-        #final-note { background: var(--secondary-color); }
-
-        /* --- Footer --- */
-        footer { padding: 40px 20px; background: #08090f; text-align: center; }
-        footer p { margin: 10px 0; color: var(--text-muted); }
-        footer a { color: var(--accent-cyan); text-decoration: none; }
-        .footer-owner { font-size: 1.1rem; font-weight: 600; }
-
-        /* --- Responsive Design --- */
-        @media (min-width: 768px) {
-            .features-grid, .creators-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 767px) {
-            #main-nav {
-                display: none;
-                position: absolute;
-                top: 72px; /* Header height */
-                left: 0;
-                width: 100%;
-                background: var(--primary-color);
-            }
-            #main-nav.active {
-                display: block;
-            }
-            #main-nav ul {
-                flex-direction: column;
-                width: 100%;
-                gap: 0;
-            }
-            #main-nav li {
-                width: 100%;
-                text-align: center;
-                border-bottom: 1px solid var(--secondary-color);
-            }
-             #main-nav a {
-                display: block;
-                padding: 15px;
-            }
-            #mobile-menu-toggle {
-                display: block;
-            }
-            .section { padding: 60px 20px; }
-            .section-title { font-size: 2.2rem; }
-            .slide-content h2 { font-size: 2rem; }
-            .slide-content p { font-size: 1rem; }
-            
-            .cta-button {
-                padding: 5px 15px;
-                font-size: 0.8rem;
-            }
-        }
-
-    </style>
+    <!-- CSS फ़ाइल को यहाँ लिंक किया गया है -->
+    <link rel="stylesheet" href="style.css"> <!-- Replace with your CSS file name -->
 </head>
 <body>
-    <header>
-        <div class="container header-container">
-            <div id="logo">
-                <a href="#">Shubh<span class="logo-accent">zone</span><div class="logo-icon"></div></a>
-            </div>
-            <nav id="main-nav">
-                <ul>
-                    <li><a href="#hero-slider">Home</a></li>
-                    <li><a href="#why-choose">Features</a></li>
-                    <li><a href="#">Shayari</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                    <li><a href="app.html" style="background: var(--accent-cyan); color: var(--primary-color); padding: 8px 20px; border-radius: 5px; font-weight: 700;">Start App</a></li>
-                </ul>
-            </nav>
-            <button id="mobile-menu-toggle" aria-label="Open Menu">☰</button>
+
+    <!-- === SIDEBAR START === -->
+    <div id="main-sidebar" class="main-sidebar">
+        <div class="sidebar-header">
+            <h3>Menu</h3>
+            <span id="close-sidebar-btn" class="close-sidebar-btn haptic-trigger">×</span>
         </div>
-    </header>
-
-    <main>
-        <!-- 1. IMAGE SLIDER -->
-        <section id="hero-slider">
-            <div class="slider-container" id="slider">
-                <div class="slides-wrapper">
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Monetize"></div>
-                        <div class="slide-overlay"></div>
-                        <div class="slide-content"><h2>Monetize Every Single Click</h2><p>Your effort is valued from the very first view. Start your journey with us.</p><a href="app.html" class="cta-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Community"></div>
-                         <div class="slide-overlay"></div>
-                        <div class="slide-content"><h2>A Community That Cares</h2><p>This isn’t just an app — it’s a family where your creativity and time are truly valued.</p><a href="app.html" class="cta-button">Start</a></div>
-                    </div>
-                    <div class="slide">
-                        <div class="slide-image"><img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Promote"></div>
-                         <div class="slide-overlay"></div>
-                        <div class="slide-content"><h2>Grow Without Limits</h2><p>Promote your content, analyze your growth, and collaborate with creators.</p><a href="app.html" class="cta-button">Start</a></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 2. WHY CHOOSE US -->
-        <section id="why-choose" class="section">
-            <div class="container">
-                <h2 class="section-title">Why Choose Shubhzone?</h2>
-                <p class="section-subtitle">We believe in empowering creators by removing the barriers. Your growth is our success, and we're here to support you at every step.</p>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <h3>Earn From View One</h3>
-                        <p>Forget subscriber counts or view targets. Your earning starts from the very first view, on your very first video. Your effort never goes to waste here.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>No Monetization Barriers</h3>
-                        <p>No need for thousands of subscribers or impossible watch hours. We use a simple, transparent revenue sharing system that works for real creators.</p>
-                    </div>
-                     <div class="feature-card">
-                        <h3>Double Income Strategy</h3>
-                        <p>Already on YouTube? Bring your audience to earn as viewers. You earn twice from the same content, creating a smart, double profit strategy.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>24/7 Dedicated Support</h3>
-                        <p>We are always here to help. Our dedicated team is committed to providing quick and reliable support for any questions or issues you may face.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. HOW IT WORKS -->
-        <section id="how-it-works" class="section">
-             <div class="container">
-                <h2 class="section-title">How It Works</h2>
-                <p class="section-subtitle">A simple and transparent system designed for you.</p>
-                <div class="faq-container">
-                    <div class="faq-item">
-                        <div class="faq-question">How does earning work?</div>
-                        <div class="faq-answer"><div class="faq-answer-content">
-                            <p>Shubhzone shares its total Ad Revenue in a fair split:</p>
-                            <ul>
-                                <li><strong>40% goes to Creators:</strong> Based on your views and watch time.</li>
-                                <li><strong>20% goes to Viewers:</strong> Rewarding the community for their engagement.</li>
-                            </ul>
-                            <p>Earnings are updated weekly, so you’re always in the loop!</p>
-                        </div></div>
-                    </div>
-                     <div class="faq-item">
-                        <div class="faq-question">How do I request my payment?</div>
-                        <div class="faq-answer"><div class="faq-answer-content">
-                            <p>It's easy:</p>
-                            <ol>
-                                <li>Go to the Menu and open the Payment System.</li>
-                                <li>Fill in your correct payment details.</li>
-                                <li>Click on 'Request'.</li>
-                            </ol>
-                            <p>You'll receive your payment within 2 days! A full breakdown is also available in the Payment Section.</p>
-                        </div></div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">When does the payout start?</div>
-                        <div class="faq-answer"><div class="faq-answer-content"><p>As soon as your total earnings reach ₹9000 (around $110 USD), your payout calculation starts. After that, you can request a payout anytime you want — no waiting periods.</p></div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 4. MEET OUR CREATORS -->
-        <section id="creators" class="section">
-            <div class="container">
-                <h2 class="section-title">Meet Our Successful Creators</h2>
-                <p class="section-subtitle">Thousands of creators are already growing their channels with us. You could be next.</p>
-                <div class="creators-grid">
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=a" alt="Creator 1">
-                        <p class="quote">"Shubhzone gave my channel the push it needed. Earning from day one was so motivating and really helped me to grow!"</p>
-                        <p class="name">Rohan S.</p>
-                    </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=b" alt="Creator 2">
-                        <p class="quote">"The double income strategy is a game-changer. Earning from the same content on two different platforms is simply brilliant."</p>
-                        <p class="name">Anjali V.</p>
-                    </div>
-                     <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=c" alt="Creator 3">
-                        <p class="quote">"Finally, a platform that truly respects its creators. The support team is amazing and the community feels like a real family."</p>
-                        <p class="name">Vikram K.</p>
-                    </div>
-                    <div class="creator-card">
-                        <img src="https://i.pravatar.cc/100?u=d" alt="You">
-                        <p class="quote">"This spot is waiting for you. Join our community of creators and start your success story with us today. Let's grow together!"</p>
-                        <p class="name">You Could Be Next</p>
-                    </div>
-                </div>
-            </div>
-        </section>
         
-        <!-- 5. FAQ SECTION -->
-        <section id="faq" class="section" style="background: var(--secondary-color);">
-            <div class="container">
-                <h2 class="section-title">Have a Question?</h2>
-                 <div class="faq-container">
-                    <div class="faq-item">
-                        <div class="faq-question">Is this platform only for making money?</div>
-                        <div class="faq-answer"><div class="faq-answer-content"><p>Honestly, if your only goal is to "just make money," this platform may not be for you. Shubhzone is for true creators who want to grow with a supportive platform. We are building this space not with ads, but with trust and creativity.</p></div></div>
+        <button id="navigate-to-payment-btn" class="sidebar-option haptic-trigger">
+            <i class="fas fa-money-check-alt" style="margin-right: 10px;"></i>Payment
+        </button>
+        <button id="navigate-to-advertisement-btn" class="sidebar-option haptic-trigger">
+            <i class="fas fa-bullhorn" style="margin-right: 10px;"></i>Advertisement
+        </button>
+        
+        <a href="https://shubhzone.onrender.com" target="_blank" rel="noopener noreferrer" class="premium-features-card haptic-trigger">
+            <div class="premium-image-wrapper">
+                <img src="https://i.ibb.co/0RF4GmTZ/Flux-Dev-A-futuristic-social-media-interface-named-Shubhzone-g-1.jpg" alt="Premium Features Image">
+            </div>
+            <span>Premium Features</span>
+        </a>
+    </div>
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <!-- === SIDEBAR END === -->
+
+
+    <!-- === ALL MODALS START === -->
+    <div id="upload-details-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-button haptic-trigger" onclick="closeUploadDetailsModal()">×</span>
+            <h3 id="modal-title">Upload Details</h3>
+            <input type="hidden" id="editing-video-id">
+            <div class="input-group">
+                <label for="modal-video-title">Title</label>
+                <input type="text" id="modal-video-title" placeholder="Enter video title">
+            </div>
+            <div class="input-group">
+                <label for="modal-video-description">Description</label>
+                <textarea id="modal-video-description" rows="3" placeholder="Add a description" maxlength="300"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="modal-video-hashtags">Hashtags</label>
+                <input type="text" id="modal-video-hashtags" placeholder="Add hashtags like #trending #viral" maxlength="60">
+            </div>
+            <div class="input-group">
+                <label for="modal-video-url">YouTube Video ID</label>
+                <input type="text" id="modal-video-url" placeholder="Enter YouTube video ID (e.g., dQw4w9WgXcQ)">
+            </div>
+            <div class="input-group">
+                <label for="modal-channel-name">YouTube Channel Name</label>
+                <input type="text" id="modal-channel-name" placeholder="Enter original creator's channel name">
+            </div>
+            <div class="input-group">
+                <label for="modal-channel-link">YouTube Channel Link (Optional)</label>
+                <input type="url" id="modal-channel-link" placeholder="Enter channel URL">
+            </div>
+            <div class="category-selector-wrapper">
+                <label>Category</label>
+                <div class="category-selector">
+                    <div class="category-selector-display haptic-trigger" onclick="toggleCategoryOptions()">
+                        <span id="selected-category-text">Select Category</span>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question">What if I enter incorrect payment details?</div>
-                        <div class="faq-answer"><div class="faq-answer-content"><p>Please be very careful while filling in your details. If you enter incorrect information, the app will not be responsible for any failed transfers. Double-check everything before you submit.</p></div></div>
+                    <div class="category-options" id="category-options"></div>
+                </div>
+            </div>
+            <div class="audience-selector">
+                <label>Audience</label>
+                <div class="audience-options">
+                    <div class="audience-option haptic-trigger" data-audience="all" onclick="selectAudience('all')">
+                        <i class="fas fa-users"></i> All Audiences
+                    </div>
+                    <div class="audience-option haptic-trigger" data-audience="18plus" onclick="selectAudience('18plus')">
+                        <i class="fas fa-user-shield"></i> 18+ Only
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- 6. A FINAL NOTE -->
-        <section id="final-note" class="section">
-            <div class="container">
-                <h2 class="section-title">A Final Note...</h2>
-                <p class="section-subtitle" style="font-size: 1.2rem; line-height: 1.8;">
-                    💖 Shubhzone is not just an app,<br>
-                    It’s a movement — to empower creators like YOU.<br>
-                    Let’s grow this family together. Your growth = Our success.<br>
-                    So why wait? Let’s begin this journey — with trust, with vision, with Shubhzone! 💫
-                </p>
+            <div class="comments-toggle">
+                <label>Allow Comments</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="comments-toggle-input" checked class="haptic-trigger">
+                    <span class="slider"></span>
+                </label>
             </div>
-        </section>
-
-        <!-- 7. DEDICATION -->
-        <section id="dedication" class="section">
-            <div class="container">
-                <h2 class="section-title">Dedicated To</h2>
-                <p class="section-subtitle">My beloved Mom, Dad, Uncle (Mama ji), and my brother, Shudhanshu.</p>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- 8. FOOTER -->
-    <footer>
-        <div class="container">
-            <p class="footer-owner">Owner: Himanshu Kumar</p>
-            <p><strong>Support Email:</strong> <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
-            <p>Shubhzone © 2025 | All Rights Reserved</p>
+            <button id="modal-save-button" class="save-button haptic-trigger" onclick="handleSave()">Upload Video</button>
         </div>
-    </footer>
-    
-<script>
-    // --- Slider Script ---
-    const sliderWrapper = document.querySelector('.slides-wrapper');
-    let currentSlideIndex = 0;
-    const totalSlides = document.querySelectorAll('.slide').length;
-    
-    function showNextSlide() {
-        currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
-        sliderWrapper.style.transform = `translateX(-${currentSlideIndex * (100 / totalSlides)}%)`;
-    }
-    
-    setInterval(showNextSlide, 4000);
+    </div>
 
-    // --- FAQ Accordion Script ---
-    const allFaqItems = document.querySelectorAll('.faq-item');
-    allFaqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        question.addEventListener('click', () => {
-            const currentlyActiveFaq = document.querySelector('.faq-item.active');
-            if (currentlyActiveFaq && currentlyActiveFaq !== item) {
-                currentlyActiveFaq.classList.remove('active');
-            }
-            item.classList.toggle('active');
-        });
-    });
+    <div id="comments-modal" class="comments-modal-overlay">
+        <div class="comments-modal-content">
+            <div class="comments-header">
+                <h4>Comments</h4>
+                <span class="close-comments-btn haptic-trigger" onclick="closeCommentsModal()">×</span>
+            </div>
+            <ul id="comments-list"></ul>
+            <div class="comment-input-container">
+                <input type="text" id="comment-input" placeholder="Add a comment...">
+                <button id="send-comment-btn" class="haptic-trigger"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
-    // --- Mobile Menu Toggle Script ---
-    const menuToggleButton = document.getElementById('mobile-menu-toggle');
-    const mainNav = document.getElementById('main-nav');
+    <div id="audio-issue-popup" class="modal-overlay">
+        <div class="popup-content">
+            <i class="fas fa-heart heart-icon"></i>
+            <p>Due to a technical issue, if you are unable to hear the audio, please scroll down the video.</p>
+            <button id="audio-issue-ok-btn" class="haptic-trigger">OK</button>
+        </div>
+    </div>
     
-    menuToggleButton.addEventListener('click', () => {
-        mainNav.classList.toggle('active');
-    });
-</script>
+    <!-- ★ नया: प्रोफाइल फोटो को बड़ा करने के लिए मोडल प्लेसहोल्डर -->
+    <div id="image-enlarge-modal" class="modal-overlay">
+        <div class="enlarged-image-content">
+            <img id="enlarged-image-src" src="" alt="Enlarged View">
+        </div>
+    </div>
+    <!-- === ALL MODALS END === -->
 
+
+    <div class="app-container" id="app-container">
+
+        <!-- === SPLASH SCREEN === -->
+        <div id="splash-screen" class="screen active">
+            <div class="welcome-top">
+                <h1 class="welcome-text">Welcome ☁️</h1>
+            </div>
+            <div class="welcome-center">
+                <div class="logo-container">
+                    <div class="logo-ring"></div>
+                    <div class="logo-icon-combo">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="orbiting-icons">
+                        <i class="fas fa-microphone orb-icon"></i>
+                        <i class="fas fa-camera orb-icon"></i>
+                        <i class="fas fa-book-open orb-icon"></i>
+                        <i class="fas fa-paint-brush orb-icon"></i>
+                    </div>
+                </div>
+                <h2 class="app-name">Shubhzone</h2>
+                <p class="tagline">Har Hunar ka Ghar</p>
+            </div>
+            <div class="welcome-bottom">
+                <button id="get-started-btn" class="get-started-btn haptic-trigger">Get Started</button>
+                <div id="loading-container" style="display: none;">
+                    <div class="loader"></div>
+                    <p style="margin-top: 10px;">Loading Videos, Please Wait...</p>
+                </div>
+                <p class="creator-credit-new">Made with ❤️ by Udbhav</p>
+            </div>
+        </div>
+
+        <!-- === INFORMATION SCREEN === -->
+        <div id="information-screen" class="screen">
+            <div class="screen-header"><span class="header-title">Mera Shubhzone</span></div>
+            <div style="margin-top: 60px; width: 100%; overflow-y: auto; padding: 20px;">
+                <div class="profile-image-upload">
+                    <img id="profile-image-preview" src="https://via.placeholder.com/120/222/FFFFFF?text=+" alt="Profile Preview">
+                    <label for="profile-image-input" class="profile-image-label haptic-trigger">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="profile-image-input" accept="image/*">
+                </div>
+                <div class="input-group">
+                    <label for="info-name">Name</label>
+                    <input type="text" id="info-name" placeholder="Enter your name">
+                </div>
+                <div class="input-group">
+                    <label for="info-mobile">Mobile No.</label>
+                    <input type="tel" id="info-mobile" placeholder="Enter your mobile number">
+                </div>
+                <div class="input-group">
+                    <label for="info-email">Email ID</label>
+                    <input type="email" id="info-email" placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="info-address">Address</label>
+                    <input type="text" id="info-address" placeholder="Enter your address">
+                </div>
+                <div class="input-group">
+                    <label for="info-hobby">Hobby</label>
+                    <input type="text" id="info-hobby" placeholder="e.g., Reading, Gaming, Coding">
+                </div>
+                <div class="input-group">
+                    <label for="info-state">State</label>
+                    <select id="info-state" onchange="checkCustom(this, 'custom-state-input')">
+                        <option value="">Select State</option>
+                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Ladakh">Ladakh</option>
+                        <option value="Lakshadweep">Lakshadweep</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Puducherry">Puducherry</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" id="custom-state-input" class="custom-input" placeholder="Please specify your state">
+                </div>
+                <div class="input-group">
+                    <label for="info-country">Country</label>
+                    <select id="info-country" onchange="checkCustom(this, 'custom-country-input')">
+                        <option value="India">India</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="text" id="custom-country-input" class="custom-input" placeholder="Please specify your country">
+                </div>
+                <div class="button-container">
+                    <button id="save-continue-btn" class="continue-btn haptic-trigger" onclick="saveAndContinue()">Continue</button>
+                    <button class="logout-btn haptic-trigger" onclick="logoutUser()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- === HOME SCREEN (SHORTS) === -->
+        <div id="home-screen" class="screen">
+            <div class="home-top-bar">
+                <div id="home-menu-icon" class="home-menu-icon haptic-trigger">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div id="category-scroller" class="category-scroller"></div>
+            </div>
+            <div id="video-swiper">
+                <div id="home-static-message-container" style="display: none;">
+                    <p class="static-message">Sorry, no video is available at the moment. <br> Please upload one!</p>
+                </div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item active" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+        
+        <!-- === LONG VIDEO SCREEN === -->
+        <div id="long-video-screen" class="screen">
+             <div id="long-video-top-bar">
+                <div id="long-video-menu-icon" class="home-menu-icon haptic-trigger">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div id="long-video-category-scroller" class="category-scroller"></div>
+            </div>
+            <div class="long-video-screen-content">
+                <div id="long-video-carousel-container">
+                    <div id="long-video-carousel-wrapper"></div>
+                </div>
+                <div class="long-video-search-container">
+                    <input type="text" id="long-video-search-input" placeholder="Search for videos...">
+                    <button id="long-video-search-btn" class="haptic-trigger"><i class="fas fa-search"></i></button>
+                    <button id="long-video-history-btn" class="haptic-trigger"><i class="fas fa-history"></i></button>
+                </div>
+                <div class="long-video-search-results-container" id="long-video-search-results" style="display: none;">
+                    <h4>Search Results</h4>
+                    <div id="long-video-search-results-grid"></div>
+                </div>
+                <div id="long-video-grid"></div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item active" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <!-- === HISTORY SCREEN === -->
+        <div id="history-screen" class="screen">
+            <div id="history-top-bar">
+                <div id="back-from-history-btn" class="home-menu-icon haptic-trigger">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <span class="header-title">Watch History</span>
+                <button id="history-date-button" class="haptic-trigger">Today <i class="fas fa-calendar-alt"></i></button>
+            </div>
+            <div class="history-content">
+                <div class="history-section-title">Recently Watched Shorts</div>
+                <div id="history-shorts-scroller"></div>
+                <div class="history-section-title">Watched Videos</div>
+                <div id="history-long-video-list"></div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <!-- === UPLOAD SCREEN === -->
+        <div id="upload-screen" class="screen">
+            <div class="upload-header">
+                <h2>Upload Content</h2>
+                <p>Share your awesome videos with the world</p>
+            </div>
+             <div class="upload-container-new">
+                <button id="upload-short-video-btn" class="upload-action-button haptic-trigger">
+                    <i class="fas fa-bolt" style="margin-right: 10px;"></i> Upload Short Video
+                </button>
+                 <button id="upload-long-video-btn" class="upload-action-button haptic-trigger" style="background-color: #ff8f00;">
+                    <i class="fas fa-film" style="margin-right: 10px;"></i> Upload Long Video
+                </button>
+                <button id="earnsure-btn" class="upload-action-button haptic-trigger" style="background-color: #4CAF50;">Earnsure</button>
+                <!-- ★ बदलाव: विज्ञापन कंटेनर जोड़ा गया -->
+                <div id="upload-screen-ad-container"></div>
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item active" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <!-- === FRIENDS SCREEN === -->
+        <div id="friends-screen" class="screen">
+            <div class="friends-top-bar">
+                <div class="tab-bar">
+                    <button class="tab-button active" data-tab="add">Add</button>
+                    <button class="tab-button" data-tab="requests">Requests</button>
+                    <button class="tab-button" data-tab="members">Members</button>
+                </div>
+            </div>
+    
+            <main class="content-area">
+                <div class="tab-content" id="add-content">
+                    <div class="add-friend-search-container">
+                        <!-- ★ बदलाव: प्लेसहोल्डर टेक्स्ट बदला गया -->
+                        <input type="text" id="add-friend-search-input" placeholder="Search by Name or @ID">
+                        <button id="add-friend-search-btn" class="haptic-trigger">Search</button>
+                    </div>
+                    <div id="add-friend-user-list">
+                        <!-- User list will be populated here by JS -->
+                    </div>
+                </div>
+                <div class="tab-content hidden" id="requests-content">
+                    <!-- Friend requests will be populated here by JS -->
+                </div>
+                <div class="tab-content hidden" id="members-content">
+                    <!-- Members list will be populated here by JS -->
+                </div>
+            </main>
+    
+            <div class="chat-screen" id="chat-screen-overlay">
+                <header class="chat-app-bar">
+                    <button class="icon-button back-arrow haptic-trigger"><i class="fas fa-arrow-left"></i></button>
+                    <div class="profile-pic"><img src="" alt="Chat User Avatar" id="chat-user-profile-pic"></div>
+                    <div class="username" id="chat-username"></div>
+                </header>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-bar">
+                    <input type="text" class="input-field" placeholder="Message...">
+                    <button class="send-button haptic-trigger" id="send-button"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item active" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+
+        <!-- === PROFILE SCREEN === -->
+        <div id="profile-screen" class="screen">
+            <div id="profile-header-new">
+                <img id="profile-header-avatar" src="https://via.placeholder.com/50/222/FFFFFF?text=+" alt="Avatar">
+                <button id="profile-your-zone-btn" class="haptic-trigger">Your Zone</button>
+            </div>
+
+            <div id="profile-video-toggle-buttons">
+                <button id="profile-show-shorts-btn" class="profile-toggle-btn active haptic-trigger">Short Video</button>
+                <button id="profile-show-longs-btn" class="profile-toggle-btn haptic-trigger">Long Video</button>
+            </div>
+
+            <div id="profile-video-content">
+                <div id="user-short-video-grid"></div>
+                <div id="user-long-video-grid" style="display: none;"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
+                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
+                <div class="nav-item active" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
+            </div>
+        </div>
+        
+        <!-- === DESCRIPTION MODAL (used across screens) === -->
+        <div id="description-modal" class="modal-overlay">
+            <div class="description-modal-content">
+                <span id="close-description-btn" class="close-button haptic-trigger">×</span>
+                <div id="description-content" class="description-text"></div>
+            </div>
+        </div>
+    
+        <!-- === PAYMENT SCREEN === -->
+        <div id="payment-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Payment Request</span>
+            </div>
+            <div id="payment-content" style="width: 100%; padding: 80px 20px 20px;">
+                <!-- Payment form will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- === YOUR ZONE SCREEN === -->
+        <div id="your-zone-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Your Zone</span>
+            </div>
+            <div id="your-zone-content">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+        
+        <!-- === EARNSURE SCREEN === -->
+        <div id="earnsure-screen" class="screen">
+             <div class="earnsure-header">
+                <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
+                <h4 class="header-title">Earnsure</h4>
+                <div class="earnsure-language-toggle" id="earnsure-language-toggle"></div>
+            </div>
+            <div class="earnsure-content-area">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+
+        <!-- === ADVERTISEMENT SCREEN === -->
+        <div id="advertisement-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Advertiser Panel</span>
+            </div>
+            <div class="container" style="margin-top: 60px; padding-top: 20px;">
+                <div id="uniqueCodeSection" class="section">
+                    <div class="card">
+                        <h2>View Your Campaigns</h2>
+                        <h3>Enter the Unique ID provided by the admin to access your dashboard.</h3>
+                        <div class="form-group">
+                            <label for="uniqueCodeInput">Your Unique ID</label>
+                            <input type="text" id="uniqueCodeInput" placeholder="Enter your ID here">
+                        </div>
+                        <button class="btn" onclick="advertiserFunctions.applyCode()">Apply</button>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <a href="#" class="logout-btn" onclick="advertiserFunctions.showSection('registrationSection')">New Advertiser? Register here.</a>
+                        </div>
+                    </div>
+                </div>
+                <div id="registrationSection" class="section">
+                    <div class="card">
+                        <h2>Welcome, Advertiser!</h2><h3>Let's get you set up in a minute.</h3>
+                        <form>
+                            <div class="form-group"><label for="adv-name">Your Name</label><input type="text" id="adv-name" placeholder="e.g., John Doe" required></div>
+                            <div class="form-group"><label for="adv-businessName">Business Name (Optional)</label><input type="text" id="adv-businessName" placeholder="e.g., John's Cafe"></div>
+                            <div class="form-group"><label for="adv-whatsapp">WhatsApp Number</label><input type="tel" id="adv-whatsapp" placeholder="Include country code, e.g., 919876543210" required></div>
+                            <button type="button" class="btn" onclick="advertiserFunctions.processRegistration()">Continue →</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="planSection" class="section">
+                    <div class="card" style="background-color: transparent; border: none; box-shadow: none;">
+                        <h2 style="color: #fde047;">Our Golden Plans</h2>
+                        <h3>Each plan is crafted to deliver maximum value.</h3>
+                        <div id="planContainer" class="plan-container"></div>
+                        <input type="hidden" id="selectedPlanData" required>
+                        <button type="button" class="btn" onclick="advertiserFunctions.goToForm()" style="margin-top: 30px;">Next Step →</button>
+                    </div>
+                </div>
+                <div id="adFormSection" class="section">
+                     <div class="card">
+                        <h2>Campaign Details</h2><h3>Describe the ad you want to run.</h3>
+                         <form id="adSubmissionForm">
+                            <div class="form-group"><label for="adv-adTitle">Ad Title</label><input type="text" id="adv-adTitle" placeholder="e.g., Diwali Special Sale" required></div>
+                            <div class="form-group"><label for="adv-adDesc">Ad Description (Short Message)</label><textarea id="adv-adDesc" placeholder="Your main message for the ad (100-200 characters)" maxlength="200" required></textarea></div>
+                            <div class="form-group"><label for="adv-cta">Call to Action (Button Text)</label><select id="adv-cta" required><option value="Call Now">Call Now</option><option value="Order Now">Order Now</option><option value="WhatsApp Us">WhatsApp Us</option><option value="Learn More">Learn More</option></select></div>
+                            <div class="form-group"><label for="adv-adLink">Destination Link</label><input type="url" id="adv-adLink" placeholder="https://yourwebsite.com or https://wa.me/..." required></div>
+                            <div class="form-group">
+                                <label for="adv-adType">Ad Type</label>
+                                <select id="adv-adType" required onchange="advertiserFunctions.updateImpressionDisclaimer()">
+                                    <option value="banner">Banner Ad</option>
+                                    <option value="image_5s">5-Second Image Ad</option>
+                                    <option value="video">Video Ad</option>
+                                </select>
+                                <p id="impressionDisclaimer"></p>
+                            </div>
+                            <div class="form-group"><label for="adv-contactWhatsapp">Confirm Contact WhatsApp Number</label><input type="tel" id="adv-contactWhatsapp" placeholder="Enter campaign contact number" required></div>
+                            <button type="button" class="btn" onclick="advertiserFunctions.submitAdRequest()">Submit Ad Request</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="dashboardSection" class="section">
+                    <div class="dashboard-header"><h2 id="welcomeMessage">Your Campaigns</h2><p>Select a campaign to view its performance.</p></div>
+                    <button class="btn" onclick="advertiserFunctions.createNewAd()">+ Add New Plan</button>
+                    <div class="card"><div id="campaignListContainer"></div></div>
+                    <div style="text-align:center;"><button class="logout-btn" onclick="advertiserFunctions.resetUser()">This isn't me, reset.</button></div>
+                </div>
+                <div id="campaignDetailSection" class="section">
+                    <div class="dashboard-header"><h2 id="detailCampaignTitle">Campaign Performance</h2><p id="detailCampaignPlan">Plan details will load here.</p></div>
+                     <div class="stats-grid">
+                        <div class="stat-card"><div class="label" id="detailAdType">Ad Type</div><div class="value" id="detailFinalImpressions">...</div></div>
+                         <div class="stat-card"><div class="label">Clicks (CTR)</div><div class="value" id="detailClickCount">...</div></div>
+                    </div>
+                    <div class="card"><h3 style="text-align:left; font-weight: 600; margin-bottom: 15px;">Viewer Locations (Sample)</h3><div class="stat-card geo-card"><div class="value" id="detailGeoData">Loading...</div></div></div>
+                    <button class="btn btn-secondary" onclick="advertiserFunctions.goBackToDashboard()" style="margin-top: 30px;">← Back to All Campaigns</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- === CREATOR PAGE SCREEN === -->
+        <div id="creator-page-screen" class="screen">
+            <div class="screen-header transparent">
+                 <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
+                 <div id="creator-page-tabs">
+                    <button class="creator-page-tab-btn active haptic-trigger" data-type="short">Short Video</button>
+                    <button class="creator-page-tab-btn haptic-trigger" data-type="long">Long Video</button>
+                 </div>
+                 <div class="header-icon-right"></div>
+            </div>
+            <div id="creator-page-functions" class="more-function-container">
+                <div id="more-function-menu" class="more-function-menu">
+                    <button id="more-videos-btn" class="function-menu-item haptic-trigger">
+                        <i class="fas fa-list-ul"></i> More Videos
+                    </button>
+                </div>
+                <button id="more-function-btn" class="more-function-btn haptic-trigger">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+            <div id="creator-page-content" class="content-area">
+                <div id="creator-page-short-view" class="creator-page-view active"></div>
+                <div id="creator-page-long-view" class="creator-page-view"></div>
+            </div>
+        </div>
+
+        <!-- === TRACK PAYMENT SCREEN === -->
+        <div id="track-payment-screen" class="screen">
+            <div class="screen-header">
+                <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
+                <span class="header-title">Track Payment</span>
+            </div>
+            <div id="track-payment-content" class="content-area" style="padding-top: 75px; padding-left: 15px; padding-right: 15px;">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+
+        <!-- === REPORT SCREEN === -->
+        <div id="report-screen" class="screen">
+            <!-- JS will populate this -->
+        </div>
+        
+        <!-- === CREDIT SCREEN === -->
+        <div id="credit-screen" class="screen">
+            <!-- JS will populate this -->
+        </div>
+
+    </div>
+
+    <!-- === ADMIN PRIORITY AD OVERLAY === -->
+    <div id="admin-priority-ad-overlay">
+        <div id="ad-timer"></div>
+        <button id="ad-close-btn">×</button>
+        <div id="ad-content-container">
+            <!-- JS will inject ad content here -->
+        </div>
+    </div>
+
+    <!-- === SCRIPTS (MUST BE AT THE END) === -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- JavaScript फ़ाइल को यहाँ लिंक किया गया है -->
+    <script src="script.js"></script> <!-- Replace with your JS file name -->
+
+    <script>
+        const setAppHeight = () => {
+            const doc = document.documentElement;
+            doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+        };
+        window.addEventListener('resize', setAppHeight);
+        setAppHeight();
+    </script>
+    
 </body>
 </html>
