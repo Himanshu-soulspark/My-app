@@ -269,7 +269,7 @@ let appState = {
     currentUser: {
         uid: null, username: "new_user", avatar: "https://via.placeholder.com/120/222/FFFFFF?text=+",
         email: "", name: "", mobile: "", address: "", hobby: "", state: "", country: "",
-        referralCode: null, likedVideos: [], diamondedCreators: [], diamonds: 0,
+        referralCode: null, likedVideos: [], 
         totalWatchTimeSeconds: 0,
         creatorTotalWatchTimeSeconds: 0, 
         creatorDailyWatchTime: {},
@@ -285,6 +285,9 @@ let appState = {
     creatorPagePlayers: {
         short: null,
         long: null,
+    },
+    creatorPage: {
+        currentLongVideo: { id: null, uploaderUid: null }
     },
     adState: {
         timers: {
@@ -360,14 +363,14 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.navigationStack.push(nextScreenId);
     }
     
-    if (appState.currentScreen === 'creator-diamond-page-screen' || appState.currentScreen === 'home-screen') {
+    if (appState.currentScreen === 'creator-page-screen' || appState.currentScreen === 'home-screen') {
         clearAllAdTimers();
     }
     
     if (appState.currentScreen === 'home-screen') {
         if (activePlayerId && players[activePlayerId]) pauseActivePlayer();
     }
-    if (appState.currentScreen === 'creator-diamond-page-screen') {
+    if (appState.currentScreen === 'creator-page-screen') {
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
         appState.creatorPagePlayers = { short: null, long: null };
@@ -383,8 +386,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'your-zone-screen') populateYourZoneScreen();
     if (nextScreenId === 'home-screen') setTimeout(setupVideoObserver, 100);
     if (nextScreenId === 'earnsure-screen') initializeEarnsureScreen();
-    if (nextScreenId === 'diamond-members-screen') populateDiamondMembersScreen();
-    if (nextScreenId === 'creator-diamond-page-screen' && payload && payload.creatorId) initializeCreatorDiamondPage(payload.creatorId, payload.startWith, payload.videoId);
+    if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
     
     if (nextScreenId === 'payment-screen') initializePaymentScreen();
@@ -400,14 +402,14 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
 function navigateBack() {
     if (appState.navigationStack.length <= 1) return;
     
-    if (appState.currentScreen === 'creator-diamond-page-screen') {
+    if (appState.currentScreen === 'creator-page-screen') {
         clearAllAdTimers();
     }
 
     appState.navigationStack.pop();
     const previousScreenId = appState.navigationStack[appState.navigationStack.length - 1];
 
-    if (appState.currentScreen === 'creator-diamond-page-screen') {
+    if (appState.currentScreen === 'creator-page-screen') {
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
         appState.creatorPagePlayers = { short: null, long: null };
@@ -435,8 +437,6 @@ async function checkUserProfileAndProceed(user) {
             userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
         }
         userData.likedVideos = userData.likedVideos || [];
-        userData.diamondedCreators = userData.diamondedCreators || [];
-        userData.diamonds = userData.diamonds || 0;
         userData.totalWatchTimeSeconds = userData.totalWatchTimeSeconds || 0;
         userData.creatorTotalWatchTimeSeconds = userData.creatorTotalWatchTimeSeconds || 0;
         userData.creatorDailyWatchTime = userData.creatorDailyWatchTime || {};
@@ -453,7 +453,7 @@ async function checkUserProfileAndProceed(user) {
             uid: user.uid, name: '', email: user.email || '',
             avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            diamonds: 0, likedVideos: [], diamondedCreators: [], totalWatchTimeSeconds: 0,
+            likedVideos: [], totalWatchTimeSeconds: 0,
             creatorTotalWatchTimeSeconds: 0,
             creatorDailyWatchTime: {},
             friends: [],
@@ -578,17 +578,34 @@ async function saveAndContinue() {
 
     const file = profileImageInput.files[0];
     if (file) {
+        // ★★★ CLOUDINARY UPLOAD LOGIC START ★★★
+        const cloudName = 'dzq7qb6ew';
+        const uploadPreset = 'bookswamp_unsigned';
+        const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', uploadPreset);
+
         try {
-            const storageRef = storage.ref(`avatars/${appState.currentUser.uid}/${Date.now()}_${file.name}`);
-            const snapshot = await storageRef.put(file);
-            userData.avatar = await snapshot.ref.getDownloadURL();
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.secure_url) {
+                userData.avatar = data.secure_url;
+            } else {
+                throw new Error('Image upload failed, no secure_url returned.');
+            }
         } catch (error) {
-            console.error("Avatar upload error:", error);
+            console.error("Cloudinary avatar upload error:", error);
             alert("Failed to upload profile picture.");
             saveContinueBtn.disabled = false;
             saveContinueBtn.textContent = 'Continue';
             return;
         }
+        // ★★★ CLOUDINARY UPLOAD LOGIC END ★★★
     }
 
     try {
@@ -762,7 +779,6 @@ async function saveNewVideo() {
         audience: appState.uploadDetails.audience || 'all',
         commentsEnabled: commentsToggleInput.checked,
         likes: 0,
-        diamonds: 0,
         commentCount: 0,
         customViewCount: 0,
     };
@@ -826,9 +842,9 @@ function renderVideoSwiper(itemsToRender) {
             const thumbnailUrl = video.thumbnailUrl || 'https://via.placeholder.com/420x740/000000/FFFFFF?text=Video';
             
             const isLiked = appState.currentUser.likedVideos.includes(video.id);
-            const isDiamondGiven = appState.currentUser.diamondedCreators.includes(video.uploaderUid);
-            const diamondIconClass = isDiamondGiven ? 'fas' : 'far';
-            const diamondIconColor = isDiamondGiven ? 'var(--primary-neon)' : 'var(--text-primary)';
+
+            const videoLengthTypeForNav = video.videoLengthType !== 'long' ? 'short' : 'long';
+            const creatorProfileOnClick = `navigateTo('creator-page-screen', { creatorId: '${video.uploaderUid}', startWith: '${videoLengthTypeForNav}', videoId: '${video.id}' })`;
 
             slide.innerHTML = `
                 <div class="video-preloader" style="background-image: url('${thumbnailUrl}');"><div class="loader"></div></div>
@@ -839,17 +855,20 @@ function renderVideoSwiper(itemsToRender) {
                     <p class="video-title">${escapeHTML(video.title) || 'Untitled Video'}</p>
                 </div>
                 <div class="video-actions-overlay">
+                    
+                    <!-- ★★★ नया बदलाव: व्यू काउंटर आइकन जोड़ा गया ★★★ -->
                     <div class="action-icon-container" data-action="view">
                         <i class="fas fa-eye icon"></i>
                         <span class="count">${formatNumber(video.customViewCount || 0)}</span>
                     </div>
+
+                    <div class="action-icon-container haptic-trigger" data-action="creator" onclick="${creatorProfileOnClick}">
+                        <i class="fas fa-user-circle icon"></i>
+                        <span class="count">Creator</span>
+                    </div>
                     <div class="action-icon-container haptic-trigger" data-action="like" onclick="toggleLikeAction('${video.id}', this.closest('.video-slide'))">
                         <i class="${isLiked ? 'fas' : 'far'} fa-heart icon ${isLiked ? 'liked' : ''}"></i>
                         <span class="count">${formatNumber(video.likes || 0)}</span>
-                    </div>
-                    <div class="action-icon-container haptic-trigger" data-action="diamond" onclick="handleDiamondAction(event, '${video.id}', '${video.uploaderUid}')">
-                        <i class="${diamondIconClass} fa-gem icon" style="color: ${diamondIconColor};"></i>
-                        <span class="count">${formatNumber(video.diamonds || 0)}</span>
                     </div>
                     <div class="action-icon-container haptic-trigger ${!video.commentsEnabled ? 'disabled' : ''}" data-action="comment" onclick="${video.commentsEnabled ? `openCommentsModal('${video.id}', '${video.uploaderUid}')` : ''}">
                         <i class="fas fa-comment-dots icon"></i>
@@ -1241,94 +1260,6 @@ async function toggleLikeAction(videoId, slideElement) {
     }
 }
 
-async function handleDiamondAction(event, videoId, uploaderUid) {
-    event.stopPropagation();
-    
-    if (!appState.currentUser || !appState.currentUser.uid) {
-        alert("You must be logged in to give a diamond.");
-        return;
-    }
-    if (appState.currentUser.uid === uploaderUid) {
-        alert("You cannot give a diamond to yourself.");
-        return;
-    }
-
-    const diamondButton = event.currentTarget;
-    diamondButton.style.pointerEvents = 'none'; 
-
-    const wasDiamondGiven = appState.currentUser.diamondedCreators.includes(uploaderUid);
-    const increment = wasDiamondGiven ? -1 : 1;
-    
-    appState.currentUser.diamondedCreators = wasDiamondGiven
-        ? appState.currentUser.diamondedCreators.filter(id => id !== uploaderUid)
-        : [...appState.currentUser.diamondedCreators, uploaderUid];
-
-    let newDiamondCount = 0;
-    fullVideoList.forEach(video => {
-        if (video.uploaderUid === uploaderUid) {
-            video.diamonds = Math.max(0, (video.diamonds || 0) + increment);
-            newDiamondCount = video.diamonds;
-        }
-    });
-
-    document.querySelectorAll(`[data-uploader-uid="${uploaderUid}"]`).forEach(slide => {
-        const icon = slide.querySelector('[data-action="diamond"] .icon');
-        const count = slide.querySelector('[data-action="diamond"] .count');
-        const videoData = fullVideoList.find(v => v.id === slide.dataset.videoId);
-        if (icon && count && videoData) {
-            icon.classList.toggle('fas', !wasDiamondGiven);
-            icon.classList.toggle('far', wasDiamondGiven);
-            icon.style.color = !wasDiamondGiven ? 'var(--primary-neon)' : 'var(--text-primary)';
-            count.textContent = formatNumber(videoData.diamonds);
-        }
-    });
-     
-    document.querySelectorAll(`.long-video-card`).forEach(card => {
-        const video = fullVideoList.find(v => v.id === card.dataset.videoId);
-        if(video && video.uploaderUid === uploaderUid) {
-            const icon = card.querySelector('.diamond-icon');
-            const uploaderSpan = card.querySelector('.long-video-uploader');
-            if (icon && uploaderSpan) {
-                icon.classList.toggle('fas', !wasDiamondGiven);
-                icon.classList.toggle('far', wasDiamondGiven);
-                icon.style.color = !wasDiamondGiven ? 'var(--primary-neon)' : 'var(--text-primary)';
-                uploaderSpan.textContent = `${escapeHTML(video.uploaderUsername)} • ${formatNumber(video.diamonds)} diamonds`;
-            }
-        }
-    });
-
-    const videosQuery = db.collection('videos').where('uploaderUid', '==', uploaderUid);
-    const userRef = db.collection('users').doc(appState.currentUser.uid);
-    const creatorRef = db.collection('users').doc(uploaderUid);
-
-    try {
-        const videoSnapshot = await videosQuery.get();
-        const batch = db.batch();
-
-        videoSnapshot.forEach(doc => {
-            batch.update(doc.ref, { diamonds: firebase.firestore.FieldValue.increment(increment) });
-        });
-
-        batch.update(creatorRef, { diamonds: firebase.firestore.FieldValue.increment(increment) });
-
-        if (wasDiamondGiven) {
-            batch.update(userRef, { diamondedCreators: firebase.firestore.FieldValue.arrayRemove(uploaderUid) });
-        } else {
-            batch.update(userRef, { diamondedCreators: firebase.firestore.FieldValue.arrayUnion(uploaderUid) });
-        }
-        
-        await batch.commit();
-        
-    } catch (error) {
-        console.error("Global diamond update failed:", error);
-        alert("Action failed. Please check your internet connection and try again.");
-        await refreshAndRenderFeed();
-    } finally {
-        diamondButton.style.pointerEvents = 'auto';
-    }
-}
-
-
 function logoutUser() {
     if (confirm("Are you sure you want to log out?")) {
         auth.signOut().then(() => {
@@ -1452,13 +1383,13 @@ function playVideoFromProfile(videoId) {
          return;
     }
     if (videoToPlay.videoLengthType === 'long') {
-        navigateTo('creator-diamond-page-screen', { 
+        navigateTo('creator-page-screen', { 
             creatorId: videoToPlay.uploaderUid, 
             startWith: 'long', 
             videoId: videoToPlay.id 
         });
     } else {
-        navigateTo('creator-diamond-page-screen', { 
+        navigateTo('creator-page-screen', { 
             creatorId: videoToPlay.uploaderUid, 
             startWith: 'short', 
             videoId: videoToPlay.id 
@@ -1667,30 +1598,36 @@ function populateLongVideoSearchResults(videos) {
 function createLongVideoCard(video) {
     const card = document.createElement('div');
     card.className = 'long-video-card';
-    card.dataset.videoId = video.id; 
-    card.dataset.uploaderUid = video.uploaderUid; 
+    card.dataset.videoId = video.id;
+    card.dataset.uploaderUid = video.uploaderUid;
     card.setAttribute('onclick', `playVideoFromProfile('${video.id}')`);
-    const isDiamondGiven = (appState.currentUser.diamondedCreators || []).includes(video.uploaderUid);
-    const diamondIconClass = isDiamondGiven ? 'fas' : 'far';
-    const diamondIconColor = isDiamondGiven ? 'var(--primary-neon)' : 'var(--text-primary)';
+    
+    // ★★★ नया बदलाव: onclick में event.stopPropagation() जोड़ा गया ताकि कार्ड पर क्लिक करने पर वीडियो न चले ★★★
+    const commentOnClick = video.commentsEnabled 
+        ? `onclick="event.stopPropagation(); openCommentsModal('${video.id}', '${video.uploaderUid}')"` 
+        : 'onclick="event.stopPropagation();"';
+    
     card.innerHTML = `
         <div class="long-video-thumbnail" style="background-image: url(${escapeHTML(video.thumbnailUrl)})">
             <div class="long-video-view-count"><i class="fas fa-eye"></i> ${formatNumber(video.customViewCount || 0)}</div>
-            <div class="long-video-menu haptic-trigger" onclick="showLongVideoMenu(event, '${video.id}')"><i class="fas fa-ellipsis-v"></i></div>
+            <div class="long-video-menu haptic-trigger" onclick="event.stopPropagation(); showLongVideoMenu(event, '${video.id}')"><i class="fas fa-ellipsis-v"></i></div>
             <i class="fas fa-play play-icon-overlay"></i>
         </div>
         <div class="long-video-info-container">
-            <div class="action-icon-container" data-action="diamond" style="cursor: pointer;" onclick="handleDiamondAction(event, '${video.id}', '${video.uploaderUid}')">
-                <i class="${diamondIconClass} fa-gem diamond-icon" style="color: ${diamondIconColor}; font-size: 2em;"></i>
-            </div>
             <div class="long-video-details">
                 <span class="long-video-name">${escapeHTML(video.title)}</span>
-                <span class="long-video-uploader">${escapeHTML(video.uploaderUsername)} • ${formatNumber(video.diamonds || 0)} diamonds</span>
+                <span class="long-video-uploader">${escapeHTML(video.uploaderUsername)}</span>
+            </div>
+            <!-- ★★★ नया बदलाव: कमेंट आइकन और काउंटर जोड़ा गया ★★★ -->
+            <div class="long-video-comment-icon haptic-trigger ${!video.commentsEnabled ? 'disabled' : ''}" ${commentOnClick}>
+                <i class="fas fa-comment-dots"></i>
+                <span>${formatNumber(video.commentCount || 0)}</span>
             </div>
         </div>
     `;
     return card;
 }
+
 
 function showLongVideoMenu(event, videoId) {
     event.stopPropagation();
@@ -2284,85 +2221,52 @@ function toggleProfileVideoView(viewType) {
 }
 
 // =======================================================
-// ★★★ DIAMOND MEMBERS & CREATOR PAGE LOGIC - START ★★★
+// ★★★ CREATOR PAGE LOGIC - START ★★★
 // =======================================================
 
-async function populateDiamondMembersScreen() {
-    const content = document.getElementById('diamond-members-content');
-    if (!content) return;
-    content.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
-
-    const creatorIds = appState.currentUser.diamondedCreators || [];
-
-    if (creatorIds.length === 0) {
-        content.innerHTML = '<p class="static-message">You have not given a diamond to any creator yet.</p>';
-        return;
-    }
-
-    try {
-        const creatorPromises = creatorIds.map(id => db.collection('users').doc(id).get());
-        const creatorDocs = await Promise.all(creatorPromises);
-        
-        const creators = creatorDocs.map(doc => ({ id: doc.id, ...doc.data() })).filter(c => c.name);
-
-        if (creators.length === 0) {
-            content.innerHTML = '<p class="static-message">Could not load creator profiles.</p>';
-            return;
-        }
-
-        const listHtml = creators.map(creator => `
-            <div class="diamond-member-item">
-                <img src="${escapeHTML(creator.avatar) || 'https://via.placeholder.com/50'}" alt="avatar" class="avatar">
-                <span class="name">${escapeHTML(creator.name)}</span>
-                <button class="open-btn haptic-trigger" onclick="navigateTo('creator-diamond-page-screen', { creatorId: '${creator.id}' })">Open</button>
-                <button class="user-video-action-btn delete haptic-trigger" style="margin-left: auto;" onclick="deactivateDiamond('${creator.id}')">
-                    <i class="fas fa-gem" style="color: var(--primary-neon);"></i> Deactivate
-                </button>
-            </div>
-        `).join('');
-        
-        content.innerHTML = `<div class="diamond-member-list">${listHtml}</div>`;
-
-    } catch (error) {
-        console.error("Error loading diamond members:", error);
-        content.innerHTML = '<p class="static-message" style="color: var(--error-red);">Error loading your diamond members.</p>';
+function openCommentsForCurrentCreatorVideo() {
+    const { id, uploaderUid } = appState.creatorPage.currentLongVideo;
+    if (id && uploaderUid) {
+        openCommentsModal(id, uploaderUid);
+    } else {
+        console.error("No current long video data to open comments for.");
+        alert("Could not load comments for this video.");
     }
 }
 
-async function deactivateDiamond(creatorId) {
-    if (!confirm("Are you sure you want to remove the diamond from this creator?")) return;
-
-    const userRef = db.collection('users').doc(appState.currentUser.uid);
-    const creatorRef = db.collection('users').doc(creatorId);
-
-    try {
-        const batch = db.batch();
-        batch.update(userRef, { diamondedCreators: firebase.firestore.FieldValue.arrayRemove(creatorId) });
-        batch.update(creatorRef, { diamonds: firebase.firestore.FieldValue.increment(-1) });
-        await batch.commit();
-
-        const index = appState.currentUser.diamondedCreators.indexOf(creatorId);
-        if (index > -1) {
-            appState.currentUser.diamondedCreators.splice(index, 1);
-        }
-        
-        alert("Diamond deactivated.");
-        populateDiamondMembersScreen();
-        
-    } catch (error) {
-        console.error("Error deactivating diamond:", error);
-        alert("Failed to deactivate diamond.");
-    }
-}
-
-
-async function initializeCreatorDiamondPage(creatorId, startWith = 'short', videoId = null) {
+async function initializeCreatorPage(creatorId, startWith = 'short', videoId = null) {
     if (fullVideoList.length === 0) await refreshAndRenderFeed();
     const shortView = document.getElementById('creator-page-short-view');
     const longView = document.getElementById('creator-page-long-view');
     if (!shortView || !longView) return;
     shortView.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
     longView.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
+
+    const videos = fullVideoList.filter(v => v.uploaderUid === creatorId && v.audience !== '18plus');
+    const shortVideos = videos.filter(v => v.videoLengthType !== 'long');
+    const longVideos = videos.filter(v => v.videoLengthType === 'long');
+
+    let startShortVideo = shortVideos[0];
+    if (videoId && startWith === 'short') {
+        const foundVideo = shortVideos.find(v => v.id === videoId);
+        if (foundVideo) startShortVideo = foundVideo;
+    }
+    let startLongVideo = longVideos[0];
+    if (videoId && startWith === 'long') {
+        const foundVideo = longVideos.find(v => v.id === videoId);
+        if (foundVideo) startLongVideo = foundVideo;
+    }
+
+    const menu = document.getElementById('more-function-menu');
+    let commentBtn = document.getElementById('creator-page-comment-btn');
+    if (!commentBtn) {
+        commentBtn = document.createElement('button');
+        commentBtn.id = 'creator-page-comment-btn';
+        commentBtn.className = 'function-menu-item haptic-trigger';
+        commentBtn.innerHTML = `<i class="fas fa-comment-dots"></i> Comment`;
+        commentBtn.onclick = openCommentsForCurrentCreatorVideo;
+        menu.appendChild(commentBtn);
+    }
 
     const tabs = document.querySelectorAll('#creator-page-tabs .creator-page-tab-btn');
     tabs.forEach(tab => {
@@ -2373,6 +2277,8 @@ async function initializeCreatorDiamondPage(creatorId, startWith = 'short', vide
             const activeView = document.getElementById(`creator-page-${tab.dataset.type}-view`);
             if (activeView) activeView.classList.add('active');
             
+            commentBtn.style.display = tab.dataset.type === 'long' ? 'flex' : 'none';
+
             clearAllAdTimers(); 
 
             const otherType = tab.dataset.type === 'short' ? 'long' : 'short';
@@ -2390,7 +2296,7 @@ async function initializeCreatorDiamondPage(creatorId, startWith = 'short', vide
         };
     });
     
-    const menu = document.getElementById('more-function-menu');
+    const menuRotate = document.getElementById('more-function-menu');
     const existingRotateBtn = document.getElementById('rotate-video-btn');
     if (existingRotateBtn) {
         existingRotateBtn.remove();
@@ -2402,22 +2308,24 @@ async function initializeCreatorDiamondPage(creatorId, startWith = 'short', vide
     rotateBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Rotate`;
     rotateBtn.onclick = toggleVideoRotation;
     
-    if (menu) {
-        menu.appendChild(rotateBtn);
+    if (menuRotate) {
+        menuRotate.appendChild(rotateBtn);
     }
     
-    const videos = fullVideoList.filter(v => v.uploaderUid === creatorId && v.audience !== '18plus');
-    const shortVideos = videos.filter(v => v.videoLengthType !== 'long');
-    const longVideos = videos.filter(v => v.videoLengthType === 'long');
-
-    renderCreatorVideoView(shortView, shortVideos, 'short', creatorId, videoId && startWith === 'short' ? videoId : null);
-    renderCreatorVideoView(longView, longVideos, 'long', creatorId, videoId && startWith === 'long' ? videoId : null);
+    if (startWith === 'long' && startLongVideo) {
+        appState.creatorPage.currentLongVideo = { id: startLongVideo.id, uploaderUid: creatorId };
+    }
+    
+    renderCreatorVideoView(shortView, shortVideos, 'short', creatorId, startShortVideo ? startShortVideo.id : null);
+    renderCreatorVideoView(longView, longVideos, 'long', creatorId, startLongVideo ? startLongVideo.id : null);
     
     document.querySelectorAll('.creator-page-view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.creator-page-tab-btn').forEach(t => t.classList.remove('active'));
     document.getElementById(`creator-page-${startWith}-view`).classList.add('active');
     document.querySelector(`.creator-page-tab-btn[data-type="${startWith}"]`).classList.add('active');
+    commentBtn.style.display = startWith === 'long' ? 'flex' : 'none';
 }
+
 
 function renderCreatorVideoView(container, videos, type, creatorId, startVideoId = null) {
     container.innerHTML = '';
@@ -2490,12 +2398,18 @@ function playCreatorVideo(type, videoIndex, creatorId) {
     
     if (videos[videoIndex]) {
         const videoToPlay = videos[videoIndex];
+
+        if (type === 'long') {
+            appState.creatorPage.currentLongVideo = { id: videoToPlay.id, uploaderUid: creatorId };
+        }
+
         const player = appState.creatorPagePlayers[type];
         if (player && typeof player.loadVideoById === 'function') {
             player.loadVideoById(videoToPlay.videoUrl);
         }
     }
 }
+
 
 function toggleCreatorVideoList() {
     const activeView = document.querySelector('.creator-page-view.active');
@@ -3062,17 +2976,16 @@ async function incrementCustomViewCount(videoId) {
 
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.header-icon-left').forEach(btn => {
-        if (!btn.closest('#history-top-bar') && !btn.closest('#creator-diamond-page-screen .screen-header')) {
+        if (!btn.closest('#history-top-bar') && !btn.closest('#creator-page-screen .screen-header')) {
             btn.onclick = () => navigateBack();
         }
     });
-    const creatorBackBtn = document.querySelector('#creator-diamond-page-screen .header-icon-left');
+    const creatorBackBtn = document.querySelector('#creator-page-screen .header-icon-left');
     if (creatorBackBtn) {
         creatorBackBtn.onclick = () => navigateBack();
     }
 
     document.getElementById('navigate-to-payment-btn')?.addEventListener('click', () => navigateTo('payment-screen'));
-    document.getElementById('navigate-to-diamond-btn')?.addEventListener('click', () => navigateTo('diamond-members-screen'));
     document.getElementById('navigate-to-advertisement-btn')?.addEventListener('click', () => navigateTo('advertisement-screen'));
     
     const sidebar = document.getElementById('main-sidebar');
