@@ -28,7 +28,7 @@ const analytics = firebase.analytics();
 
 
 // =======================================================================
-// ★★★ ADVERTISEMENT LOGIC - START ★★★
+// ★★★ ADVERTISEMENT LOGIC - START (v5.5 - With Fallback) ★★★
 // =======================================================================
 
 /**
@@ -60,6 +60,7 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
         adInvokeScript.onload = () => {
             console.log(`[AD] Script loaded successfully from: ${invokeScriptSrc}`);
             loaded = true;
+            // विज्ञापन नेटवर्क को रेंडर करने के लिए थोड़ा समय दें
             setTimeout(() => {
                 if(container.innerHTML.length > 20 || container.querySelector('iframe')) {
                    resolve(true);
@@ -68,13 +69,14 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
         };
         adInvokeScript.onerror = (err) => {
             console.error(`[AD] Script failed to load from: ${invokeScriptSrc}`, err);
-            container.innerHTML = '';
+            container.innerHTML = ''; // Error message can be added here if needed
             resolve(false);
         };
-
+        
         container.appendChild(adOptionsScript);
         container.appendChild(adInvokeScript);
 
+        // एक टाइमआउट फॉलबैक यह सुनिश्चित करने के लिए कि अगर onload फायर नहीं होता है तो भी यह विफल हो जाए
         setTimeout(() => {
             if (!loaded) {
                 console.warn(`[AD] Script from ${invokeScriptSrc} timed out.`);
@@ -92,26 +94,29 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
 async function showBannerAdWithFallback(container) {
     if (!container) return;
 
+    // यह सुनिश्चित करने के लिए कि विज्ञापन कंटेनर दिखाई दे रहा है
     container.style.display = 'flex';
     container.style.justifyContent = 'center';
     container.style.alignItems = 'center';
-    container.innerHTML = '<div class="loader"></div>';
+    container.innerHTML = '<div class="loader"></div>'; // लोडर दिखाएं
 
-    // ★★★ बदलाव: आपके द्वारा प्रदान किया गया नया विज्ञापन URL ★★★
+    // ★★★ समाधान 2: आपकी दी गई सही Adsterra Key और URL यहाँ डाला गया है ★★★
+    // प्राथमिक विज्ञापन नेटवर्क (Adsterra)
     const primaryOptions = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
-    const primarySrc = "//decreaselackadmit.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-
-    // Adsterra Native Banner as Fallback
+    const primarySrc = "//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
+    
+    // द्वितीयक विज्ञापन नेटवर्क (Monetag - यह सिर्फ एक उदाहरण है, असल में यह Profitableratecpm है)
     const fallbackOptions = `atOptions = {'key' : 'f218d914c870fc85f6dd64b9c8c31249', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
     const fallbackSrc = "//pl27114897.profitableratecpm.com/f218d914c870fc85f6dd64b9c8c31249/invoke.js";
-
+    
+    console.log(`[AD] Attempting to load PRIMARY ad in:`, container.id || container.className);
     const primaryAdLoaded = await injectAdScript(container, primaryOptions, primarySrc);
 
     if (!primaryAdLoaded) {
-        console.warn('[AD] PRIMARY ad (decreaselackadmit) failed. Attempting FALLBACK.');
+        console.warn('[AD] PRIMARY ad failed to load. Attempting FALLBACK ad.');
         const fallbackAdLoaded = await injectAdScript(container, fallbackOptions, fallbackSrc);
         if (!fallbackAdLoaded) {
-            console.error('[AD] FALLBACK ad also failed.');
+            console.error('[AD] FALLBACK ad also failed to load.');
             container.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.8em;">Ad not available</p>';
         } else {
              console.log('[AD] FALLBACK ad loaded successfully.');
@@ -134,7 +139,7 @@ function manageLongVideoPlayerBanner(action) {
     if (!adContainer) {
         adContainer = document.createElement('div');
         adContainer.id = 'in-player-timed-ad';
-
+        
         const closeBtn = document.createElement('span');
         closeBtn.innerHTML = '&times;';
         closeBtn.className = 'in-player-ad-close-btn';
@@ -145,65 +150,29 @@ function manageLongVideoPlayerBanner(action) {
 
         adContainer.appendChild(closeBtn);
         playerWrapper.appendChild(adContainer);
+        
+        showBannerAdWithFallback(adContainer); 
     }
-
+    
     const isRotated = playerWrapper.closest('.main-video-card-wrapper')?.classList.contains('rotated');
 
     if (action === 'show' && !isRotated) {
         adContainer.style.display = 'flex';
+        // विज्ञापन को ताज़ा करने के लिए फिर से लोड करें
         showBannerAdWithFallback(adContainer);
     } else {
         adContainer.style.display = 'none';
     }
 }
-
-// ★★★ नया: शॉर्ट वीडियो के लिए टाइमर वाला विज्ञापन ★★★
-function manageShortVideoTimedAd(action) {
-    let adContainer = document.getElementById('in-player-timed-ad-short');
-
-    if (!adContainer) {
-        adContainer = document.createElement('div');
-        adContainer.id = 'in-player-timed-ad-short';
-        // सीएसएस में स्टाइल को परिभाषित किया गया है ताकि इसे प्रबंधित करना आसान हो
-
-        const closeBtn = document.createElement('span');
-        closeBtn.innerHTML = '&times;';
-        closeBtn.className = 'in-player-ad-close-btn';
-        closeBtn.onclick = (e) => {
-            e.stopPropagation();
-            adContainer.style.display = 'none';
-        };
-
-        adContainer.appendChild(closeBtn);
-        document.getElementById('app-container').appendChild(adContainer);
-    }
-
-    const activeSlide = document.querySelector('.video-slide[data-video-id="' + activePlayerId + '"]');
-
-    if (action === 'show' && activeSlide) {
-        adContainer.style.display = 'flex';
-        activeSlide.appendChild(adContainer); // विज्ञापन को सक्रिय स्लाइड में ले जाएं
-        showBannerAdWithFallback(adContainer);
-    } else {
-        adContainer.style.display = 'none';
-        // विज्ञापन को वापस ऐप कंटेनर में ले जाएं
-        if(adContainer.parentElement !== document.getElementById('app-container')) {
-            document.getElementById('app-container').appendChild(adContainer);
-        }
-    }
-}
-
 
 /**
  * सभी सक्रिय वीडियो-संबंधित विज्ञापन टाइमर्स को साफ़ करता है।
  */
 function clearAllAdTimers() {
-    if (appState.adState.timers.longVideoPlayerBanner) clearTimeout(appState.adState.timers.longVideoPlayerBanner);
-    if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
-    if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
-
-    manageShortVideoTimedAd('hide');
-    manageLongVideoPlayerBanner('hide');
+    const adContainer = document.getElementById('in-player-timed-ad');
+    if (adContainer) {
+        adContainer.style.display = 'none';
+    }
 }
 // =======================================================================
 // ★★★ ADVERTISEMENT LOGIC - END ★★★
@@ -245,7 +214,7 @@ async function generateAndSaveReferralCode(uid, name) {
     while (referralCode.length < 7) {
         referralCode += Math.floor(Math.random() * 10);
     }
-
+    
     try {
         await db.collection('users').doc(uid).update({ referralCode: referralCode });
         return referralCode;
@@ -279,11 +248,11 @@ let appState = {
     currentUser: {
         uid: null, username: "new_user", avatar: "https://via.placeholder.com/120/222/FFFFFF?text=+",
         email: "", name: "", mobile: "", address: "", hobby: "", state: "", country: "",
-        referralCode: null, likedVideos: [],
+        referralCode: null, likedVideos: [], 
         totalWatchTimeSeconds: 0,
-        creatorTotalWatchTimeSeconds: 0,
+        creatorTotalWatchTimeSeconds: 0, 
         creatorDailyWatchTime: {},
-        friends: [],
+        friends: [], 
     },
     currentScreen: 'splash-screen',
     navigationStack: ['splash-screen'],
@@ -302,8 +271,6 @@ let appState = {
     adState: {
         timers: {
             longVideoPlayerBanner: null,
-            shortVideoAdShow: null,
-            shortVideoAdHide: null,
         },
     },
     appTimeTrackerInterval: null, watchTimeInterval: null,
@@ -353,6 +320,7 @@ const closeDescriptionBtn = document.getElementById('close-description-btn');
 
 const categories = [ "Entertainment", "Comedy", "Music", "Dance", "Education", "Travel", "Food", "DIY", "Sports", "Gaming", "News", "Lifestyle" ];
 
+// ★★★ बदलाव: Earnsure कंटेंट को एक ऑब्जेक्ट में स्टोर किया गया ★★★
 const earnsureContent = {
     hi: `<h4>🌟 आपका अपना वीडियो प्लेटफॉर्म – जहां हर व्यू की क़ीमत है! 🎥💰</h4><hr><p><strong>👀 दर्शकों के लिए (Viewers):</strong></p><p>अगर आप इस ऐप पर वीडियो देखते हैं, तो हर सेकंड का Watch Time रिकॉर्ड होता है। आप जितना ज़्यादा देखेंगे, उतनी ज़्यादा आपकी कमाई (Ad Revenue Share) होगी।</p><p>🎉 अब वीडियो देखना सिर्फ़ मनोरंजन नहीं – कमाई का ज़रिया भी है!</p><hr><p><strong>🎥 क्रिएटर्स के लिए (Creators):</strong></p><p>अगर आप अपना खुद का वीडियो इस प्लेटफ़ॉर्म पर डालते हैं और लोग उसे देखते हैं, तो आपके वीडियो के Watch Time के आधार पर आपको भी कमाई दी जाएगी।</p><p>🛑 <strong>अगर आप किसी और का वीडियो डालते हैं, तो:</strong></p><ul><li>आपको उससे कोई कमाई नहीं मिलेगी।</li><li>लेकिन अगर आप खुद वह वीडियो देखें, तो एक Viewer के रूप में आप कमाई कर सकते हैं।</li></ul><hr><p><strong>🧾 पेमेंट पॉलिसी (Payment Policy):</strong></p><p>🗓️ <strong>हर सोमवार को पेमेंट Apply करें – 24 घंटे का समय!</strong></p><p>अब से, आप हर सोमवार को पूरे दिन (00:00 से 23:59 तक) "Payment Apply" बटन पर क्लिक कर सकते हैं।</p><p>✅ अगर आप सोमवार को अप्लाई नहीं करते, तो उस सप्ताह की कमाई रद्द (forfeit) मानी जाएगी।</p><hr><p><strong>💵 पेमेंट कब मिलेगा?</strong></p><p>पहली बार पेमेंट तब मिलेगा जब आपकी कुल कमाई ₹5000 (लगभग $60 USD) हो जाएगी।</p><p>इसके बाद आप चाहे ₹2 (लगभग $0.02 USD) भी कमाएं, आप उसे कभी भी निकाल सकते हैं।</p><hr><p><strong>💼 ऐप की दो खास विशेषताएं:</strong></p><p>📢 <strong>1. ब्रांड प्रमोशन का मौका</strong></p><p>इस ऐप पर आप अपने ब्रांड, प्रोडक्ट या सर्विस का विज्ञापन कर सकते हैं — वो भी सही टारगेटेड ऑडियंस के सामने।</p><p>📬 <strong>2. सीधे यूज़र से संपर्क करें</strong></p><p>अगर आपको किसी यूज़र से बात करनी है – सुझाव, फीडबैक या काम के लिए – तो आप ऐप के ज़रिए सीधे मैसेज या संपर्क कर सकते हैं।</p><hr><p><strong>✅ वेरिफिकेशन के नियम:</strong></p><p>अगर आप अपने वीडियो से क्रिएटर के रूप में कमाई करना चाहते हैं, तो आपको:</p><ol><li>अपनी कम से कम 5 यूट्यूब वीडियो में ऐप का नाम या लिंक (Shout-out) देना होगा।</li><li>इससे हम यह पुष्टि कर सकेंगे कि चैनल आपका है।</li></ol><hr><p><strong>🔒 ईमानदारी और पारदर्शिता हमारी प्राथमिकता है</strong></p><p>हम चाहते हैं कि हर Viewer और Creator को उनका पूरा हक़ मिले — बिना किसी धोखे और बिना किसी मुश्किल के।</p><blockquote>"कमाई और विश्वास का रिश्ता तभी टिकता है, जब दोनों तरफ से इज्ज़त हो।"</blockquote><hr><p><strong>📩 संपर्क करें:</strong></p><p>कोई सवाल या सहायता चाहिए? ईमेल करें 👉 udbhavscience12@gmail.com</p><hr><h4>🌈 आइए, साथ मिलकर कुछ बड़ा बनाएं।</h4><p>आप देखिए, कमाइए, प्रमोट कीजिए, जुड़िए — यह मंच आपका है। 🚀💖</p>`,
     en: `<h4>🌟 Your Own Video Platform – Where Every View Has Value! 🎥💰</h4><hr><p><strong>👀 For Viewers:</strong></p><p>When you watch videos on this app, every second of your Watch Time is recorded. The more you watch, the more you earn (Ad Revenue Share).</p><p>🎉 Watching videos is no longer just entertainment — it’s also a way to earn!</p><hr><p><strong>🎥 For Creators:</strong></p><p>If you upload your own videos to this platform and people watch them, you earn money based on the watch time of those videos.</p><p>🛑 <strong>But if you upload someone else’s video:</strong></p><ul><li>You won’t earn any revenue from it.</li><li>However, if you watch it yourself, you will still earn as a viewer.</li></ul><hr><p><strong>🧾 Payment Policy:</strong></p><p>🗓️ <strong>Apply for Payment Every Monday – Full 24 Hours!</strong></p><p>You can apply for payment every Monday, anytime between 00:00 and 23:59 (24 hours window).</p><p>✅ If you do not apply on Monday, the earnings for that week will be forfeited.</p><hr><p><strong>💵 When Will You Get Paid?</strong></p><p>Your first payment will be released only when your total earnings reach ₹5000 (approx. $60 USD).</p><p>After that, even if you earn just ₹2 (approx. $0.02 USD), you can withdraw it anytime.</p><hr><p><strong>💼 Two Special Features of This App:</strong></p><p>📢 <strong>1. Promote Your Own Brand</strong></p><p>You can advertise your brand, product, or services directly on this platform — to a real, engaged audience who already loves content.</p><p>📬 <strong>2. Contact Any User Directly</strong></p><p>Need to reach out to a user for collaboration, feedback, or business? The app allows you to directly contact any user via messaging.</p><hr><p><strong>✅ Verification Rules for Creators:</strong></p><p>If you want to earn revenue as a creator, you must:</p><ol><li>Give a shout-out (mention/link to this app) in at least 5 videos on your YouTube channel.</li><li>This helps us verify that the channel is genuinely yours.</li></ol><hr><p><strong>🔒 Honesty & Transparency Come First</strong></p><p>We are committed to giving every viewer and creator their fair share, with zero cheating and zero complications.</p><blockquote>"True earnings and trust grow only when there's respect on both sides."</blockquote><hr><p><strong>📩 Need Help? Contact Us:</strong></p><p>Have questions or suggestions? 📧 Email us at: udbhavscience12@gmail.com</p><hr><h4>🌈 Let’s build something great, together.</h4><p>Watch, Earn, Promote, and Connect — This platform is truly yours. 🚀💖</p>`
@@ -367,16 +335,16 @@ function activateScreen(screenId) {
 }
 
 function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
-
+    
     if (appState.currentScreen === nextScreenId && !payload) return;
     if (appState.navigationStack[appState.navigationStack.length - 1] !== nextScreenId) {
         appState.navigationStack.push(nextScreenId);
     }
-
+    
     if (appState.currentScreen === 'creator-page-screen' || appState.currentScreen === 'home-screen') {
         clearAllAdTimers();
     }
-
+    
     if (appState.currentScreen === 'home-screen') {
         if (activePlayerId && players[activePlayerId]) pauseActivePlayer();
     }
@@ -386,7 +354,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.creatorPagePlayers = { short: null, long: null };
     }
     activePlayerId = null;
-
+    
     activateScreen(nextScreenId);
     appState.currentScreenPayload = payload;
 
@@ -399,20 +367,20 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
     if (nextScreenId === 'credit-screen' && payload && payload.videoId) initializeCreditScreen(payload.videoId);
-
+    
     if (nextScreenId === 'payment-screen') initializePaymentScreen();
     if (nextScreenId === 'track-payment-screen') initializeTrackPaymentScreen();
     if (nextScreenId === 'report-screen') initializeReportScreen();
     if (nextScreenId === 'friends-screen') {
         populateAddFriendsList();
         populateFriendRequestsList();
-        populateMembersList();
+        populateMembersList(); 
     }
 }
 
 function navigateBack() {
     if (appState.navigationStack.length <= 1) return;
-
+    
     if (appState.currentScreen === 'creator-page-screen') {
         clearAllAdTimers();
     }
@@ -424,13 +392,13 @@ function navigateBack() {
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
         appState.creatorPagePlayers = { short: null, long: null };
-
+        
         const videoWrapper = document.querySelector('#creator-page-long-view .main-video-card-wrapper');
         if (videoWrapper && videoWrapper.classList.contains('rotated')) {
             videoWrapper.classList.remove('rotated');
         }
     }
-
+    
     activateScreen(previousScreenId);
 
     if (previousScreenId === 'profile-screen') loadUserVideosFromFirebase();
@@ -451,7 +419,7 @@ async function checkUserProfileAndProceed(user) {
         userData.totalWatchTimeSeconds = userData.totalWatchTimeSeconds || 0;
         userData.creatorTotalWatchTimeSeconds = userData.creatorTotalWatchTimeSeconds || 0;
         userData.creatorDailyWatchTime = userData.creatorDailyWatchTime || {};
-        userData.friends = userData.friends || [];
+        userData.friends = userData.friends || []; 
         appState.currentUser = { ...appState.currentUser, ...userData };
 
         const savedHistory = localStorage.getItem('shubhzoneViewingHistory');
@@ -463,7 +431,7 @@ async function checkUserProfileAndProceed(user) {
                 appState.viewingHistory = [];
             }
         }
-
+        
         updateProfileUI();
         if (userData.name && userData.state) {
             await startAppLogic();
@@ -525,18 +493,20 @@ async function loadUserVideosFromFirebase() {
     }
 }
 
+// ★★★ बदलाव: वीडियो को शफल किया जाएगा ★★★
 async function refreshAndRenderFeed() {
     const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
     const snapshot = await videosRef.get();
     const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     fullVideoList = [...loadedVideos];
-
+    
     let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
-
+    
+    // वीडियो को रैंडम क्रम में दिखाने के लिए शफल करें
     shortVideos = shuffleArray(shortVideos);
     appState.allVideos = shortVideos;
-
-    renderVideoSwiper(shortVideos);
+    
+    renderVideoSwiper(shortVideos); 
 }
 
 
@@ -570,7 +540,7 @@ function checkCustom(select, inputId) { document.getElementById(inputId).style.d
 async function saveAndContinue() {
     saveContinueBtn.disabled = true;
     saveContinueBtn.textContent = 'Saving...';
-
+    
     const name = document.getElementById('info-name').value.trim();
     const stateValue = document.getElementById('info-state').value;
     const customState = document.getElementById('custom-state-input').value.trim();
@@ -598,7 +568,7 @@ async function saveAndContinue() {
         const cloudName = 'dzq7qb6ew';
         const uploadPreset = 'bookswamp_unsigned';
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
+        
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', uploadPreset);
@@ -625,16 +595,16 @@ async function saveAndContinue() {
 
     try {
         await db.collection('users').doc(appState.currentUser.uid).set(userData, { merge: true });
-
+        
         if (!appState.currentUser.referralCode || !appState.currentUser.referralCode.startsWith('@')) {
             appState.currentUser.referralCode = await generateAndSaveReferralCode(appState.currentUser.uid, name);
         }
-
+        
         appState.currentUser = { ...appState.currentUser, ...userData };
         updateProfileUI();
-
+        
         await startAppLogic();
-
+        
     } catch (error) {
         console.error("Profile save error:", error);
         alert("Failed to save profile.");
@@ -647,10 +617,10 @@ async function saveAndContinue() {
 function updateProfileUI() {
     const profileHeaderAvatar = document.getElementById('profile-header-avatar');
     if (profileHeaderAvatar) profileHeaderAvatar.src = appState.currentUser.avatar || "https://via.placeholder.com/50/222/FFFFFF?text=+";
-
+    
     const yourZoneAvatar = document.getElementById('your-zone-header-avatar');
     if (yourZoneAvatar) yourZoneAvatar.src = appState.currentUser.avatar || "https://via.placeholder.com/40";
-
+    
     profileImagePreview.src = appState.currentUser.avatar || "https://via.placeholder.com/120/222/FFFFFF?text=+";
     document.getElementById('info-name').value = appState.currentUser.name || '';
     document.getElementById('info-mobile').value = appState.currentUser.mobile || '';
@@ -770,7 +740,7 @@ async function saveVideoEdits(videoId) {
 async function saveNewVideo() {
     modalSaveButton.disabled = true;
     modalSaveButton.textContent = 'Uploading...';
-
+    
     const videoUrlValue = modalVideoUrlInput.value.trim();
     const title = modalVideoTitle.value.trim();
     const category = appState.uploadDetails.category;
@@ -870,6 +840,7 @@ function renderVideoSwiper(itemsToRender) {
         homeStaticMessageContainer.style.display = 'none';
     }
 
+    let videoCount = 0;
     itemsToRender.forEach((video) => {
         const slide = document.createElement('div');
         slide.className = 'video-slide';
@@ -920,6 +891,16 @@ function renderVideoSwiper(itemsToRender) {
                 </div>
             </div>`;
         videoSwiper.appendChild(slide);
+        videoCount++;
+
+        if (videoCount > 0 && videoCount % 3 === 0) {
+            const adSlide = document.createElement('div');
+            adSlide.className = 'video-slide native-ad-slide'; 
+            const adContainerId = `ad-container-feed-${videoCount}`;
+            adSlide.innerHTML = `<div class="ad-slide-wrapper"><p style="color: var(--text-secondary); font-size: 0.9em; text-align: center; margin-bottom: 10px;">Advertisement</p><div id="${adContainerId}" class="ad-slot-container"></div></div>`;
+            videoSwiper.appendChild(adSlide);
+            setTimeout(() => showBannerAdWithFallback(document.getElementById(adContainerId)), 200);
+        }
     });
 
     if (isYouTubeApiReady) {
@@ -984,7 +965,7 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event) {
     const iframe = event.target.getIframe();
     if (!iframe) return;
-
+    
     const creatorPlayerView = iframe.closest('.creator-page-view');
     if (creatorPlayerView) {
         handleCreatorPlayerStateChange(event);
@@ -999,28 +980,10 @@ function onPlayerStateChange(event) {
     if (event.data !== YT.PlayerState.UNSTARTED && preloader) {
         preloader.style.display = 'none';
     }
-
-    if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
-    if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
-    manageShortVideoTimedAd('hide');
-
     if (event.data === YT.PlayerState.PLAYING) {
         startWatchTimeTracker();
         startVideoViewTracker(videoId, 'short');
-
-        if (userHasInteracted && typeof event.target.unMute === 'function' && event.target.isMuted()) {
-            event.target.unMute();
-            console.log(`[Audio] Unmuting video via onStateChange: ${videoId}`);
-        }
-
-        appState.adState.timers.shortVideoAdShow = setTimeout(() => {
-            manageShortVideoTimedAd('show');
-        }, 15000);
-
-        appState.adState.timers.shortVideoAdHide = setTimeout(() => {
-            manageShortVideoTimedAd('hide');
-        }, 18000);
-
+        
         if (userHasInteracted) {
              if (typeof event.target.isMuted === 'function' && event.target.isMuted() && !hasShownAudioPopup) {
                  document.getElementById('audio-issue-popup').classList.add('active');
@@ -1036,7 +999,7 @@ function onPlayerStateChange(event) {
 function addVideoToHistory(videoId) {
     if (!videoId) return;
     const existingIndex = appState.viewingHistory.findIndex(item => item.id === videoId);
-
+    
     if (existingIndex > -1) {
         appState.viewingHistory.splice(existingIndex, 1);
     }
@@ -1094,35 +1057,21 @@ function playActivePlayer(videoId) {
     addVideoToHistory(videoId);
 
     player.playVideo();
-
+    
     if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
         player.unMute();
         console.log(`[Audio] Unmuting video: ${videoId}`);
     }
 }
 
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-// ★★★ समाधान: ऑडियो मिक्सिंग की समस्या का हल ★★★
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 function pauseActivePlayer() {
     if (!activePlayerId) return;
-    // ★★★ फ़िक्स: यहाँ एक टाइपो था। 'activePlayer_id' को 'activePlayerId' में बदल दिया गया है। ★★★
     const player = players[activePlayerId];
-    // जांचें कि प्लेयर मौजूद है और उसमें stopVideo फंक्शन है
-    if (!player || typeof player.stopVideo !== 'function') return;
+    if (!player || typeof player.pauseVideo !== 'function') return;
 
-    // विज्ञापन टाइमर को साफ़ करें
-    if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
-    if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
-    manageShortVideoTimedAd('hide');
-
-    // ★★★ समाधान: pauseVideo() की जगह stopVideo() का उपयोग करें
-    // यह वीडियो को पूरी तरह से बंद कर देता है, जिससे ऑडियो मिक्सिंग की समस्या हल हो जाती है।
-    player.stopVideo();
-
-    // ★★★ सुधार: सक्रिय प्लेयर आईडी को तुरंत रीसेट करें
-    console.log(`[Player Control] Stopped and reset active player: ${activePlayerId}`);
-    activePlayerId = null;
+    if (player.getPlayerState() === YT.PlayerState.PLAYING || player.getPlayerState() === YT.PlayerState.BUFFERING) {
+         player.pauseVideo();
+    }
 }
 
 function setupVideoObserver() {
@@ -1307,7 +1256,7 @@ async function toggleLikeAction(videoId, slideElement) {
     const isLiked = likedVideos.includes(videoId);
     const videoRef = db.collection('videos').doc(videoId);
     const userRef = db.collection('users').doc(appState.currentUser.uid);
-
+    
     const likeIcon = slideElement.querySelector('.action-icon-container[data-action="like"] .icon');
     const likeCountElement = slideElement.querySelector('.action-icon-container[data-action="like"] .count');
     let currentLikes = parseInt(likeCountElement.textContent.replace(/[^\d]/g, '') * (likeCountElement.textContent.includes('K') ? 1000 : likeCountElement.textContent.includes('L') ? 100000 : 1)) || 0;
@@ -1383,7 +1332,7 @@ function filterVideosByCategory(category, element) {
     if (category !== 'All') {
         filtered = filtered.filter(video => video.category === category);
     }
-
+    
     const displayItems = shuffleArray(filtered);
     appState.allVideos = displayItems;
 
@@ -1466,16 +1415,16 @@ function playVideoFromProfile(videoId) {
          return;
     }
     if (videoToPlay.videoLengthType === 'long') {
-        navigateTo('creator-page-screen', {
-            creatorId: videoToPlay.uploaderUid,
-            startWith: 'long',
-            videoId: videoToPlay.id
+        navigateTo('creator-page-screen', { 
+            creatorId: videoToPlay.uploaderUid, 
+            startWith: 'long', 
+            videoId: videoToPlay.id 
         });
     } else {
-        navigateTo('creator-page-screen', {
-            creatorId: videoToPlay.uploaderUid,
-            startWith: 'short',
-            videoId: videoToPlay.id
+        navigateTo('creator-page-screen', { 
+            creatorId: videoToPlay.uploaderUid, 
+            startWith: 'short', 
+            videoId: videoToPlay.id 
         });
     }
 }
@@ -1522,12 +1471,13 @@ function closeAudioIssuePopup() {
     document.getElementById('audio-issue-popup').classList.remove('active');
 }
 
+// ★★★ समाधान 3: Admin Priority Ad को दिखाने का फंक्शन ★★★
 async function checkAndShowPriorityAd() {
     return new Promise(async (resolve) => {
         try {
             const adDoc = await db.collection('config').doc('priorityAd').get();
             if (!adDoc.exists || !adDoc.data().isActive) {
-                return resolve();
+                return resolve(); // विज्ञापन नहीं है या सक्रिय नहीं है, तो तुरंत आगे बढ़ें
             }
 
             const adData = adDoc.data();
@@ -1535,21 +1485,22 @@ async function checkAndShowPriorityAd() {
             const contentContainer = document.getElementById('ad-content-container');
             const timerEl = document.getElementById('ad-timer');
             const closeBtn = document.getElementById('ad-close-btn');
-
-            contentContainer.innerHTML = '';
+            
+            contentContainer.innerHTML = ''; // पुराना कंटेंट साफ़ करें
 
             if (adData.type === 'image' && adData.contentUrl) {
                 const img = document.createElement('img');
                 img.src = adData.contentUrl;
                 contentContainer.appendChild(img);
             } else if (adData.type === 'video' && adData.contentUrl) {
+                // यह मानते हुए कि यह एक YouTube ID है
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://www.youtube.com/embed/${adData.contentUrl}?autoplay=1&mute=1&controls=0`;
                 iframe.setAttribute('frameborder', '0');
                 iframe.setAttribute('allow', 'autoplay; encrypted-media');
                 contentContainer.appendChild(iframe);
             } else {
-                return resolve();
+                return resolve(); // गलत प्रकार या URL
             }
 
             overlay.style.display = 'flex';
@@ -1570,12 +1521,12 @@ async function checkAndShowPriorityAd() {
 
             closeBtn.onclick = () => {
                 overlay.style.display = 'none';
-                resolve();
+                resolve(); // उपयोगकर्ता द्वारा बंद किए जाने पर आगे बढ़ें
             };
 
         } catch (error) {
             console.error("Error fetching priority ad:", error);
-            resolve();
+            resolve(); // त्रुटि होने पर भी ऐप को चलने दें
         }
     });
 }
@@ -1585,10 +1536,9 @@ const startAppLogic = async () => {
     if (appStartLogicHasRun && appState.currentScreen !== 'splash-screen' && appState.currentScreen !== 'information-screen') {
         return;
     }
-
+    
+    // ★★★ समाधान 3: ऐप लॉजिक शुरू करने से पहले Priority Ad दिखाएं ★★★
     await checkAndShowPriorityAd();
-
-    adRotationManager.init();
 
     appStartLogicHasRun = true;
 
@@ -1596,16 +1546,16 @@ const startAppLogic = async () => {
     const loadingContainer = document.getElementById('loading-container');
     if (getStartedBtn) getStartedBtn.style.display = 'none';
     if (loadingContainer) loadingContainer.style.display = 'flex';
-
+    
     renderCategories();
     renderCategoriesInBar();
     await refreshAndRenderFeed();
-
+    
     const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
     const lastScreen = lastScreenBeforeAd || 'home-screen';
-
+    
     navigateTo(lastScreen, null, lastScrollPosition);
-
+    
     sessionStorage.removeItem('lastScreenBeforeAd');
     sessionStorage.removeItem('lastScrollPositionBeforeAd');
 };
@@ -1647,7 +1597,7 @@ function populateLongVideoCarousel() {
     wrapper.innerHTML = '';
 
     let allLongVideos = fullVideoList.filter(v => v.videoLengthType === 'long');
-
+    
     let carouselVideos = shuffleArray([...allLongVideos]).slice(0, 10);
 
     if (carouselVideos.length === 0) {
@@ -1678,6 +1628,7 @@ function populateLongVideoCarousel() {
     }
 }
 
+// ★★★ बदलाव: लॉन्ग वीडियो ग्रिड को भी शफल किया जाएगा ★★★
 function populateLongVideoGrid(category = 'All') {
     const grid = document.getElementById('long-video-grid');
     if (!grid) return;
@@ -1689,6 +1640,7 @@ function populateLongVideoGrid(category = 'All') {
         longVideos = longVideos.filter(v => v.category === category);
     }
 
+    // लॉन्ग वीडियो ग्रिड को शफल करें
     longVideos = shuffleArray(longVideos);
 
     if (longVideos.length === 0) {
@@ -1700,6 +1652,18 @@ function populateLongVideoGrid(category = 'All') {
         longVideos.forEach((video, index) => {
             const card = createLongVideoCard(video);
             grid.appendChild(card);
+
+            if ((index + 1) % 2 === 0) {
+                const adContainer = document.createElement('div');
+                const adId = `long-video-ad-${index}`;
+                adContainer.id = adId;
+                adContainer.className = 'long-video-grid-ad';
+                grid.appendChild(adContainer);
+                setTimeout(() => {
+                    const adElement = document.getElementById(adId);
+                    if (adElement) showBannerAdWithFallback(adElement);
+                }, 100);
+            }
         });
     }
 }
@@ -1711,7 +1675,7 @@ function performLongVideoSearch() {
     const longVideos = fullVideoList.filter(v => v.videoLengthType === 'long');
     let results = [];
     if (query) {
-        results = longVideos.filter(v =>
+        results = longVideos.filter(v => 
             (v.title && v.title.toLowerCase().includes(query)) ||
             (v.uploaderUsername && v.uploaderUsername.toLowerCase().includes(query))
         );
@@ -1742,11 +1706,11 @@ function createLongVideoCard(video) {
     card.className = 'long-video-card';
     card.dataset.videoId = video.id;
     card.dataset.uploaderUid = video.uploaderUid;
-
-    const commentOnClick = video.commentsEnabled
-        ? `onclick="event.stopPropagation(); openCommentsModal('${video.id}', '${video.uploaderUid}')"`
+    
+    const commentOnClick = video.commentsEnabled 
+        ? `onclick="event.stopPropagation(); openCommentsModal('${video.id}', '${video.uploaderUid}')"` 
         : 'onclick="event.stopPropagation();"';
-
+    
     card.innerHTML = `
         <div class="long-video-thumbnail" style="background-image: url(${escapeHTML(video.thumbnailUrl)})" onclick="playVideoFromProfile('${video.id}')">
             <div class="long-video-view-count"><i class="fas fa-eye"></i> ${formatNumber(video.customViewCount || 0)}</div>
@@ -1792,50 +1756,31 @@ function closeDescriptionModal() {
     descriptionModal.classList.remove('active');
 }
 
-function initializeHistoryScreen() {
-    const topBar = document.getElementById('history-top-bar');
-    if (topBar) {
-        const existingButton = document.getElementById('history-clear-btn') || document.getElementById('history-date-button');
-        if (existingButton) existingButton.remove();
-
-        const clearButton = document.createElement('button');
-        clearButton.id = 'history-clear-btn';
-        clearButton.className = 'haptic-trigger';
-        clearButton.innerHTML = 'Clear History <i class="fas fa-trash-alt"></i>';
-        clearButton.style.cssText = 'background: var(--error-red); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.9em;';
-        clearButton.onclick = clearWatchHistory;
-        topBar.appendChild(clearButton);
-    }
-    renderHistoryShortsScroller();
-    renderHistoryLongVideoList();
+function initializeHistoryScreen(filterDate = null) {
+    renderHistoryShortsScroller(filterDate);
+    renderHistoryLongVideoList(filterDate);
 }
 
-function clearWatchHistory() {
-    if (confirm("Are you sure you want to clear your entire watch history? This action cannot be undone.")) {
-        appState.viewingHistory = [];
-        localStorage.removeItem('shubhzoneViewingHistory');
-        initializeHistoryScreen();
-        alert("Watch history cleared.");
-    }
-}
-
-function renderHistoryShortsScroller() {
+function renderHistoryShortsScroller(filterDate = null) {
     const scroller = document.getElementById('history-shorts-scroller');
     if (!scroller) return;
     scroller.innerHTML = '';
 
-    const historyVideos = appState.viewingHistory
+    let historyEntries = appState.viewingHistory;
+    if (filterDate) {
+        historyEntries = historyEntries.filter(entry => new Date(entry.watchedAt).toISOString().slice(0, 10) === filterDate);
+    }
+    
+    const historyVideos = historyEntries
         .map(entry => fullVideoList.find(v => v.id === entry.id && v.videoLengthType !== 'long'))
         .filter(Boolean);
 
     if (historyVideos.length === 0) {
-        scroller.innerHTML = `<p class="static-message" style="color: var(--text-secondary);">No short video history.</p>`;
+        scroller.innerHTML = `<p class="static-message" style="color: var(--text-secondary);">No short video history${filterDate ? ' for this date' : ''}.</p>`;
         return;
     }
 
-    const shuffledVideos = shuffleArray(historyVideos);
-
-    shuffledVideos.forEach(video => {
+    historyVideos.forEach(video => {
         const card = document.createElement('div');
         card.className = 'history-short-card haptic-trigger';
         card.style.backgroundImage = `url(${escapeHTML(video.thumbnailUrl)})`;
@@ -1846,23 +1791,26 @@ function renderHistoryShortsScroller() {
 }
 
 
-function renderHistoryLongVideoList() {
+function renderHistoryLongVideoList(filterDate = null) {
     const list = document.getElementById('history-long-video-list');
     if (!list) return;
     list.innerHTML = '';
 
-    const historyVideos = appState.viewingHistory
+    let historyEntries = appState.viewingHistory;
+    if (filterDate) {
+        historyEntries = historyEntries.filter(entry => new Date(entry.watchedAt).toISOString().slice(0, 10) === filterDate);
+    }
+
+    const historyVideos = historyEntries
         .map(entry => fullVideoList.find(v => v.id === entry.id && v.videoLengthType === 'long'))
         .filter(Boolean);
 
     if (historyVideos.length === 0) {
-        list.innerHTML = `<p class="static-message" style="color: var(--text-secondary);">No long video history.</p>`;
+        list.innerHTML = `<p class="static-message" style="color: var(--text-secondary);">No long video history${filterDate ? ' for this date' : ''}.</p>`;
         return;
     }
 
-    const shuffledVideos = shuffleArray(historyVideos);
-
-    shuffledVideos.forEach((video, index) => {
+    historyVideos.forEach(video => {
         const item = document.createElement('div');
         item.className = 'history-list-item haptic-trigger';
         item.innerHTML = `
@@ -1876,16 +1824,39 @@ function renderHistoryLongVideoList() {
             </div>
         `;
         list.appendChild(item);
-
-        // ★★★ नया: हिस्ट्री लिस्ट में विज्ञापन जोड़ना ★★★
-        if (index === 2) { // तीसरे वीडियो के बाद विज्ञापन दिखाएं
-            const adContainer = document.createElement('div');
-            adContainer.id = `history-ad-container`;
-            adContainer.className = 'long-video-grid-ad'; // मौजूदा स्टाइल का उपयोग करें
-            list.appendChild(adContainer);
-            setTimeout(() => showBannerAdWithFallback(adContainer), 200);
-        }
     });
+}
+
+// ★★★ समाधान 1: कैलेंडर बटन के लिए सही किया गया फंक्शन ★★★
+function showHistoryDate() {
+    // एक अस्थायी इनपुट एलिमेंट बनाएं
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.style.position = 'absolute';
+    dateInput.style.left = '-9999px'; // इसे स्क्रीन से बाहर छिपाएं
+    document.body.appendChild(dateInput);
+
+    // तारीख चुने जाने पर क्या करना है, उसके लिए इवेंट लिस्नर
+    dateInput.addEventListener('change', (e) => {
+        const selectedDate = e.target.value;
+        const dateButton = document.getElementById('history-date-button');
+        
+        if (selectedDate && dateButton) {
+            initializeHistoryScreen(selectedDate);
+            const friendlyDate = new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+            dateButton.innerHTML = `${friendlyDate} <i class="fas fa-calendar-alt"></i>`;
+        }
+        document.body.removeChild(dateInput); // काम होने के बाद इनपुट को हटा दें
+    });
+
+    // ब्राउज़र का नेटिव डेट पिकर खोलने के लिए showPicker() का उपयोग करें
+    try {
+        dateInput.showPicker();
+    } catch (error) {
+        console.error("showPicker() is not supported or was blocked.", error);
+        // फॉलबैक के तौर पर, आप उपयोगकर्ता को एक संदेश दिखा सकते हैं
+        alert("Could not open date picker. Please check your browser settings.");
+    }
 }
 
 
@@ -1905,10 +1876,12 @@ function deleteFromHistory(videoId) {
     }
 }
 
+// ★★★ बदलाव: Earnsure स्क्रीन को पूरी तरह से नया रूप दिया गया ★★★
 function initializeEarnsureScreen() {
     const contentArea = document.querySelector('#earnsure-screen .earnsure-content-area');
     if (!contentArea) return;
 
+    // कंटेंट एरिया को साफ़ करें और नया स्ट्रक्चर बनाएं
     contentArea.innerHTML = `
         <div class="earnsure-ad-container" id="earnsure-top-ad-container"></div>
         <div class="earnsure-section">
@@ -1916,12 +1889,16 @@ function initializeEarnsureScreen() {
         </div>
     `;
 
+    // विज्ञापन दिखाएं
     showBannerAdWithFallback(document.getElementById('earnsure-top-ad-container'));
-
+    
+    // डिफ़ॉल्ट भाषा के साथ कंटेंट दिखाएं
     populateEarnsureContent(currentEarnsureLanguage);
 
+    // भाषा टॉगल बटन को हैंडल करें
     const languageToggle = document.getElementById('earnsure-language-toggle');
     if (languageToggle) {
+        // सुनिश्चित करें कि बटन केवल एक बार बनें
         let enButton = languageToggle.querySelector('[data-lang="en"]');
         let hiButton = languageToggle.querySelector('[data-lang="hi"]');
         if (!enButton) {
@@ -1938,16 +1915,19 @@ function initializeEarnsureScreen() {
             hiButton.textContent = 'HI';
             languageToggle.appendChild(hiButton);
         }
-
+        
+        // बटन की स्थिति और कंटेंट को अपडेट करने के लिए एक फंक्शन
         const updateButtons = (lang) => {
             currentEarnsureLanguage = lang;
             enButton.classList.toggle('active', lang === 'en');
             hiButton.classList.toggle('active', lang === 'hi');
             populateEarnsureContent(lang);
         };
-
+        
+        // वर्तमान स्थिति के अनुसार बटन सेट करें
         updateButtons(currentEarnsureLanguage);
 
+        // क्लिक इवेंट्स जोड़ें
         enButton.onclick = () => updateButtons('en');
         hiButton.onclick = () => updateButtons('hi');
     }
@@ -1960,10 +1940,14 @@ function populateEarnsureContent(lang) {
     }
 }
 
+
+/**
+ * ★★★ बदलाव: Your Zone स्क्रीन से Unique ID हटाया गया और Referral Code का नाम बदला गया ★★★
+ */
 function populateYourZoneScreen() {
     const content = document.getElementById('your-zone-content');
     if (!content) return;
-
+    
     const { referralCode, avatar, name, email } = appState.currentUser;
     content.innerHTML = `
         <div class="your-zone-header">
@@ -2073,28 +2057,28 @@ async function acceptFriendRequest(event, requestId, senderId) {
     actionDiv.innerHTML = '<div class="loader" style="width: 20px; height: 20px;"></div>';
 
     const batch = db.batch();
-
+    
     const requestRef = db.collection('friendRequests').doc(requestId);
     batch.update(requestRef, { status: 'accepted' });
 
     const currentUserRef = db.collection('users').doc(appState.currentUser.uid);
     batch.update(currentUserRef, { friends: firebase.firestore.FieldValue.arrayUnion(senderId) });
-
+    
     const senderUserRef = db.collection('users').doc(senderId);
     batch.update(senderUserRef, { friends: firebase.firestore.FieldValue.arrayUnion(appState.currentUser.uid) });
 
     try {
         await batch.commit();
-
+        
         if (!appState.currentUser.friends.includes(senderId)) {
             appState.currentUser.friends.push(senderId);
         }
 
         alert("Friend request accepted!");
-
+        
         const requestCard = document.getElementById(`request-${requestId}`);
         if (requestCard) requestCard.remove();
-
+        
         populateMembersList();
 
     } catch (error) {
@@ -2154,7 +2138,7 @@ async function populateMembersList() {
                         <div class="subtext">Tap to chat</div>
                     </div>
                 </div>`;
-
+            
             if ((index + 1) % 5 === 0) {
                 const adId = `friend-ad-${index}`;
                 finalHtml += `<div id="${adId}" class="friend-list-ad"></div>`;
@@ -2164,7 +2148,7 @@ async function populateMembersList() {
                 }, 100);
             }
         });
-
+        
         membersContent.innerHTML = finalHtml || '<p class="static-message">Could not load friends list.</p>';
 
     } catch (error) {
@@ -2177,7 +2161,7 @@ async function populateMembersList() {
 async function populateAddFriendsList(featuredUser = null) {
     const addContent = document.querySelector('#friends-screen #add-content');
     if (!addContent) return;
-
+    
     const userListContainer = addContent.querySelector('#add-friend-user-list');
     if (!userListContainer) {
         console.error('#add-friend-user-list container not found');
@@ -2191,14 +2175,14 @@ async function populateAddFriendsList(featuredUser = null) {
             userListContainer.innerHTML = '<p class="static-message">No other users found.</p>';
             return;
         }
-
+        
         const currentUserFriends = appState.currentUser.friends || [];
         const sentRequestsSnapshot = await db.collection('friendRequests').where('senderId', '==', appState.currentUser.uid).get();
         const requestedIds = sentRequestsSnapshot.docs.map(doc => doc.data().receiverId);
 
         const createUserCard = (user) => {
             const isRequested = requestedIds.includes(user.id);
-            const buttonHtml = isRequested
+            const buttonHtml = isRequested 
                 ? `<button class="add-button requested" disabled>Requested</button>`
                 : `<button class="add-button haptic-trigger" onclick="sendFriendRequest('${user.id}', this)">Add Friend</button>`;
 
@@ -2220,8 +2204,8 @@ async function populateAddFriendsList(featuredUser = null) {
 
         const otherUsersHtml = usersSnapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() }))
-            .filter(user =>
-                user.id !== appState.currentUser.uid &&
+            .filter(user => 
+                user.id !== appState.currentUser.uid && 
                 user.name &&
                 (!featuredUser || user.id !== featuredUser.id) &&
                 !currentUserFriends.includes(user.id)
@@ -2245,7 +2229,7 @@ async function searchUser() {
         populateAddFriendsList();
         return;
     }
-
+    
     userListContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
 
     try {
@@ -2272,13 +2256,13 @@ async function searchUser() {
 async function startChat(friendId, friendName, friendAvatar) {
     const chatScreen = document.getElementById('chat-screen-overlay');
     if (!chatScreen) return;
-
+    
     document.getElementById('chat-username').textContent = friendName;
     document.getElementById('chat-user-profile-pic').src = friendAvatar || 'https://via.placeholder.com/50';
 
     const uids = [appState.currentUser.uid, friendId].sort();
     const chatId = uids.join('_');
-
+    
     appState.activeChat = { chatId, friendId, friendName, friendAvatar };
 
     try {
@@ -2312,7 +2296,7 @@ async function sendMessage() {
         senderId: appState.currentUser.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-
+    
     inputField.value = '';
 
     try {
@@ -2327,7 +2311,7 @@ async function sendMessage() {
 function loadChatMessages(chatId) {
     const messagesContainer = document.getElementById('chat-messages');
     messagesContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
-
+    
     db.collection('chats').doc(chatId).collection('messages').orderBy('createdAt', 'asc')
       .onSnapshot(snapshot => {
           if (snapshot.empty) {
@@ -2341,7 +2325,7 @@ function loadChatMessages(chatId) {
           }).join('');
 
           messagesContainer.innerHTML = messagesHtml;
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          messagesContainer.scrollTop = messagesContainer.scrollHeight; 
       }, error => {
           console.error("Error loading chat messages:", error);
           messagesContainer.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load chat. Check security rules.</p>';
@@ -2351,7 +2335,7 @@ function loadChatMessages(chatId) {
 function initializeMessagingInterface() {
     const friendsScreen = document.getElementById('friends-screen');
     if (!friendsScreen) return;
-
+    
     friendsScreen.querySelectorAll('.tab-button').forEach(button => {
         button.classList.add('haptic-trigger');
         button.addEventListener('click', () => {
@@ -2483,10 +2467,10 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
             document.querySelectorAll('.creator-page-view').forEach(v => v.classList.remove('active'));
             const activeView = document.getElementById(`creator-page-${tab.dataset.type}-view`);
             if (activeView) activeView.classList.add('active');
-
+            
             commentBtn.style.display = tab.dataset.type === 'long' ? 'flex' : 'none';
 
-            clearAllAdTimers();
+            clearAllAdTimers(); 
 
             const otherType = tab.dataset.type === 'short' ? 'long' : 'short';
             if(appState.creatorPagePlayers[otherType] && typeof appState.creatorPagePlayers[otherType].pauseVideo === 'function') {
@@ -2502,7 +2486,7 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
             }
         };
     });
-
+    
     const menuRotate = document.getElementById('more-function-menu');
     const existingRotateBtn = document.getElementById('rotate-video-btn');
     if (existingRotateBtn) {
@@ -2514,18 +2498,18 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
     rotateBtn.className = 'function-menu-item haptic-trigger';
     rotateBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Rotate`;
     rotateBtn.onclick = toggleVideoRotation;
-
+    
     if (menuRotate) {
         menuRotate.appendChild(rotateBtn);
     }
-
+    
     if (startWith === 'long' && startLongVideo) {
         appState.creatorPage.currentLongVideo = { id: startLongVideo.id, uploaderUid: creatorId };
     }
-
+    
     renderCreatorVideoView(shortView, shortVideos, 'short', creatorId, startShortVideo ? startShortVideo.id : null);
     renderCreatorVideoView(longView, longVideos, 'long', creatorId, startLongVideo ? startLongVideo.id : null);
-
+    
     document.querySelectorAll('.creator-page-view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.creator-page-tab-btn').forEach(t => t.classList.remove('active'));
     document.getElementById(`creator-page-${startWith}-view`).classList.add('active');
@@ -2540,13 +2524,13 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
         container.innerHTML = `<p class="static-message">This creator has no ${type} videos.</p>`;
         return;
     }
-
+    
     let firstVideo = videos[0];
     if (startVideoId) {
         const foundVideo = videos.find(v => v.id === startVideoId);
         if (foundVideo) firstVideo = foundVideo;
     }
-
+    
     const videoListHtml = videos.map((v, index) => {
         const thumbClass = (type === 'long') ? 'side-video-thumb-long' : 'side-video-thumb-short';
         return `<img src="${v.thumbnailUrl}" class="side-video-thumb haptic-trigger ${thumbClass}" onclick="playCreatorVideo('${type}', ${index}, '${creatorId}')">`;
@@ -2562,7 +2546,7 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
             <div class="side-video-list-scroller">${videoListHtml}</div>
         </div>
     `;
-
+    
     if (videos.length > 0 && isYouTubeApiReady) {
         initializeCreatorPagePlayer(firstVideo.videoUrl, `creator-page-player-${type}`, type);
     }
@@ -2579,7 +2563,7 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         videoId: videoId,
         playerVars: {
             'autoplay': 1,
-            'controls': 1,
+            'controls': 1, 
             'rel': 0,
             'showinfo': 0,
             'mute': 0,
@@ -2588,8 +2572,8 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
             'origin': window.location.origin
         },
         events: {
-            'onReady': (event) => {
-                event.target.playVideo();
+            'onReady': (event) => { 
+                event.target.playVideo(); 
                 if (type === 'long') {
                     manageLongVideoPlayerBanner('hide');
                 }
@@ -2600,12 +2584,12 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
 }
 
 function playCreatorVideo(type, videoIndex, creatorId) {
-    const videos = fullVideoList.filter(v =>
-        v.uploaderUid === creatorId &&
+    const videos = fullVideoList.filter(v => 
+        v.uploaderUid === creatorId && 
         v.audience !== '18plus' &&
         (type === 'long' ? v.videoLengthType === 'long' : v.videoLengthType !== 'long')
     );
-
+    
     if (videos[videoIndex]) {
         const videoToPlay = videos[videoIndex];
 
@@ -2633,15 +2617,15 @@ function toggleCreatorVideoList() {
 
 function toggleVideoRotation() {
     const longVideoView = document.getElementById('creator-page-long-view');
-
+    
     if (longVideoView && longVideoView.classList.contains('active')) {
         const videoWrapper = longVideoView.querySelector('.main-video-card-wrapper');
         const moreFunctionsMenu = document.getElementById('more-function-menu');
         const player = appState.creatorPagePlayers.long;
-
+        
         if (videoWrapper) {
             videoWrapper.classList.toggle('rotated');
-
+            
             if (videoWrapper.classList.contains('rotated')) {
                 manageLongVideoPlayerBanner('hide');
             } else {
@@ -2661,11 +2645,14 @@ function toggleVideoRotation() {
     }
 }
 
+/**
+ * ★★★ बदलाव: लॉन्ग वीडियो विज्ञापन का लॉजिक अपडेट किया गया ★★★
+ */
 function handleCreatorPlayerStateChange(event) {
     const player = event.target;
     const playerState = event.data;
     const iframe = player.getIframe();
-
+    
     const isLongVideo = iframe.closest('#creator-page-long-view');
 
     const videoData = player.getVideoData();
@@ -2681,10 +2668,10 @@ function handleCreatorPlayerStateChange(event) {
         startVideoViewTracker(dbVideoId, videoType);
         addVideoToHistory(dbVideoId);
     } else if (playerState === YT.PlayerState.PAUSED) {
-        if (isLongVideo) manageLongVideoPlayerBanner('show');
+        if (isLongVideo) manageLongVideoPlayerBanner('hide'); // पॉज़ पर विज्ञापन छिपाएं
         stopVideoViewTracker(dbVideoId);
     } else if (playerState === YT.PlayerState.ENDED) {
-        if (isLongVideo) manageLongVideoPlayerBanner('show');
+        if (isLongVideo) manageLongVideoPlayerBanner('show'); // खत्म होने पर विज्ञापन दिखाएं
         stopVideoViewTracker(dbVideoId);
     } else {
         if (isLongVideo) manageLongVideoPlayerBanner('hide');
@@ -2722,7 +2709,7 @@ function togglePaymentDetails() {
 async function handlePaymentRequest(event) {
     const user = appState.currentUser;
     const method = document.getElementById('payment-method').value;
-
+    
     if(!method) {
         alert("Please select a payment method.");
         return;
@@ -2752,7 +2739,7 @@ async function handlePaymentRequest(event) {
     if(!confirm("This will submit your payment request to the admin. After submitting, your tracking data will be reset. Continue?")) {
         return;
     }
-
+    
     const button = event.target;
     button.disabled = true;
     button.textContent = "Submitting...";
@@ -2774,12 +2761,12 @@ async function handlePaymentRequest(event) {
         status: "pending",
         requestedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-
+    
     try {
         await db.collection("paymentRequests").add(requestData);
         await resetTrackingData();
         alert("Payment request submitted successfully! Your tracking data has been reset.");
-        navigateTo('home-screen');
+        navigateTo('home-screen'); 
     } catch(error) {
         console.error("Error submitting payment request:", error);
         alert("Failed to submit request. Please try again.");
@@ -2827,7 +2814,7 @@ async function updateCreatorWatchTime(creatorId, watchedSeconds) {
         const today = new Date().toISOString().slice(0, 10);
         const dailyWatchTimeKey = `creatorDailyWatchTime.${today}`;
 
-        await creatorRef.update({
+        await creatorRef.update({ 
             creatorTotalWatchTimeSeconds: firebase.firestore.FieldValue.increment(watchedSeconds),
             [dailyWatchTimeKey]: firebase.firestore.FieldValue.increment(watchedSeconds)
         });
@@ -2841,14 +2828,14 @@ async function updateCreatorWatchTime(creatorId, watchedSeconds) {
 
 function startWatchTimeTracker() {
     if (appState.watchTimeInterval) clearInterval(appState.watchTimeInterval);
-
+    
     let secondsSinceLastUpdate = 0;
     const videoData = fullVideoList.find(v => v.id === activePlayerId);
     const creatorId = videoData ? videoData.uploaderUid : null;
 
     appState.watchTimeInterval = setInterval(async () => {
         appState.currentUser.totalWatchTimeSeconds += 1;
-
+        
         if (creatorId && creatorId !== appState.currentUser.uid) {
             secondsSinceLastUpdate += 1;
         }
@@ -2864,7 +2851,7 @@ async function stopWatchTimeTracker() {
     if (appState.watchTimeInterval) {
         clearInterval(appState.watchTimeInterval);
         appState.watchTimeInterval = null;
-
+        
         const userRef = db.collection('users').doc(appState.currentUser.uid);
         try {
             await userRef.update({ totalWatchTimeSeconds: appState.currentUser.totalWatchTimeSeconds });
@@ -2879,8 +2866,8 @@ async function resetTrackingData() {
     try {
         localStorage.setItem('totalAppTimeSeconds', '0');
         const userRef = db.collection('users').doc(appState.currentUser.uid);
-        await userRef.update({
-            totalWatchTimeSeconds: 0,
+        await userRef.update({ 
+            totalWatchTimeSeconds: 0, 
             creatorTotalWatchTimeSeconds: 0,
             creatorDailyWatchTime: {}
         });
@@ -2910,7 +2897,7 @@ function formatSecondsToHMS(secs) {
     if (h > 0) parts.push(h + "h");
     if (m > 0) parts.push(m + "m");
     if (secs > 0 || parts.length === 0) parts.push(secs + "s");
-
+    
     return parts.join(' ');
 }
 // =======================================================
@@ -2937,7 +2924,7 @@ async function submitReport() {
 
     try {
         await db.collection('reports').add({
-            reporterUid: appState.currentUser.uid,
+            reporterUid: appState.currentUser.uid, 
             reporterName: appState.currentUser.name,
             reportText: reportText,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -2959,7 +2946,7 @@ function startVideoViewTracker(videoId, type) {
     stopVideoViewTracker(videoId);
     appState.videoWatchTrackers[videoId] = { timer: null, watchedSeconds: 0, viewed: false };
     const targetSeconds = type === 'long' ? 300 : 20;
-
+    
     appState.videoWatchTrackers[videoId].timer = setInterval(() => {
         const tracker = appState.videoWatchTrackers[videoId];
         if (tracker) {
@@ -2985,7 +2972,7 @@ async function incrementCustomViewCount(videoId) {
         const videoRef = db.collection('videos').doc(videoId);
         await videoRef.update({ customViewCount: firebase.firestore.FieldValue.increment(1) });
         console.log(`Custom view counted for video: ${videoId}`);
-
+        
         const videoCard = document.querySelector(`.long-video-card[data-video-id='${videoId}']`) || document.querySelector(`.video-slide[data-video-id='${videoId}']`);
         if (videoCard) {
             const countElement = videoCard.querySelector('[data-action="view"] .count') || videoCard.querySelector('.long-video-view-count');
@@ -3004,104 +2991,9 @@ async function incrementCustomViewCount(videoId) {
         console.error("Error incrementing custom view count:", error);
     }
 }
-
 // =======================================================
-// ★★★ ADS ROTATION & INIT LOGIC - START ★★★
+// ★★★ CREDIT, IMAGE ENLARGE & INIT LOGIC - START ★★★
 // =======================================================
-const adRotationManager = {
-    minutes: 0,
-    shortAdTimer: null,
-    init: function() {
-        setInterval(this.adScheduler.bind(this), 60000); // हर 1 मिनट पर
-        this.startSpecialAdTimer();
-        this.showBanner();
-    },
-    adScheduler: function() {
-        this.minutes++;
-        console.log(`[Ad Scheduler] Minute: ${this.minutes}`);
-
-        if (this.minutes % 30 === 0) this.showPopunder();
-        if (this.minutes % 5 === 0) this.showSocialBar();
-        if (this.minutes % 4 === 0) this.showRedirect();
-        if (this.minutes % 2 === 0) this.showInterstitial();
-    },
-    injectScript: function(src, isAsync = true, id = null, attributes = {}) {
-        if (id && document.getElementById(id)) return;
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = isAsync;
-        if (id) script.id = id;
-        for (const key in attributes) {
-            script.setAttribute(key, attributes[key]);
-        }
-        document.head.appendChild(script);
-        console.log(`[Ad Inject] Script injected: ${src}`);
-        return script;
-    },
-    showInterstitial: function() {
-        console.log("✅ Interstitial Ad Triggered");
-        this.injectScript('https://groleegni.net/401/9572500');
-    },
-    showRedirect: function() {
-        console.log("➡️ Redirect Ad Triggered");
-        window.location.href = "https://www.profitableratecpm.com/tq7jxrf5v?key=6c0e753b930c66f90b622d51e426e9d8";
-    },
-    showSocialBar: function() {
-        console.log("📢 Social Bar Loaded");
-        this.injectScript('//pl27114870.profitableratecpm.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js', true, 'adsterra-social-bar');
-    },
-    showPopunder: function() {
-        console.log("💣 Popunder Launched");
-        this.injectScript('//pl27115090.profitableratecpm.com/7d/0c/a8/7d0ca84cbcf7b35539ae2feb7dc2bd2e.js', true, 'adsterra-popunder');
-        this.injectScript('https://fpyf8.com/88/tag.min.js', true, 'monetag-popunder', {'data-zone': '157303', 'data-cfasync': 'false'});
-    },
-    showBanner: function() {
-        let bannerContainer = document.getElementById('static-banner-container');
-        if (!bannerContainer) {
-            bannerContainer = document.createElement('div');
-            bannerContainer.id = 'static-banner-container';
-            appContainer.appendChild(bannerContainer);
-        }
-        if (bannerContainer) {
-            console.log("🖼️ Static Banner Loaded");
-            showBannerAdWithFallback(bannerContainer);
-        }
-    },
-    startSpecialAdTimer: function() {
-        if (this.shortAdTimer) clearInterval(this.shortAdTimer);
-        this.shortAdTimer = setInterval(() => {
-            const existingAd = document.getElementById('special-timed-ad');
-            if (existingAd) return;
-
-            const adDiv = document.createElement('div');
-            adDiv.id = 'special-timed-ad';
-
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.async = true;
-            script.src = "//decreaselackadmit.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-
-            const optionsScript = document.createElement('script');
-            optionsScript.type = 'text/javascript';
-            optionsScript.text = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {}}`;
-
-            adDiv.appendChild(optionsScript);
-            adDiv.appendChild(script);
-
-            console.log("[AD] Injecting special timed ad.");
-
-            document.body.appendChild(adDiv);
-
-            setTimeout(() => {
-                const adToRemove = document.getElementById('special-timed-ad');
-                if (adToRemove) {
-                    adToRemove.remove();
-                }
-            }, 5000); // 5 सेकंड बाद हटा दें
-        }, 13000); // हर 13 सेकंड में
-    }
-};
-
 function initializeCreditScreen(videoId) {
     const screen = document.getElementById('credit-screen');
     if (!screen) return;
@@ -3173,6 +3065,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('long-video-search-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') performLongVideoSearch(); });
     document.getElementById('long-video-history-btn')?.addEventListener('click', () => navigateTo('history-screen'));
     document.getElementById('back-from-history-btn')?.addEventListener('click', () => navigateBack());
+    document.getElementById('history-date-button')?.addEventListener('click', showHistoryDate);
     document.getElementById('haptic-toggle-input')?.addEventListener('change', (e) => saveHapticPreference(e.target.checked));
     document.getElementById('profile-your-zone-btn')?.addEventListener('click', () => navigateTo('your-zone-screen'));
     document.getElementById('profile-show-shorts-btn')?.addEventListener('click', () => toggleProfileVideoView('short'));
