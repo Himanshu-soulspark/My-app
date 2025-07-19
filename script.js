@@ -68,10 +68,10 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
         };
         adInvokeScript.onerror = (err) => {
             console.error(`[AD] Script failed to load from: ${invokeScriptSrc}`, err);
-            container.innerHTML = ''; 
+            container.innerHTML = '';
             resolve(false);
         };
-        
+
         container.appendChild(adOptionsScript);
         container.appendChild(adInvokeScript);
 
@@ -96,15 +96,15 @@ async function showBannerAdWithFallback(container) {
     container.style.justifyContent = 'center';
     container.style.alignItems = 'center';
     container.innerHTML = '<div class="loader"></div>';
-    
+
     // ★★★ बदलाव: आपके द्वारा प्रदान किया गया नया विज्ञापन URL ★★★
     const primaryOptions = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
     const primarySrc = "//decreaselackadmit.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-    
+
     // Adsterra Native Banner as Fallback
     const fallbackOptions = `atOptions = {'key' : 'f218d914c870fc85f6dd64b9c8c31249', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
     const fallbackSrc = "//pl27114897.profitableratecpm.com/f218d914c870fc85f6dd64b9c8c31249/invoke.js";
-    
+
     const primaryAdLoaded = await injectAdScript(container, primaryOptions, primarySrc);
 
     if (!primaryAdLoaded) {
@@ -134,7 +134,7 @@ function manageLongVideoPlayerBanner(action) {
     if (!adContainer) {
         adContainer = document.createElement('div');
         adContainer.id = 'in-player-timed-ad';
-        
+
         const closeBtn = document.createElement('span');
         closeBtn.innerHTML = '&times;';
         closeBtn.className = 'in-player-ad-close-btn';
@@ -146,7 +146,7 @@ function manageLongVideoPlayerBanner(action) {
         adContainer.appendChild(closeBtn);
         playerWrapper.appendChild(adContainer);
     }
-    
+
     const isRotated = playerWrapper.closest('.main-video-card-wrapper')?.classList.contains('rotated');
 
     if (action === 'show' && !isRotated) {
@@ -165,7 +165,7 @@ function manageShortVideoTimedAd(action) {
         adContainer = document.createElement('div');
         adContainer.id = 'in-player-timed-ad-short';
         // सीएसएस में स्टाइल को परिभाषित किया गया है ताकि इसे प्रबंधित करना आसान हो
-        
+
         const closeBtn = document.createElement('span');
         closeBtn.innerHTML = '&times;';
         closeBtn.className = 'in-player-ad-close-btn';
@@ -177,7 +177,7 @@ function manageShortVideoTimedAd(action) {
         adContainer.appendChild(closeBtn);
         document.getElementById('app-container').appendChild(adContainer);
     }
-    
+
     const activeSlide = document.querySelector('.video-slide[data-video-id="' + activePlayerId + '"]');
 
     if (action === 'show' && activeSlide) {
@@ -201,7 +201,7 @@ function clearAllAdTimers() {
     if (appState.adState.timers.longVideoPlayerBanner) clearTimeout(appState.adState.timers.longVideoPlayerBanner);
     if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
     if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
-    
+
     manageShortVideoTimedAd('hide');
     manageLongVideoPlayerBanner('hide');
 }
@@ -245,7 +245,7 @@ async function generateAndSaveReferralCode(uid, name) {
     while (referralCode.length < 7) {
         referralCode += Math.floor(Math.random() * 10);
     }
-    
+
     try {
         await db.collection('users').doc(uid).update({ referralCode: referralCode });
         return referralCode;
@@ -279,11 +279,11 @@ let appState = {
     currentUser: {
         uid: null, username: "new_user", avatar: "https://via.placeholder.com/120/222/FFFFFF?text=+",
         email: "", name: "", mobile: "", address: "", hobby: "", state: "", country: "",
-        referralCode: null, likedVideos: [], 
+        referralCode: null, likedVideos: [],
         totalWatchTimeSeconds: 0,
-        creatorTotalWatchTimeSeconds: 0, 
+        creatorTotalWatchTimeSeconds: 0,
         creatorDailyWatchTime: {},
-        friends: [], 
+        friends: [],
     },
     currentScreen: 'splash-screen',
     navigationStack: ['splash-screen'],
@@ -367,16 +367,16 @@ function activateScreen(screenId) {
 }
 
 function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
-    
+
     if (appState.currentScreen === nextScreenId && !payload) return;
     if (appState.navigationStack[appState.navigationStack.length - 1] !== nextScreenId) {
         appState.navigationStack.push(nextScreenId);
     }
-    
+
     if (appState.currentScreen === 'creator-page-screen' || appState.currentScreen === 'home-screen') {
         clearAllAdTimers();
     }
-    
+
     if (appState.currentScreen === 'home-screen') {
         if (activePlayerId && players[activePlayerId]) pauseActivePlayer();
     }
@@ -386,7 +386,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.creatorPagePlayers = { short: null, long: null };
     }
     activePlayerId = null;
-    
+
     activateScreen(nextScreenId);
     appState.currentScreenPayload = payload;
 
@@ -399,20 +399,20 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
     if (nextScreenId === 'credit-screen' && payload && payload.videoId) initializeCreditScreen(payload.videoId);
-    
+
     if (nextScreenId === 'payment-screen') initializePaymentScreen();
     if (nextScreenId === 'track-payment-screen') initializeTrackPaymentScreen();
     if (nextScreenId === 'report-screen') initializeReportScreen();
     if (nextScreenId === 'friends-screen') {
         populateAddFriendsList();
         populateFriendRequestsList();
-        populateMembersList(); 
+        populateMembersList();
     }
 }
 
 function navigateBack() {
     if (appState.navigationStack.length <= 1) return;
-    
+
     if (appState.currentScreen === 'creator-page-screen') {
         clearAllAdTimers();
     }
@@ -424,13 +424,13 @@ function navigateBack() {
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
         appState.creatorPagePlayers = { short: null, long: null };
-        
+
         const videoWrapper = document.querySelector('#creator-page-long-view .main-video-card-wrapper');
         if (videoWrapper && videoWrapper.classList.contains('rotated')) {
             videoWrapper.classList.remove('rotated');
         }
     }
-    
+
     activateScreen(previousScreenId);
 
     if (previousScreenId === 'profile-screen') loadUserVideosFromFirebase();
@@ -451,7 +451,7 @@ async function checkUserProfileAndProceed(user) {
         userData.totalWatchTimeSeconds = userData.totalWatchTimeSeconds || 0;
         userData.creatorTotalWatchTimeSeconds = userData.creatorTotalWatchTimeSeconds || 0;
         userData.creatorDailyWatchTime = userData.creatorDailyWatchTime || {};
-        userData.friends = userData.friends || []; 
+        userData.friends = userData.friends || [];
         appState.currentUser = { ...appState.currentUser, ...userData };
 
         const savedHistory = localStorage.getItem('shubhzoneViewingHistory');
@@ -463,7 +463,7 @@ async function checkUserProfileAndProceed(user) {
                 appState.viewingHistory = [];
             }
         }
-        
+
         updateProfileUI();
         if (userData.name && userData.state) {
             await startAppLogic();
@@ -530,13 +530,13 @@ async function refreshAndRenderFeed() {
     const snapshot = await videosRef.get();
     const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     fullVideoList = [...loadedVideos];
-    
+
     let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
-    
+
     shortVideos = shuffleArray(shortVideos);
     appState.allVideos = shortVideos;
-    
-    renderVideoSwiper(shortVideos); 
+
+    renderVideoSwiper(shortVideos);
 }
 
 
@@ -570,7 +570,7 @@ function checkCustom(select, inputId) { document.getElementById(inputId).style.d
 async function saveAndContinue() {
     saveContinueBtn.disabled = true;
     saveContinueBtn.textContent = 'Saving...';
-    
+
     const name = document.getElementById('info-name').value.trim();
     const stateValue = document.getElementById('info-state').value;
     const customState = document.getElementById('custom-state-input').value.trim();
@@ -598,7 +598,7 @@ async function saveAndContinue() {
         const cloudName = 'dzq7qb6ew';
         const uploadPreset = 'bookswamp_unsigned';
         const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-        
+
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', uploadPreset);
@@ -625,16 +625,16 @@ async function saveAndContinue() {
 
     try {
         await db.collection('users').doc(appState.currentUser.uid).set(userData, { merge: true });
-        
+
         if (!appState.currentUser.referralCode || !appState.currentUser.referralCode.startsWith('@')) {
             appState.currentUser.referralCode = await generateAndSaveReferralCode(appState.currentUser.uid, name);
         }
-        
+
         appState.currentUser = { ...appState.currentUser, ...userData };
         updateProfileUI();
-        
+
         await startAppLogic();
-        
+
     } catch (error) {
         console.error("Profile save error:", error);
         alert("Failed to save profile.");
@@ -647,10 +647,10 @@ async function saveAndContinue() {
 function updateProfileUI() {
     const profileHeaderAvatar = document.getElementById('profile-header-avatar');
     if (profileHeaderAvatar) profileHeaderAvatar.src = appState.currentUser.avatar || "https://via.placeholder.com/50/222/FFFFFF?text=+";
-    
+
     const yourZoneAvatar = document.getElementById('your-zone-header-avatar');
     if (yourZoneAvatar) yourZoneAvatar.src = appState.currentUser.avatar || "https://via.placeholder.com/40";
-    
+
     profileImagePreview.src = appState.currentUser.avatar || "https://via.placeholder.com/120/222/FFFFFF?text=+";
     document.getElementById('info-name').value = appState.currentUser.name || '';
     document.getElementById('info-mobile').value = appState.currentUser.mobile || '';
@@ -770,7 +770,7 @@ async function saveVideoEdits(videoId) {
 async function saveNewVideo() {
     modalSaveButton.disabled = true;
     modalSaveButton.textContent = 'Uploading...';
-    
+
     const videoUrlValue = modalVideoUrlInput.value.trim();
     const title = modalVideoTitle.value.trim();
     const category = appState.uploadDetails.category;
@@ -984,7 +984,7 @@ function onPlayerReady(event) {
 function onPlayerStateChange(event) {
     const iframe = event.target.getIframe();
     if (!iframe) return;
-    
+
     const creatorPlayerView = iframe.closest('.creator-page-view');
     if (creatorPlayerView) {
         handleCreatorPlayerStateChange(event);
@@ -999,7 +999,7 @@ function onPlayerStateChange(event) {
     if (event.data !== YT.PlayerState.UNSTARTED && preloader) {
         preloader.style.display = 'none';
     }
-    
+
     if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
     if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
     manageShortVideoTimedAd('hide');
@@ -1007,12 +1007,12 @@ function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         startWatchTimeTracker();
         startVideoViewTracker(videoId, 'short');
-        
+
         if (userHasInteracted && typeof event.target.unMute === 'function' && event.target.isMuted()) {
             event.target.unMute();
             console.log(`[Audio] Unmuting video via onStateChange: ${videoId}`);
         }
-        
+
         appState.adState.timers.shortVideoAdShow = setTimeout(() => {
             manageShortVideoTimedAd('show');
         }, 15000);
@@ -1020,7 +1020,7 @@ function onPlayerStateChange(event) {
         appState.adState.timers.shortVideoAdHide = setTimeout(() => {
             manageShortVideoTimedAd('hide');
         }, 18000);
-        
+
         if (userHasInteracted) {
              if (typeof event.target.isMuted === 'function' && event.target.isMuted() && !hasShownAudioPopup) {
                  document.getElementById('audio-issue-popup').classList.add('active');
@@ -1036,7 +1036,7 @@ function onPlayerStateChange(event) {
 function addVideoToHistory(videoId) {
     if (!videoId) return;
     const existingIndex = appState.viewingHistory.findIndex(item => item.id === videoId);
-    
+
     if (existingIndex > -1) {
         appState.viewingHistory.splice(existingIndex, 1);
     }
@@ -1094,7 +1094,7 @@ function playActivePlayer(videoId) {
     addVideoToHistory(videoId);
 
     player.playVideo();
-    
+
     if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
         player.unMute();
         console.log(`[Audio] Unmuting video: ${videoId}`);
@@ -1106,10 +1106,11 @@ function playActivePlayer(videoId) {
 // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 function pauseActivePlayer() {
     if (!activePlayerId) return;
+    // ★★★ फ़िक्स: यहाँ एक टाइपो था। 'activePlayer_id' को 'activePlayerId' में बदल दिया गया है। ★★★
     const player = players[activePlayerId];
     // जांचें कि प्लेयर मौजूद है और उसमें stopVideo फंक्शन है
     if (!player || typeof player.stopVideo !== 'function') return;
-    
+
     // विज्ञापन टाइमर को साफ़ करें
     if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
     if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
@@ -1118,7 +1119,7 @@ function pauseActivePlayer() {
     // ★★★ समाधान: pauseVideo() की जगह stopVideo() का उपयोग करें
     // यह वीडियो को पूरी तरह से बंद कर देता है, जिससे ऑडियो मिक्सिंग की समस्या हल हो जाती है।
     player.stopVideo();
-    
+
     // ★★★ सुधार: सक्रिय प्लेयर आईडी को तुरंत रीसेट करें
     console.log(`[Player Control] Stopped and reset active player: ${activePlayerId}`);
     activePlayerId = null;
@@ -1306,7 +1307,7 @@ async function toggleLikeAction(videoId, slideElement) {
     const isLiked = likedVideos.includes(videoId);
     const videoRef = db.collection('videos').doc(videoId);
     const userRef = db.collection('users').doc(appState.currentUser.uid);
-    
+
     const likeIcon = slideElement.querySelector('.action-icon-container[data-action="like"] .icon');
     const likeCountElement = slideElement.querySelector('.action-icon-container[data-action="like"] .count');
     let currentLikes = parseInt(likeCountElement.textContent.replace(/[^\d]/g, '') * (likeCountElement.textContent.includes('K') ? 1000 : likeCountElement.textContent.includes('L') ? 100000 : 1)) || 0;
@@ -1382,7 +1383,7 @@ function filterVideosByCategory(category, element) {
     if (category !== 'All') {
         filtered = filtered.filter(video => video.category === category);
     }
-    
+
     const displayItems = shuffleArray(filtered);
     appState.allVideos = displayItems;
 
@@ -1465,16 +1466,16 @@ function playVideoFromProfile(videoId) {
          return;
     }
     if (videoToPlay.videoLengthType === 'long') {
-        navigateTo('creator-page-screen', { 
-            creatorId: videoToPlay.uploaderUid, 
-            startWith: 'long', 
-            videoId: videoToPlay.id 
+        navigateTo('creator-page-screen', {
+            creatorId: videoToPlay.uploaderUid,
+            startWith: 'long',
+            videoId: videoToPlay.id
         });
     } else {
-        navigateTo('creator-page-screen', { 
-            creatorId: videoToPlay.uploaderUid, 
-            startWith: 'short', 
-            videoId: videoToPlay.id 
+        navigateTo('creator-page-screen', {
+            creatorId: videoToPlay.uploaderUid,
+            startWith: 'short',
+            videoId: videoToPlay.id
         });
     }
 }
@@ -1526,7 +1527,7 @@ async function checkAndShowPriorityAd() {
         try {
             const adDoc = await db.collection('config').doc('priorityAd').get();
             if (!adDoc.exists || !adDoc.data().isActive) {
-                return resolve(); 
+                return resolve();
             }
 
             const adData = adDoc.data();
@@ -1534,8 +1535,8 @@ async function checkAndShowPriorityAd() {
             const contentContainer = document.getElementById('ad-content-container');
             const timerEl = document.getElementById('ad-timer');
             const closeBtn = document.getElementById('ad-close-btn');
-            
-            contentContainer.innerHTML = ''; 
+
+            contentContainer.innerHTML = '';
 
             if (adData.type === 'image' && adData.contentUrl) {
                 const img = document.createElement('img');
@@ -1548,7 +1549,7 @@ async function checkAndShowPriorityAd() {
                 iframe.setAttribute('allow', 'autoplay; encrypted-media');
                 contentContainer.appendChild(iframe);
             } else {
-                return resolve(); 
+                return resolve();
             }
 
             overlay.style.display = 'flex';
@@ -1569,12 +1570,12 @@ async function checkAndShowPriorityAd() {
 
             closeBtn.onclick = () => {
                 overlay.style.display = 'none';
-                resolve(); 
+                resolve();
             };
 
         } catch (error) {
             console.error("Error fetching priority ad:", error);
-            resolve(); 
+            resolve();
         }
     });
 }
@@ -1584,9 +1585,9 @@ const startAppLogic = async () => {
     if (appStartLogicHasRun && appState.currentScreen !== 'splash-screen' && appState.currentScreen !== 'information-screen') {
         return;
     }
-    
+
     await checkAndShowPriorityAd();
-    
+
     adRotationManager.init();
 
     appStartLogicHasRun = true;
@@ -1595,16 +1596,16 @@ const startAppLogic = async () => {
     const loadingContainer = document.getElementById('loading-container');
     if (getStartedBtn) getStartedBtn.style.display = 'none';
     if (loadingContainer) loadingContainer.style.display = 'flex';
-    
+
     renderCategories();
     renderCategoriesInBar();
     await refreshAndRenderFeed();
-    
+
     const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
     const lastScreen = lastScreenBeforeAd || 'home-screen';
-    
+
     navigateTo(lastScreen, null, lastScrollPosition);
-    
+
     sessionStorage.removeItem('lastScreenBeforeAd');
     sessionStorage.removeItem('lastScrollPositionBeforeAd');
 };
@@ -1646,7 +1647,7 @@ function populateLongVideoCarousel() {
     wrapper.innerHTML = '';
 
     let allLongVideos = fullVideoList.filter(v => v.videoLengthType === 'long');
-    
+
     let carouselVideos = shuffleArray([...allLongVideos]).slice(0, 10);
 
     if (carouselVideos.length === 0) {
@@ -1710,7 +1711,7 @@ function performLongVideoSearch() {
     const longVideos = fullVideoList.filter(v => v.videoLengthType === 'long');
     let results = [];
     if (query) {
-        results = longVideos.filter(v => 
+        results = longVideos.filter(v =>
             (v.title && v.title.toLowerCase().includes(query)) ||
             (v.uploaderUsername && v.uploaderUsername.toLowerCase().includes(query))
         );
@@ -1741,11 +1742,11 @@ function createLongVideoCard(video) {
     card.className = 'long-video-card';
     card.dataset.videoId = video.id;
     card.dataset.uploaderUid = video.uploaderUid;
-    
-    const commentOnClick = video.commentsEnabled 
-        ? `onclick="event.stopPropagation(); openCommentsModal('${video.id}', '${video.uploaderUid}')"` 
+
+    const commentOnClick = video.commentsEnabled
+        ? `onclick="event.stopPropagation(); openCommentsModal('${video.id}', '${video.uploaderUid}')"`
         : 'onclick="event.stopPropagation();"';
-    
+
     card.innerHTML = `
         <div class="long-video-thumbnail" style="background-image: url(${escapeHTML(video.thumbnailUrl)})" onclick="playVideoFromProfile('${video.id}')">
             <div class="long-video-view-count"><i class="fas fa-eye"></i> ${formatNumber(video.customViewCount || 0)}</div>
@@ -1916,7 +1917,7 @@ function initializeEarnsureScreen() {
     `;
 
     showBannerAdWithFallback(document.getElementById('earnsure-top-ad-container'));
-    
+
     populateEarnsureContent(currentEarnsureLanguage);
 
     const languageToggle = document.getElementById('earnsure-language-toggle');
@@ -1937,14 +1938,14 @@ function initializeEarnsureScreen() {
             hiButton.textContent = 'HI';
             languageToggle.appendChild(hiButton);
         }
-        
+
         const updateButtons = (lang) => {
             currentEarnsureLanguage = lang;
             enButton.classList.toggle('active', lang === 'en');
             hiButton.classList.toggle('active', lang === 'hi');
             populateEarnsureContent(lang);
         };
-        
+
         updateButtons(currentEarnsureLanguage);
 
         enButton.onclick = () => updateButtons('en');
@@ -1962,7 +1963,7 @@ function populateEarnsureContent(lang) {
 function populateYourZoneScreen() {
     const content = document.getElementById('your-zone-content');
     if (!content) return;
-    
+
     const { referralCode, avatar, name, email } = appState.currentUser;
     content.innerHTML = `
         <div class="your-zone-header">
@@ -2072,28 +2073,28 @@ async function acceptFriendRequest(event, requestId, senderId) {
     actionDiv.innerHTML = '<div class="loader" style="width: 20px; height: 20px;"></div>';
 
     const batch = db.batch();
-    
+
     const requestRef = db.collection('friendRequests').doc(requestId);
     batch.update(requestRef, { status: 'accepted' });
 
     const currentUserRef = db.collection('users').doc(appState.currentUser.uid);
     batch.update(currentUserRef, { friends: firebase.firestore.FieldValue.arrayUnion(senderId) });
-    
+
     const senderUserRef = db.collection('users').doc(senderId);
     batch.update(senderUserRef, { friends: firebase.firestore.FieldValue.arrayUnion(appState.currentUser.uid) });
 
     try {
         await batch.commit();
-        
+
         if (!appState.currentUser.friends.includes(senderId)) {
             appState.currentUser.friends.push(senderId);
         }
 
         alert("Friend request accepted!");
-        
+
         const requestCard = document.getElementById(`request-${requestId}`);
         if (requestCard) requestCard.remove();
-        
+
         populateMembersList();
 
     } catch (error) {
@@ -2153,7 +2154,7 @@ async function populateMembersList() {
                         <div class="subtext">Tap to chat</div>
                     </div>
                 </div>`;
-            
+
             if ((index + 1) % 5 === 0) {
                 const adId = `friend-ad-${index}`;
                 finalHtml += `<div id="${adId}" class="friend-list-ad"></div>`;
@@ -2163,7 +2164,7 @@ async function populateMembersList() {
                 }, 100);
             }
         });
-        
+
         membersContent.innerHTML = finalHtml || '<p class="static-message">Could not load friends list.</p>';
 
     } catch (error) {
@@ -2176,7 +2177,7 @@ async function populateMembersList() {
 async function populateAddFriendsList(featuredUser = null) {
     const addContent = document.querySelector('#friends-screen #add-content');
     if (!addContent) return;
-    
+
     const userListContainer = addContent.querySelector('#add-friend-user-list');
     if (!userListContainer) {
         console.error('#add-friend-user-list container not found');
@@ -2190,14 +2191,14 @@ async function populateAddFriendsList(featuredUser = null) {
             userListContainer.innerHTML = '<p class="static-message">No other users found.</p>';
             return;
         }
-        
+
         const currentUserFriends = appState.currentUser.friends || [];
         const sentRequestsSnapshot = await db.collection('friendRequests').where('senderId', '==', appState.currentUser.uid).get();
         const requestedIds = sentRequestsSnapshot.docs.map(doc => doc.data().receiverId);
 
         const createUserCard = (user) => {
             const isRequested = requestedIds.includes(user.id);
-            const buttonHtml = isRequested 
+            const buttonHtml = isRequested
                 ? `<button class="add-button requested" disabled>Requested</button>`
                 : `<button class="add-button haptic-trigger" onclick="sendFriendRequest('${user.id}', this)">Add Friend</button>`;
 
@@ -2219,8 +2220,8 @@ async function populateAddFriendsList(featuredUser = null) {
 
         const otherUsersHtml = usersSnapshot.docs
             .map(doc => ({ id: doc.id, ...doc.data() }))
-            .filter(user => 
-                user.id !== appState.currentUser.uid && 
+            .filter(user =>
+                user.id !== appState.currentUser.uid &&
                 user.name &&
                 (!featuredUser || user.id !== featuredUser.id) &&
                 !currentUserFriends.includes(user.id)
@@ -2244,7 +2245,7 @@ async function searchUser() {
         populateAddFriendsList();
         return;
     }
-    
+
     userListContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
 
     try {
@@ -2271,13 +2272,13 @@ async function searchUser() {
 async function startChat(friendId, friendName, friendAvatar) {
     const chatScreen = document.getElementById('chat-screen-overlay');
     if (!chatScreen) return;
-    
+
     document.getElementById('chat-username').textContent = friendName;
     document.getElementById('chat-user-profile-pic').src = friendAvatar || 'https://via.placeholder.com/50';
 
     const uids = [appState.currentUser.uid, friendId].sort();
     const chatId = uids.join('_');
-    
+
     appState.activeChat = { chatId, friendId, friendName, friendAvatar };
 
     try {
@@ -2311,7 +2312,7 @@ async function sendMessage() {
         senderId: appState.currentUser.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-    
+
     inputField.value = '';
 
     try {
@@ -2326,7 +2327,7 @@ async function sendMessage() {
 function loadChatMessages(chatId) {
     const messagesContainer = document.getElementById('chat-messages');
     messagesContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
-    
+
     db.collection('chats').doc(chatId).collection('messages').orderBy('createdAt', 'asc')
       .onSnapshot(snapshot => {
           if (snapshot.empty) {
@@ -2340,7 +2341,7 @@ function loadChatMessages(chatId) {
           }).join('');
 
           messagesContainer.innerHTML = messagesHtml;
-          messagesContainer.scrollTop = messagesContainer.scrollHeight; 
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
       }, error => {
           console.error("Error loading chat messages:", error);
           messagesContainer.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load chat. Check security rules.</p>';
@@ -2350,7 +2351,7 @@ function loadChatMessages(chatId) {
 function initializeMessagingInterface() {
     const friendsScreen = document.getElementById('friends-screen');
     if (!friendsScreen) return;
-    
+
     friendsScreen.querySelectorAll('.tab-button').forEach(button => {
         button.classList.add('haptic-trigger');
         button.addEventListener('click', () => {
@@ -2482,10 +2483,10 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
             document.querySelectorAll('.creator-page-view').forEach(v => v.classList.remove('active'));
             const activeView = document.getElementById(`creator-page-${tab.dataset.type}-view`);
             if (activeView) activeView.classList.add('active');
-            
+
             commentBtn.style.display = tab.dataset.type === 'long' ? 'flex' : 'none';
 
-            clearAllAdTimers(); 
+            clearAllAdTimers();
 
             const otherType = tab.dataset.type === 'short' ? 'long' : 'short';
             if(appState.creatorPagePlayers[otherType] && typeof appState.creatorPagePlayers[otherType].pauseVideo === 'function') {
@@ -2501,7 +2502,7 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
             }
         };
     });
-    
+
     const menuRotate = document.getElementById('more-function-menu');
     const existingRotateBtn = document.getElementById('rotate-video-btn');
     if (existingRotateBtn) {
@@ -2513,18 +2514,18 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
     rotateBtn.className = 'function-menu-item haptic-trigger';
     rotateBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Rotate`;
     rotateBtn.onclick = toggleVideoRotation;
-    
+
     if (menuRotate) {
         menuRotate.appendChild(rotateBtn);
     }
-    
+
     if (startWith === 'long' && startLongVideo) {
         appState.creatorPage.currentLongVideo = { id: startLongVideo.id, uploaderUid: creatorId };
     }
-    
+
     renderCreatorVideoView(shortView, shortVideos, 'short', creatorId, startShortVideo ? startShortVideo.id : null);
     renderCreatorVideoView(longView, longVideos, 'long', creatorId, startLongVideo ? startLongVideo.id : null);
-    
+
     document.querySelectorAll('.creator-page-view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.creator-page-tab-btn').forEach(t => t.classList.remove('active'));
     document.getElementById(`creator-page-${startWith}-view`).classList.add('active');
@@ -2539,13 +2540,13 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
         container.innerHTML = `<p class="static-message">This creator has no ${type} videos.</p>`;
         return;
     }
-    
+
     let firstVideo = videos[0];
     if (startVideoId) {
         const foundVideo = videos.find(v => v.id === startVideoId);
         if (foundVideo) firstVideo = foundVideo;
     }
-    
+
     const videoListHtml = videos.map((v, index) => {
         const thumbClass = (type === 'long') ? 'side-video-thumb-long' : 'side-video-thumb-short';
         return `<img src="${v.thumbnailUrl}" class="side-video-thumb haptic-trigger ${thumbClass}" onclick="playCreatorVideo('${type}', ${index}, '${creatorId}')">`;
@@ -2561,7 +2562,7 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
             <div class="side-video-list-scroller">${videoListHtml}</div>
         </div>
     `;
-    
+
     if (videos.length > 0 && isYouTubeApiReady) {
         initializeCreatorPagePlayer(firstVideo.videoUrl, `creator-page-player-${type}`, type);
     }
@@ -2578,7 +2579,7 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         videoId: videoId,
         playerVars: {
             'autoplay': 1,
-            'controls': 1, 
+            'controls': 1,
             'rel': 0,
             'showinfo': 0,
             'mute': 0,
@@ -2587,8 +2588,8 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
             'origin': window.location.origin
         },
         events: {
-            'onReady': (event) => { 
-                event.target.playVideo(); 
+            'onReady': (event) => {
+                event.target.playVideo();
                 if (type === 'long') {
                     manageLongVideoPlayerBanner('hide');
                 }
@@ -2599,12 +2600,12 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
 }
 
 function playCreatorVideo(type, videoIndex, creatorId) {
-    const videos = fullVideoList.filter(v => 
-        v.uploaderUid === creatorId && 
+    const videos = fullVideoList.filter(v =>
+        v.uploaderUid === creatorId &&
         v.audience !== '18plus' &&
         (type === 'long' ? v.videoLengthType === 'long' : v.videoLengthType !== 'long')
     );
-    
+
     if (videos[videoIndex]) {
         const videoToPlay = videos[videoIndex];
 
@@ -2632,15 +2633,15 @@ function toggleCreatorVideoList() {
 
 function toggleVideoRotation() {
     const longVideoView = document.getElementById('creator-page-long-view');
-    
+
     if (longVideoView && longVideoView.classList.contains('active')) {
         const videoWrapper = longVideoView.querySelector('.main-video-card-wrapper');
         const moreFunctionsMenu = document.getElementById('more-function-menu');
         const player = appState.creatorPagePlayers.long;
-        
+
         if (videoWrapper) {
             videoWrapper.classList.toggle('rotated');
-            
+
             if (videoWrapper.classList.contains('rotated')) {
                 manageLongVideoPlayerBanner('hide');
             } else {
@@ -2664,7 +2665,7 @@ function handleCreatorPlayerStateChange(event) {
     const player = event.target;
     const playerState = event.data;
     const iframe = player.getIframe();
-    
+
     const isLongVideo = iframe.closest('#creator-page-long-view');
 
     const videoData = player.getVideoData();
@@ -2680,10 +2681,10 @@ function handleCreatorPlayerStateChange(event) {
         startVideoViewTracker(dbVideoId, videoType);
         addVideoToHistory(dbVideoId);
     } else if (playerState === YT.PlayerState.PAUSED) {
-        if (isLongVideo) manageLongVideoPlayerBanner('show'); 
+        if (isLongVideo) manageLongVideoPlayerBanner('show');
         stopVideoViewTracker(dbVideoId);
     } else if (playerState === YT.PlayerState.ENDED) {
-        if (isLongVideo) manageLongVideoPlayerBanner('show'); 
+        if (isLongVideo) manageLongVideoPlayerBanner('show');
         stopVideoViewTracker(dbVideoId);
     } else {
         if (isLongVideo) manageLongVideoPlayerBanner('hide');
@@ -2721,7 +2722,7 @@ function togglePaymentDetails() {
 async function handlePaymentRequest(event) {
     const user = appState.currentUser;
     const method = document.getElementById('payment-method').value;
-    
+
     if(!method) {
         alert("Please select a payment method.");
         return;
@@ -2751,7 +2752,7 @@ async function handlePaymentRequest(event) {
     if(!confirm("This will submit your payment request to the admin. After submitting, your tracking data will be reset. Continue?")) {
         return;
     }
-    
+
     const button = event.target;
     button.disabled = true;
     button.textContent = "Submitting...";
@@ -2773,12 +2774,12 @@ async function handlePaymentRequest(event) {
         status: "pending",
         requestedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-    
+
     try {
         await db.collection("paymentRequests").add(requestData);
         await resetTrackingData();
         alert("Payment request submitted successfully! Your tracking data has been reset.");
-        navigateTo('home-screen'); 
+        navigateTo('home-screen');
     } catch(error) {
         console.error("Error submitting payment request:", error);
         alert("Failed to submit request. Please try again.");
@@ -2826,7 +2827,7 @@ async function updateCreatorWatchTime(creatorId, watchedSeconds) {
         const today = new Date().toISOString().slice(0, 10);
         const dailyWatchTimeKey = `creatorDailyWatchTime.${today}`;
 
-        await creatorRef.update({ 
+        await creatorRef.update({
             creatorTotalWatchTimeSeconds: firebase.firestore.FieldValue.increment(watchedSeconds),
             [dailyWatchTimeKey]: firebase.firestore.FieldValue.increment(watchedSeconds)
         });
@@ -2840,14 +2841,14 @@ async function updateCreatorWatchTime(creatorId, watchedSeconds) {
 
 function startWatchTimeTracker() {
     if (appState.watchTimeInterval) clearInterval(appState.watchTimeInterval);
-    
+
     let secondsSinceLastUpdate = 0;
     const videoData = fullVideoList.find(v => v.id === activePlayerId);
     const creatorId = videoData ? videoData.uploaderUid : null;
 
     appState.watchTimeInterval = setInterval(async () => {
         appState.currentUser.totalWatchTimeSeconds += 1;
-        
+
         if (creatorId && creatorId !== appState.currentUser.uid) {
             secondsSinceLastUpdate += 1;
         }
@@ -2863,7 +2864,7 @@ async function stopWatchTimeTracker() {
     if (appState.watchTimeInterval) {
         clearInterval(appState.watchTimeInterval);
         appState.watchTimeInterval = null;
-        
+
         const userRef = db.collection('users').doc(appState.currentUser.uid);
         try {
             await userRef.update({ totalWatchTimeSeconds: appState.currentUser.totalWatchTimeSeconds });
@@ -2878,8 +2879,8 @@ async function resetTrackingData() {
     try {
         localStorage.setItem('totalAppTimeSeconds', '0');
         const userRef = db.collection('users').doc(appState.currentUser.uid);
-        await userRef.update({ 
-            totalWatchTimeSeconds: 0, 
+        await userRef.update({
+            totalWatchTimeSeconds: 0,
             creatorTotalWatchTimeSeconds: 0,
             creatorDailyWatchTime: {}
         });
@@ -2909,7 +2910,7 @@ function formatSecondsToHMS(secs) {
     if (h > 0) parts.push(h + "h");
     if (m > 0) parts.push(m + "m");
     if (secs > 0 || parts.length === 0) parts.push(secs + "s");
-    
+
     return parts.join(' ');
 }
 // =======================================================
@@ -2936,7 +2937,7 @@ async function submitReport() {
 
     try {
         await db.collection('reports').add({
-            reporterUid: appState.currentUser.uid, 
+            reporterUid: appState.currentUser.uid,
             reporterName: appState.currentUser.name,
             reportText: reportText,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -2958,7 +2959,7 @@ function startVideoViewTracker(videoId, type) {
     stopVideoViewTracker(videoId);
     appState.videoWatchTrackers[videoId] = { timer: null, watchedSeconds: 0, viewed: false };
     const targetSeconds = type === 'long' ? 300 : 20;
-    
+
     appState.videoWatchTrackers[videoId].timer = setInterval(() => {
         const tracker = appState.videoWatchTrackers[videoId];
         if (tracker) {
@@ -2984,7 +2985,7 @@ async function incrementCustomViewCount(videoId) {
         const videoRef = db.collection('videos').doc(videoId);
         await videoRef.update({ customViewCount: firebase.firestore.FieldValue.increment(1) });
         console.log(`Custom view counted for video: ${videoId}`);
-        
+
         const videoCard = document.querySelector(`.long-video-card[data-video-id='${videoId}']`) || document.querySelector(`.video-slide[data-video-id='${videoId}']`);
         if (videoCard) {
             const countElement = videoCard.querySelector('[data-action="view"] .count') || videoCard.querySelector('.long-video-view-count');
@@ -3070,16 +3071,16 @@ const adRotationManager = {
         if (this.shortAdTimer) clearInterval(this.shortAdTimer);
         this.shortAdTimer = setInterval(() => {
             const existingAd = document.getElementById('special-timed-ad');
-            if (existingAd) return; 
+            if (existingAd) return;
 
             const adDiv = document.createElement('div');
             adDiv.id = 'special-timed-ad';
-            
+
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.async = true;
             script.src = "//decreaselackadmit.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-            
+
             const optionsScript = document.createElement('script');
             optionsScript.type = 'text/javascript';
             optionsScript.text = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {}}`;
