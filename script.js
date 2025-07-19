@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v6.3 === */
+/* === Shubhzone App Script (Code 2) - FINAL v6.4 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -1598,7 +1598,6 @@ const startAppLogic = async () => {
     renderCategories();
     renderCategoriesInBar();
     
-    // ★★★ बदला हुआ कोड: डेटा को नेविगेट करने से पहले लोड करें ★★★
     await refreshAndRenderFeed();
     
     const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
@@ -3086,7 +3085,7 @@ async function incrementCustomViewCount(videoId) {
 // =======================================================
 const adRotationManager = {
     minutes: 0,
-    adCooldownActive: false, // यह फ्लैग बताएगा कि क्या 60 सेकंड का कूलडाउन चल रहा है
+    adCooldownActive: false,
     init: function() {
         setInterval(this.adScheduler.bind(this), 60000); // हर 60 सेकंड में एक बार चलेगा
         this.showBanner();
@@ -3108,7 +3107,6 @@ const adRotationManager = {
                 break;
             case 2:
                 this.showSocialBar();
-                this.showPopunder();
                 break;
             case 0:
                 this.showRedirect();
@@ -3124,7 +3122,11 @@ const adRotationManager = {
         }, 60000); // 60 सेकंड
     },
     injectScript: function(src, isAsync = true, id = null, attributes = {}) {
-        if (id && document.getElementById(id)) return;
+        // स्क्रिप्ट को दोबारा इंजेक्ट होने से रोकें
+        if (id && document.getElementById(id)) {
+            console.log(`[Ad Inject] Script with ID ${id} already exists. Skipping.`);
+            return document.getElementById(id);
+        }
         const script = document.createElement('script');
         script.src = src;
         script.async = isAsync;
@@ -3145,18 +3147,12 @@ const adRotationManager = {
     showRedirect: function() {
         console.log("[Ad Trigger] ➡️ Redirect Ad Triggered");
         this.saveStateBeforeRedirect();
-        this.triggerCooldown(); // रीडायरेक्ट करने से पहले कूलडाउन शुरू करें
+        this.triggerCooldown();
         window.location.href = "https://www.profitableratecpm.com/tq7jxrf5v?key=6c0e753b930c66f90b622d51e426e9d8";
     },
     showSocialBar: function() {
         console.log("[Ad Trigger] 📢 Social Bar Loaded");
         this.injectScript('//pl27114870.profitableratecpm.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js', true, 'adsterra-social-bar');
-    },
-    showPopunder: function() {
-        console.log("[Ad Trigger] 💣 Popunder Launched");
-        this.saveStateBeforeRedirect();
-        this.injectScript('//pl27115090.profitableratecpm.com/7d/0c/a8/7d0ca84cbcf7b35539ae2feb7dc2bd2e.js', true, 'adsterra-popunder');
-        this.injectScript('https://fpyf8.com/88/tag.min.js', true, 'monetag-popunder', {'data-zone': '157303', 'data-cfasync': 'false'});
         this.triggerCooldown();
     },
     showBanner: function() {
