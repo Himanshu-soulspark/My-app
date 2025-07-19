@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v6.2 === */
+/* === Shubhzone App Script (Code 2) - FINAL v6.3 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -428,41 +428,45 @@ function navigateBack() {
 }
 
 async function checkUserProfileAndProceed(user) {
-    if (!user) return; // Promise को हल करने की आवश्यकता नहीं है
+    if (!user) return;
     appState.currentUser.uid = user.uid;
     const userRef = db.collection('users').doc(user.uid);
-    const doc = await userRef.get();
-    if (doc.exists) {
-        let userData = doc.data();
-        if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
-            userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
-        }
-        appState.currentUser = { ...appState.currentUser, ...userData };
-        updateProfileUI();
-        // ★★★ महत्वपूर्ण: यहीं से तय होगा कि ऐप शुरू करना है या जानकारी स्क्रीन पर भेजना है
-        if (userData.name && userData.state) {
-            await startAppLogic();
+    try {
+        const doc = await userRef.get();
+        if (doc.exists) {
+            let userData = doc.data();
+            if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
+                userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
+            }
+            appState.currentUser = { ...appState.currentUser, ...userData };
+            updateProfileUI();
+            
+            if (userData.name && userData.state) {
+                await startAppLogic();
+            } else {
+                navigateTo('information-screen');
+            }
         } else {
+            const initialData = {
+                uid: user.uid, name: '', email: user.email || '',
+                avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                likedVideos: [], 
+                totalWatchTimeSeconds: 0,
+                viewerCoins: 0,
+                creatorTotalWatchTimeSeconds: 0,
+                creatorCoins: 0,
+                creatorDailyWatchTime: {},
+                friends: [],
+                referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
+            };
+            await userRef.set(initialData);
+            appState.currentUser = { ...appState.currentUser, ...initialData };
+            updateProfileUI();
             navigateTo('information-screen');
         }
-    } else {
-        const initialData = {
-            uid: user.uid, name: '', email: user.email || '',
-            avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            likedVideos: [], 
-            totalWatchTimeSeconds: 0,
-            viewerCoins: 0,
-            creatorTotalWatchTimeSeconds: 0,
-            creatorCoins: 0,
-            creatorDailyWatchTime: {},
-            friends: [],
-            referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
-        };
-        await userRef.set(initialData);
-        appState.currentUser = { ...appState.currentUser, ...initialData };
-        updateProfileUI();
-        navigateTo('information-screen');
+    } catch (error) {
+        console.error("Error in checkUserProfileAndProceed:", error);
     }
 }
 
@@ -484,7 +488,6 @@ function listenToUserUpdates(uid) {
     }, (error) => console.error("Error listening to user updates:", error));
 }
 
-// ★★★ बदला हुआ कोड: आरंभीकरण तर्क को सरल बनाया गया ★★★
 function initializeApp() {
     if (appInitializationComplete) return;
     appInitializationComplete = true;
@@ -496,7 +499,6 @@ function initializeApp() {
                 listenToUserUpdates(appState.currentUser.uid);
             }
         } else {
-            // अगर कोई यूज़र नहीं है, तो अनाम रूप से साइन इन करें
             auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
         }
     });
@@ -531,7 +533,7 @@ async function refreshAndRenderFeed() {
         shortVideos = shuffleArray(shortVideos);
         appState.allVideos = shortVideos;
         
-        renderVideoSwiper(shortVideos); 
+        renderVideoSwiper(shortVideos);
     } catch (error) {
         console.error("Error refreshing feed:", error);
         videoSwiper.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load videos. Please check your connection.</p>';
@@ -632,7 +634,6 @@ async function saveAndContinue() {
         appState.currentUser = { ...appState.currentUser, ...userData };
         updateProfileUI();
         
-        // ★★★ महत्वपूर्ण: प्रोफ़ाइल सहेजने के बाद ऐप तर्क शुरू करें
         await startAppLogic();
         
     } catch (error) {
@@ -1596,6 +1597,8 @@ const startAppLogic = async () => {
     
     renderCategories();
     renderCategoriesInBar();
+    
+    // ★★★ बदला हुआ कोड: डेटा को नेविगेट करने से पहले लोड करें ★★★
     await refreshAndRenderFeed();
     
     const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
@@ -3079,16 +3082,21 @@ async function incrementCustomViewCount(videoId) {
 
 // =======================================================
 // ★★★ ADS ROTATION & REDIRECT STATE LOGIC - START ★★★
+// ★★★ बदला हुआ कोड: विज्ञापन शेड्यूलिंग और कूलडाउन सिस्टम ★★★
 // =======================================================
 const adRotationManager = {
     minutes: 0,
-    shortAdTimer: null,
+    adCooldownActive: false, // यह फ्लैग बताएगा कि क्या 60 सेकंड का कूलडाउन चल रहा है
     init: function() {
-        setInterval(this.adScheduler.bind(this), 60000); 
-        this.startSpecialAdTimer();
+        setInterval(this.adScheduler.bind(this), 60000); // हर 60 सेकंड में एक बार चलेगा
         this.showBanner();
     },
     adScheduler: function() {
+        if (this.adCooldownActive) {
+            console.log("[Ad Scheduler] Cooldown active. Skipping ad this minute.");
+            return;
+        }
+
         this.minutes++;
         const adCycle = this.minutes % 3;
 
@@ -3096,19 +3104,24 @@ const adRotationManager = {
 
         switch (adCycle) {
             case 1:
-                console.log("[Ad Trigger] Type: Interstitial");
                 this.showInterstitial();
                 break;
             case 2:
-                console.log("[Ad Trigger] Type: Social Bar / Popunder");
                 this.showSocialBar();
                 this.showPopunder();
                 break;
             case 0:
-                console.log("[Ad Trigger] Type: Redirect");
                 this.showRedirect();
                 break;
         }
+    },
+    triggerCooldown: function() {
+        console.log("[Ad Cooldown] Starting 60-second cooldown.");
+        this.adCooldownActive = true;
+        setTimeout(() => {
+            console.log("[Ad Cooldown] Cooldown finished. Ads are enabled again.");
+            this.adCooldownActive = false;
+        }, 60000); // 60 सेकंड
     },
     injectScript: function(src, isAsync = true, id = null, attributes = {}) {
         if (id && document.getElementById(id)) return;
@@ -3124,20 +3137,27 @@ const adRotationManager = {
         return script;
     },
     showInterstitial: function() {
+        console.log("[Ad Trigger] ✅ Interstitial Ad Triggered");
         this.saveStateBeforeRedirect(); 
         this.injectScript('https://groleegni.net/401/9572500');
+        this.triggerCooldown();
     },
     showRedirect: function() {
-        this.saveStateBeforeRedirect(); 
+        console.log("[Ad Trigger] ➡️ Redirect Ad Triggered");
+        this.saveStateBeforeRedirect();
+        this.triggerCooldown(); // रीडायरेक्ट करने से पहले कूलडाउन शुरू करें
         window.location.href = "https://www.profitableratecpm.com/tq7jxrf5v?key=6c0e753b930c66f90b622d51e426e9d8";
     },
     showSocialBar: function() {
+        console.log("[Ad Trigger] 📢 Social Bar Loaded");
         this.injectScript('//pl27114870.profitableratecpm.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js', true, 'adsterra-social-bar');
     },
     showPopunder: function() {
+        console.log("[Ad Trigger] 💣 Popunder Launched");
         this.saveStateBeforeRedirect();
         this.injectScript('//pl27115090.profitableratecpm.com/7d/0c/a8/7d0ca84cbcf7b35539ae2feb7dc2bd2e.js', true, 'adsterra-popunder');
         this.injectScript('https://fpyf8.com/88/tag.min.js', true, 'monetag-popunder', {'data-zone': '157303', 'data-cfasync': 'false'});
+        this.triggerCooldown();
     },
     showBanner: function() {
         let bannerContainer = document.getElementById('static-banner-container');
@@ -3150,37 +3170,6 @@ const adRotationManager = {
             console.log("🖼️ Static Banner Loaded");
             showBannerAdWithFallback(bannerContainer);
         }
-    },
-    startSpecialAdTimer: function() {
-        if (this.shortAdTimer) clearInterval(this.shortAdTimer);
-        this.shortAdTimer = setInterval(() => {
-            const existingAd = document.getElementById('special-timed-ad');
-            if (existingAd) return; 
-
-            const adDiv = document.createElement('div');
-            adDiv.id = 'special-timed-ad';
-            
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.async = true;
-            script.src = "//decreaselackadmit.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-            
-            const optionsScript = document.createElement('script');
-            optionsScript.type = 'text/javascript';
-            optionsScript.text = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {}}`;
-
-            adDiv.appendChild(optionsScript);
-            adDiv.appendChild(script);
-
-            document.body.appendChild(adDiv);
-
-            setTimeout(() => {
-                const adToRemove = document.getElementById('special-timed-ad');
-                if (adToRemove) {
-                    adToRemove.remove();
-                }
-            }, 5000); 
-        }, 13000); 
     },
     saveStateBeforeRedirect: function() {
         const currentScreenId = appState.currentScreen;
@@ -3251,15 +3240,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('main-sidebar');
     if (sidebar) { const reportButton = document.createElement('button'); reportButton.id = 'navigate-to-report-btn'; reportButton.className = 'sidebar-option haptic-trigger'; reportButton.innerHTML = `<i class="fas fa-flag" style="margin-right: 10px;"></i>Report`; reportButton.onclick = () => navigateTo('report-screen'); const adButton = document.getElementById('navigate-to-advertisement-btn'); if (adButton && adButton.nextSibling) sidebar.insertBefore(reportButton, adButton.nextSibling); else sidebar.appendChild(reportButton); }
     
-    // ★★★ महत्वपूर्ण: ऐप को शुरू करने के लिए get-started-btn अब सीधे startAppLogic को नहीं बुलाएगा।
-    // इसके बजाय, यह केवल लोडर दिखाएगा और onAuthStateChanged प्रक्रिया को संभालने देगा।
     const getStartedBtn = document.getElementById('get-started-btn');
     if (getStartedBtn) { 
         getStartedBtn.classList.add('haptic-trigger'); 
         getStartedBtn.addEventListener('click', () => {
             getStartedBtn.style.display = 'none';
             document.getElementById('loading-container').style.display = 'flex';
-            // तर्क अब initializeApp में auth स्थिति द्वारा नियंत्रित किया जाता है
         }); 
     }
     
