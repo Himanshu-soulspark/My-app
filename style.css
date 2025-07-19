@@ -842,7 +842,7 @@ body {
 }
 
 .modal-overlay {
-    position: fixed; /* ★ बदलाव: absolute से fixed ताकि यह पूरे व्यूपोर्ट को कवर करे */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -1125,6 +1125,7 @@ input:checked + .slider:before {
     border-bottom: 1px solid rgba(var(--text-primary-rgb), 0.1);
 }
 
+/* ★ नया: ट्रांसपेरेंट हेडर */
 .screen-header.transparent {
     background-color: transparent;
     backdrop-filter: none;
@@ -1315,10 +1316,11 @@ input:checked + .slider:before {
     font-weight: 400;
     font-size: 0.9em;
     margin: 0;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* ★ क्रेडिट बटन के लिए जगह */
     text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
 }
 
+/* ★ नया स्टाइल: क्रेडिट बटन के लिए */
 .credit-btn {
     pointer-events: auto;
     background-color: rgba(var(--secondary-background-rgb), 0.7);
@@ -1330,7 +1332,7 @@ input:checked + .slider:before {
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-left: 50px;
+    margin-left: 50px; /* ★ बदलाव: बीच में लाने के लिए */
 }
 .credit-btn:hover {
     background-color: var(--primary-neon);
@@ -1364,7 +1366,7 @@ input:checked + .slider:before {
 }
 
 .comments-modal-overlay {
-    position: fixed; /* ★ बदलाव: absolute से fixed */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -1491,7 +1493,7 @@ input:checked + .slider:before {
 }
 
 .main-sidebar {
-    position: fixed; /* ★ बदलाव: absolute से fixed */
+    position: absolute;
     top: 0;
     left: 0;
     width: 280px;
@@ -1512,7 +1514,7 @@ input:checked + .slider:before {
 }
 
 .sidebar-overlay {
-    position: fixed; /* ★ बदलाव: absolute से fixed */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -1954,8 +1956,8 @@ input:checked + .slider:before {
     cursor: pointer;
     font-size: 0.9em;
     transition: all 0.2s ease;
-    position: relative; 
-    overflow: hidden; 
+    position: relative; /* ★ बदलाव: JS को इनपुट ओवरले करने की अनुमति देने के लिए */
+    overflow: hidden; /* ★ बदलाव: JS को इनपुट ओवरले करने की अनुमति देने के लिए */
 }
 #history-date-button:hover {
     background-color: var(--secondary-background);
@@ -2120,7 +2122,7 @@ input:checked + .slider:before {
 
 #friends-screen .content-area {
     flex-grow: 1;
-    padding: 80px 15px 80px 15px; 
+    padding: 80px 15px 80px 15px; /* टॉप पैडिंग बढ़ाई गई */
     overflow-y: auto;
     height: 100%;
 }
@@ -2165,14 +2167,14 @@ input:checked + .slider:before {
     opacity: 0.9;
 }
 
-
+/* ★★★ बदलाव: मेंबर्स लिस्ट के कार्ड को छोटा करने के लिए स्टाइल बदला गया ★★★ */
 .holographic-card {
     display: flex;
     align-items: center;
     background-color: rgba(var(--secondary-background-rgb), 0.5);
     border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 12px; /* पहले 15px था */
+    margin-bottom: 12px; /* पहले 15px था */
     border: 1px solid rgba(var(--primary-neon-rgb), 0.2);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -2187,18 +2189,19 @@ input:checked + .slider:before {
 
 .holographic-card:hover {
     border-color: rgba(var(--primary-neon-rgb), 0.5);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 .holographic-card .profile-pic {
-    width: 60px;
-    height: 60px;
+    width: 50px; /* पहले 60px था */
+    height: 50px; /* पहले 60px था */
     border-radius: 50%;
-    margin-right: 18px;
+    margin-right: 15px;
     background-color: var(--background);
     overflow: hidden;
     border: 2px solid rgba(var(--primary-neon-rgb), 0.2);
     flex-shrink: 0;
+    cursor: pointer;
 }
 .holographic-card .profile-pic img, .chat-app-bar .profile-pic img {
     width: 100%;
@@ -2211,11 +2214,11 @@ input:checked + .slider:before {
 }
 .holographic-card .info .name {
     font-weight: 700;
-    font-size: 18px;
+    font-size: 16px; /* पहले 18px था */
     color: var(--text-primary);
 }
 .holographic-card .info .subtext {
-    font-size: 14px;
+    font-size: 13px; /* पहले 14px था */
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
@@ -2227,6 +2230,7 @@ input:checked + .slider:before {
     font-size: 0.8em;
     margin-top: 4px;
 }
+
 
 .add-button {
     background: var(--primary-neon);
@@ -2413,6 +2417,7 @@ input:checked + .slider:before {
     box-shadow: 0 0 5px var(--primary-neon);
 }
 
+
 :root {
     --description-modal-bg: var(--primary-neon);
 }
@@ -2522,19 +2527,19 @@ input:checked + .slider:before {
     padding: 3px;
 }
 .earnsure-language-toggle button {
-    background: transparent;
-    color: var(--text-secondary);
-    border: none;
-    padding: 4px 8px;
+    background: var(--secondary-background);
+    color: var(--text-primary);
+    border: 1px solid var(--text-secondary);
+    padding: 6px 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: 700;
-    font-size: 0.8em;
+    font-weight: 500;
     transition: all 0.2s ease;
 }
 .earnsure-language-toggle button.active {
     background-color: var(--primary-neon);
     color: var(--background);
+    border-color: var(--primary-neon);
 }
 .earnsure-language-toggle button:hover {
     opacity: 0.8;
@@ -2556,11 +2561,22 @@ input:checked + .slider:before {
     justify-content: center;
     margin-bottom: 20px;
     flex-shrink: 0;
-    min-height: 250px;
-    background-color: var(--secondary-background);
-    border-radius: 8px;
 }
 
+.earnsure-ad-container > div {
+    width: 300px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--secondary-background);
+    border: 1px dashed var(--text-secondary);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* ★★★ बदलाव: Earnsure कंटेंट के लिए नया स्टाइल */
 .earnsure-section {
     background-color: var(--secondary-background);
     border-left: 4px solid var(--primary-neon);
@@ -2603,7 +2619,6 @@ input:checked + .slider:before {
     padding-left: 15px;
     margin: 1em 0;
 }
-
 
 #creator-page-screen .content-area {
     overflow: hidden;
@@ -3243,7 +3258,7 @@ input:checked + .slider:before {
 }
 
 #admin-priority-ad-overlay {
-    position: fixed; /* ★ बदलाव: absolute से fixed */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -3309,6 +3324,10 @@ input:checked + .slider:before {
     background-color: var(--error-red);
     transform: scale(1.1);
 }
+
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ NEW CREDIT SCREEN STYLES ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
 #credit-screen .screen-header {
     justify-content: space-between;
@@ -3391,6 +3410,10 @@ input:checked + .slider:before {
     line-height: 1.6;
 }
 
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ MEDIA QUERY FOR DESKTOP AND BROWSER COMPATIBILITY ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+
 @media (min-width: 768px) {
     body {
         display: flex;
@@ -3414,8 +3437,12 @@ input:checked + .slider:before {
     }
 }
 
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ वीडियो रोटेशन के लिए CSS स्टाइल ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+
 #creator-page-long-view .main-video-card-wrapper.rotated {
-    position: fixed; /* ★ बदलाव: absolute से fixed */
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -3435,6 +3462,10 @@ input:checked + .slider:before {
     border-radius: 0;
 }
 
+/* ================================================= */
+/* ★★★★★★★ NEW ADVERTISEMENT STYLES (v5.1) - START ★★★★★★★ */
+/* ================================================= */
+
 .long-video-grid-ad,
 .friend-list-ad,
 #upload-screen-ad-container {
@@ -3453,21 +3484,20 @@ input:checked + .slider:before {
 #in-player-timed-ad {
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 250px;
+    left: 0;
+    width: 100%;
     z-index: 60;
     display: none;
     justify-content: center;
     align-items: center;
     background-color: rgba(0,0,0,0.5);
+    padding: 5px 0;
     backdrop-filter: blur(4px);
 }
 .in-player-ad-close-btn {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: -10px;
+    right: -10px;
     background: rgba(0,0,0,0.8);
     color: white;
     border: 1px solid white;
@@ -3518,49 +3548,14 @@ input:checked + .slider:before {
     border: none;
 }
 
-/* ★ नया स्टाइल: मेंबर लिस्ट के नए डिज़ाइन के लिए */
-#members-content .holographic-card {
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-#members-content .holographic-card:hover {
-    background-color: rgba(var(--primary-neon-rgb), 0.05);
-    transform: translateY(-2px);
-}
-#members-content .holographic-card .profile-pic {
-    width: 50px;
-    height: 50px;
-    margin-right: 15px;
-    cursor: pointer;
-}
-#members-content .holographic-card .info {
-    cursor: pointer;
-    text-align: left;
-}
-#members-content .holographic-card .info .name {
-    font-size: 1.1em;
-    font-weight: 500;
-}
-#members-content .holographic-card .info .subtext {
-    display: none;
-}
-#members-content .holographic-card .delete-friend-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.3em;
-    cursor: pointer;
-    padding: 10px;
-    margin-left: auto;
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-#members-content .holographic-card .delete-friend-btn:hover {
-    color: var(--error-red);
-    transform: scale(1.1);
-}
 
-/* ★ नया स्टाइल: प्रोफाइल फोटो को बड़ा दिखाने वाले मोडल के लिए */
+/* ================================================= */
+/* ★★★★★★★ NEW ADVERTISEMENT STYLES (v5.1) - END ★★★★★★★ */
+/* ================================================= */
+
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ नया: प्रोफाइल फोटो को बड़ा करने के लिए स्टाइल ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 #image-enlarge-modal .enlarged-image-content {
     background-color: transparent;
     padding: 0;
@@ -3572,6 +3567,7 @@ input:checked + .slider:before {
     align-items: center;
     box-shadow: none;
 }
+
 #image-enlarge-modal img {
     max-width: 100%;
     max-height: 100%;
