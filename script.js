@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v6.4 === */
+/* === Shubhzone App Script (Code 2) - FINAL v6.5 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -384,9 +384,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     appState.currentScreenPayload = payload;
 
     setTimeout(() => {
-        const contentArea = document.querySelector(`#${nextScreenId} .content-area`) || 
-                            document.getElementById('video-swiper') ||
-                            document.getElementById(nextScreenId);
+        const contentArea = document.querySelector(`#${nextScreenId} .content-area, #${nextScreenId} .screen-content, #video-swiper`);
         if (contentArea && scrollPosition > 0) {
             contentArea.scrollTop = scrollPosition;
         }
@@ -396,7 +394,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'long-video-screen') setupLongVideoScreen();
     if (nextScreenId === 'history-screen') initializeHistoryScreen();
     if (nextScreenId === 'your-zone-screen') populateYourZoneScreen();
-    if (nextScreenId === 'home-screen') initializeHomeScreen(); // ★ बदला हुआ
+    if (nextScreenId === 'home-screen') initializeHomeScreen();
     if (nextScreenId === 'earnsure-screen') initializeEarnsureScreen();
     if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
@@ -425,8 +423,61 @@ function navigateBack() {
 
     if (previousScreenId === 'profile-screen') loadUserVideosFromFirebase();
     if (previousScreenId === 'long-video-screen') setupLongVideoScreen();
-    if (previousScreenId === 'home-screen') initializeHomeScreen(); // ★ बदला हुआ
+    if (previousScreenId === 'home-screen') initializeHomeScreen();
 }
+
+// ★★★ बदला हुआ और सबसे महत्वपूर्ण फ़ंक्शन ★★★
+async function initializeApp() {
+    if (appInitializationComplete) return;
+    appInitializationComplete = true;
+
+    const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
+    const lastScroll = sessionStorage.getItem('lastScrollPositionBeforeAd');
+
+    // यदि हम विज्ञापन से वापस आ रहे हैं
+    if (lastScreen) {
+        console.log("[State Restore] Detected return from an ad. Restoring state.");
+        document.getElementById('splash-screen').style.display = 'none';
+        document.getElementById('loading-container').style.display = 'flex';
+        
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // उपयोगकर्ता डेटा प्राप्त करें लेकिन अभी नेविगेट न करें
+                appState.currentUser.uid = user.uid;
+                const userRef = db.collection('users').doc(user.uid);
+                const doc = await userRef.get();
+                if (doc.exists) {
+                    appState.currentUser = { ...appState.currentUser, ...doc.data() };
+                    listenToUserUpdates(user.uid);
+                    updateProfileUI();
+                    
+                    // अब ऐप शुरू करें और सहेजी गई स्थिति को बहाल करें
+                    await restoreStateOrStartNormally(true);
+                } else {
+                    // यदि उपयोगकर्ता मौजूद नहीं है, तो सामान्य प्रवाह पर वापस जाएं
+                    await restoreStateOrStartNormally(false);
+                }
+            } else {
+                 // यदि उपयोगकर्ता नहीं है, तो सामान्य प्रवाह पर वापस जाएं
+                auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
+                await restoreStateOrStartNormally(false);
+            }
+        });
+    } else {
+        // सामान्य ऐप स्टार्टअप
+        console.log("[State Restore] Normal startup sequence.");
+        activateScreen('splash-screen');
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                await checkUserProfileAndProceed(user);
+            } else {
+                auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
+            }
+        });
+    }
+    startAppTimeTracker();
+}
+
 
 async function checkUserProfileAndProceed(user) {
     if (!user) return; 
@@ -439,6 +490,7 @@ async function checkUserProfileAndProceed(user) {
             userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
         }
         appState.currentUser = { ...appState.currentUser, ...userData };
+        listenToUserUpdates(user.uid);
         updateProfileUI();
         
         if (userData.name && userData.state) {
@@ -468,7 +520,6 @@ async function checkUserProfileAndProceed(user) {
 }
 
 
-let appInitializationComplete = false;
 let userListener = null;
 
 function listenToUserUpdates(uid) {
@@ -483,24 +534,6 @@ function listenToUserUpdates(uid) {
             }
         }
     }, (error) => console.error("Error listening to user updates:", error));
-}
-
-function initializeApp() {
-    if (appInitializationComplete) return;
-    appInitializationComplete = true;
-
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            await checkUserProfileAndProceed(user);
-            if (appState.currentUser.uid) {
-                listenToUserUpdates(appState.currentUser.uid);
-            }
-        } else {
-            auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
-        }
-    });
-    activateScreen('splash-screen');
-    startAppTimeTracker();
 }
 
 
@@ -1357,7 +1390,6 @@ function filterVideosByCategory(category, element) {
 
     renderVideoSwiper(appState.allVideos);
     
-    // फ़िल्टर करने के बाद प्लेयर को फिर से शुरू करें
     setTimeout(initializePlayers, 100);
 }
 
@@ -1549,18 +1581,21 @@ async function checkAndShowPriorityAd() {
     });
 }
 
+// ★★★ बदला हुआ फ़ंक्शन ★★★
 let appStartLogicHasRun = false;
-const startAppLogic = async () => {
+async function startAppLogic() {
     if (appStartLogicHasRun) return;
     appStartLogicHasRun = true;
     
-    adRotationManager.init();
+    await restoreStateOrStartNormally(false);
+};
 
-    await checkAndShowPriorityAd();
-    
+// ★★★ नया हेल्पर फ़ंक्शन ★★★
+async function restoreStateOrStartNormally(isRestoring) {
     const loadingContainer = document.getElementById('loading-container');
     if (loadingContainer) loadingContainer.style.display = 'flex';
-    
+
+    await checkAndShowPriorityAd();
     renderCategories();
     renderCategoriesInBar();
     
@@ -1573,18 +1608,25 @@ const startAppLogic = async () => {
     
     if (loadingContainer) loadingContainer.style.display = 'none';
 
-    const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
-    const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
-    
-    if (lastScreen && document.getElementById(lastScreen)) {
-        console.log(`[State Restore] Restoring to screen: ${lastScreen} at scroll: ${lastScrollPosition}`);
-        navigateTo(lastScreen, null, lastScrollPosition);
+    // विज्ञापन प्रबंधक केवल मुख्य ऐप तर्क चलने पर ही शुरू करें
+    adRotationManager.init();
+
+    if (isRestoring) {
+        const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
+        const lastScroll = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
+        
+        if (lastScreen && document.getElementById(lastScreen)) {
+            console.log(`[State Restore] Restoring to screen: ${lastScreen} at scroll: ${lastScroll}`);
+            navigateTo(lastScreen, null, lastScroll);
+        } else {
+            navigateTo('home-screen');
+        }
         sessionStorage.removeItem('lastScreenBeforeAd');
         sessionStorage.removeItem('lastScrollPositionBeforeAd');
     } else {
         navigateTo('home-screen');
     }
-};
+}
 
 function setupLongVideoScreen() {
     populateLongVideoCategories();
@@ -3098,6 +3140,7 @@ const adRotationManager = {
 
         if (screenElement) {
             const contentArea = screenElement.querySelector('.content-area') || 
+                                screenElement.querySelector('.screen-content') ||
                                 document.getElementById('video-swiper'); 
             if (contentArea) {
                 scrollPosition = contentArea.scrollTop;
