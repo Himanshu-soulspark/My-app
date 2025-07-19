@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v5.5 === */
+/* === Shubhzone App Script (Code 2) - FINAL v5.7 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -280,8 +280,11 @@ let appState = {
         uid: null, username: "new_user", avatar: "https://via.placeholder.com/120/222/FFFFFF?text=+",
         email: "", name: "", mobile: "", address: "", hobby: "", state: "", country: "",
         referralCode: null, likedVideos: [], 
-        totalWatchTimeSeconds: 0,
-        creatorTotalWatchTimeSeconds: 0, 
+        // ★★★ बदला हुआ: कॉइन सिस्टम के लिए नई प्रॉपर्टीज़ जोड़ी गईं
+        totalWatchTimeSeconds: 0, // अभी भी आंतरिक गणना के लिए रखा गया है
+        viewerCoins: 0,
+        creatorTotalWatchTimeSeconds: 0, // अभी भी आंतरिक गणना के लिए रखा गया है
+        creatorCoins: 0,
         creatorDailyWatchTime: {},
         friends: [], 
     },
@@ -307,7 +310,6 @@ let appState = {
         },
     },
     appTimeTrackerInterval: null,
-    // ★★★ समाधान: वॉच टाइम के लिए एक बेहतर ट्रैकर बनाया गया
     watchTimeManager: {
         // videoId: { interval: null, accumulatedSeconds: 0 }
     },
@@ -394,6 +396,14 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     activateScreen(nextScreenId);
     appState.currentScreenPayload = payload;
 
+    // स्क्रीन लोड होने के बाद स्क्रॉल पोजीशन को सेट करें
+    setTimeout(() => {
+        const contentArea = document.querySelector(`#${nextScreenId} .content-area`) || document.getElementById(nextScreenId);
+        if (contentArea && scrollPosition > 0) {
+            contentArea.scrollTop = scrollPosition;
+        }
+    }, 100); // थोड़ा विलंब सुनिश्चित करता है कि DOM अपडेट हो गया है
+
     if (nextScreenId === 'profile-screen') loadUserVideosFromFirebase();
     if (nextScreenId === 'long-video-screen') setupLongVideoScreen();
     if (nextScreenId === 'history-screen') initializeHistoryScreen();
@@ -452,8 +462,11 @@ async function checkUserProfileAndProceed(user) {
             userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
         }
         userData.likedVideos = userData.likedVideos || [];
+        // ★★★ बदला हुआ: डेटाबेस से कॉइन डेटा लोड करें
         userData.totalWatchTimeSeconds = userData.totalWatchTimeSeconds || 0;
+        userData.viewerCoins = userData.viewerCoins || 0;
         userData.creatorTotalWatchTimeSeconds = userData.creatorTotalWatchTimeSeconds || 0;
+        userData.creatorCoins = userData.creatorCoins || 0;
         userData.creatorDailyWatchTime = userData.creatorDailyWatchTime || {};
         userData.friends = userData.friends || []; 
         appState.currentUser = { ...appState.currentUser, ...userData };
@@ -479,8 +492,12 @@ async function checkUserProfileAndProceed(user) {
             uid: user.uid, name: '', email: user.email || '',
             avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            likedVideos: [], totalWatchTimeSeconds: 0,
+            likedVideos: [], 
+            // ★★★ बदला हुआ: नए यूजर के लिए कॉइन डेटा सेट करें
+            totalWatchTimeSeconds: 0,
+            viewerCoins: 0,
             creatorTotalWatchTimeSeconds: 0,
+            creatorCoins: 0,
             creatorDailyWatchTime: {},
             friends: [],
             referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
@@ -498,11 +515,13 @@ function initializeApp() {
     if (appInitializationComplete) return;
     appInitializationComplete = true;
 
+    // ★★★ बदला हुआ: रीडायरेक्ट से पहले की स्थिति को पुनर्स्थापित करने के लिए
     lastScreenBeforeAd = sessionStorage.getItem('lastScreenBeforeAd');
     const lastScrollPosition = sessionStorage.getItem('lastScrollPositionBeforeAd');
     if (lastScreenBeforeAd) {
         appState.navigationStack = ['splash-screen', lastScreenBeforeAd];
     }
+    
     auth.onAuthStateChanged(user => {
         if (user) {
             checkUserProfileAndProceed(user);
@@ -1013,7 +1032,6 @@ function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         startVideoViewTracker(videoId, 'short');
         
-        // ★★★ समाधान: वॉच टाइम ट्रैकर को यहाँ कॉल करें
         if (videoData) {
             startCreatorWatchTimeTracker(videoId, videoData.uploaderUid);
         }
@@ -1039,7 +1057,6 @@ function onPlayerStateChange(event) {
         }
     } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
         stopVideoViewTracker(videoId);
-        // ★★★ समाधान: वॉच टाइम ट्रैकर को यहाँ रोकें
         if (videoData) {
             stopCreatorWatchTimeTracker(videoId);
         }
@@ -1123,7 +1140,6 @@ function pauseActivePlayer() {
     if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
     manageShortVideoTimedAd('hide');
 
-    // ★★★ समाधान: pauseVideo() की जगह stopVideo() का उपयोग करें
     player.stopVideo();
     
     console.log(`[Player Control] Stopped and reset active player: ${activePlayerId}`);
@@ -1605,6 +1621,7 @@ const startAppLogic = async () => {
     renderCategoriesInBar();
     await refreshAndRenderFeed();
     
+    // ★★★ बदला हुआ: रीडायरेक्ट से पहले की स्थिति को पुनर्स्थापित करने के लिए logic
     const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
     const lastScreen = lastScreenBeforeAd || 'home-screen';
     
@@ -2491,7 +2508,6 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
 
             clearAllAdTimers(); 
 
-            // ★★★ समाधान: ऑडियो मिक्सिंग रोकने के लिए stopVideo() का प्रयोग करें
             const otherType = tab.dataset.type === 'short' ? 'long' : 'short';
             if(appState.creatorPagePlayers[otherType] && typeof appState.creatorPagePlayers[otherType].stopVideo === 'function') {
                 appState.creatorPagePlayers[otherType].stopVideo();
@@ -2572,7 +2588,6 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
     }
 }
 
-// ★★★ समाधान: autoplay को एक पैरामीटर के रूप में जोड़ा गया
 function initializeCreatorPagePlayer(videoId, containerId, type, shouldAutoplay) {
     if (appState.creatorPagePlayers[type]) {
         appState.creatorPagePlayers[type].destroy();
@@ -2583,7 +2598,6 @@ function initializeCreatorPagePlayer(videoId, containerId, type, shouldAutoplay)
         width: '100%',
         videoId: videoId,
         playerVars: {
-            // ★★★ समाधान: autoplay को नियंत्रित करना
             'autoplay': shouldAutoplay ? 1 : 0,
             'controls': 1, 
             'rel': 0,
@@ -2654,7 +2668,7 @@ function toggleVideoRotation() {
                 manageLongVideoPlayerBanner('hide');
             } else {
                 if (player && player.getPlayerState() !== YT.PlayerState.PLAYING) {
-                    manageLongVideoPlayerBanner('show');
+                    // manageLongVideoPlayerBanner('show'); // Removed as per request
                 } else {
                     manageLongVideoPlayerBanner('hide');
                 }
@@ -2688,12 +2702,10 @@ function handleCreatorPlayerStateChange(event) {
         if (isLongVideo) manageLongVideoPlayerBanner('hide');
         startVideoViewTracker(dbVideoId, currentVideo.videoLengthType);
         addVideoToHistory(dbVideoId);
-        // ★★★ समाधान: क्रिएटर पेज पर भी वॉच टाइम ट्रैक करें
         startCreatorWatchTimeTracker(dbVideoId, uploaderUid);
     } else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.ENDED) {
-        if (isLongVideo) manageLongVideoPlayerBanner('show'); 
+        // if (isLongVideo) manageLongVideoPlayerBanner('show'); // Removed as per request
         stopVideoViewTracker(dbVideoId);
-        // ★★★ समाधान: क्रिएटर पेज पर वॉच टाइम रोकें
         stopCreatorWatchTimeTracker(dbVideoId);
     } else {
         if (isLongVideo) manageLongVideoPlayerBanner('hide');
@@ -2702,7 +2714,7 @@ function handleCreatorPlayerStateChange(event) {
 
 
 // =======================================================
-// ★★★ PAYMENT & TRACKING LOGIC - START ★★★
+// ★★★ PAYMENT & COIN SYSTEM LOGIC - START ★★★
 // =======================================================
 
 function initializePaymentScreen() {
@@ -2717,7 +2729,7 @@ function initializePaymentScreen() {
         <div id="bank-details" class="payment-details" style="display:none;"><div class="form-group"><label for="bank-account-number">Account Number</label><input type="text" id="bank-account-number" placeholder="Enter Account Number"></div><div class="form-group"><label for="bank-ifsc-code">IFSC Code</label><input type="text" id="bank-ifsc-code" placeholder="Enter IFSC Code"></div></div>
         <div class="form-group"><label for="payment-address">Address</label><textarea id="payment-address" rows="3" placeholder="Enter your full address">${escapeHTML(user.address)}</textarea></div>
         <div class="form-group"><label for="payment-aadhar">Aadhar Number</label><input type="text" id="payment-aadhar" placeholder="Enter your Aadhar number"></div>
-        <button class="continue-btn haptic-trigger" onclick="navigateTo('track-payment-screen')" style="background-color: var(--success-green); margin-bottom: 10px;">Track Payment</button>
+        <button class="continue-btn haptic-trigger" onclick="navigateTo('track-payment-screen')" style="background-color: var(--success-green); margin-bottom: 10px;">Track Earnings</button>
         <button class="continue-btn haptic-trigger" onclick="handlePaymentRequest(event)">Request Payment</button>
     `;
 }
@@ -2758,7 +2770,7 @@ async function handlePaymentRequest(event) {
         return;
     }
 
-    if(!confirm("This will submit your payment request to the admin. After submitting, your tracking data will be reset. Continue?")) {
+    if(!confirm("This will submit your payment request to the admin. After submitting, your tracking data (coins and watch time) will be reset. Continue?")) {
         return;
     }
     
@@ -2766,10 +2778,7 @@ async function handlePaymentRequest(event) {
     button.disabled = true;
     button.textContent = "Submitting...";
 
-    const totalAppTimeSeconds = parseInt(localStorage.getItem('totalAppTimeSeconds') || '0', 10);
-    const creatorWatchTime = user.creatorTotalWatchTimeSeconds || 0;
-    const dailyCreatorWatchTime = user.creatorDailyWatchTime || {};
-
+    // ★★★ बदला हुआ: कॉइन डेटा भेजा जा रहा है
     const requestData = {
         requesterUid: user.uid,
         requesterName: user.name,
@@ -2777,9 +2786,10 @@ async function handlePaymentRequest(event) {
         paymentDetails: paymentDetails,
         address: address,
         aadhar: aadhar,
-        appTimeSeconds: totalAppTimeSeconds,
-        totalCreatorWatchTimeSeconds: creatorWatchTime,
-        dailyCreatorWatchTime: dailyCreatorWatchTime,
+        viewerCoins: user.viewerCoins || 0,
+        creatorCoins: user.creatorCoins || 0,
+        totalAppTimeSeconds: parseInt(localStorage.getItem('totalAppTimeSeconds') || '0', 10), // संदर्भ के लिए
+        totalCreatorWatchTimeSeconds: user.creatorTotalWatchTimeSeconds || 0, // संदर्भ के लिए
         status: "pending",
         requestedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -2787,7 +2797,7 @@ async function handlePaymentRequest(event) {
     try {
         await db.collection("paymentRequests").add(requestData);
         await resetTrackingData();
-        alert("Payment request submitted successfully! Your tracking data has been reset.");
+        alert("Payment request submitted successfully! Your earnings data has been reset.");
         navigateTo('home-screen'); 
     } catch(error) {
         console.error("Error submitting payment request:", error);
@@ -2802,58 +2812,110 @@ function initializeTrackPaymentScreen() {
     const content = document.getElementById('track-payment-content');
     if (!content) return;
 
-    const totalAppTimeSeconds = parseInt(localStorage.getItem('totalAppTimeSeconds') || '0', 10);
-    const creatorWatchTime = appState.currentUser.creatorTotalWatchTimeSeconds || 0;
-    const dailyWatchData = appState.currentUser.creatorDailyWatchTime || {};
-
-    const dailyBreakdownHtml = Object.entries(dailyWatchData)
-        .sort((a, b) => new Date(b[0]) - new Date(a[0]))
-        .map(([date, seconds]) => `<li><strong>${date}:</strong> ${formatSecondsToHMS(seconds)}</li>`)
-        .join('');
+    // ★★★ बदला हुआ: कॉइन सिस्टम के अनुसार UI को अपडेट किया गया
+    const viewerCoins = appState.currentUser.viewerCoins || 0;
+    const creatorCoins = appState.currentUser.creatorCoins || 0;
+    const uncreditedSeconds = parseInt(localStorage.getItem('uncreditedUserSeconds') || '0', 10);
+    const timeToNextCoin = 300 - uncreditedSeconds;
 
     content.innerHTML = `
         <div class="earnsure-section"><p>This data helps calculate your earnings. It will be reset after each payment request.</p></div>
-        <div class="earnsure-section"><h4>🕒 Time Spent on App</h4><p style="font-size: 1.5em; color: var(--primary-neon);">${formatSecondsToHMS(totalAppTimeSeconds)}</p></div>
-        <div class="earnsure-section"><h4>📺 Total Video Watch Time (Creator)</h4><p style="font-size: 1.5em; color: var(--primary-neon);">${formatSecondsToHMS(creatorWatchTime)}</p></div>
-        <div class="earnsure-section"><h4>🗓️ Daily Watch Time Breakdown</h4>${dailyBreakdownHtml ? `<ul>${dailyBreakdownHtml}</ul>` : '<p>No daily watch time recorded yet.</p>'}</div>
+        <div class="earnsure-section"><h4>🪙 Your Viewer Coins</h4><p style="font-size: 1.5em; color: var(--primary-neon);">${viewerCoins}</p><p style="font-size: 0.9em; color: var(--text-secondary);">You get 1 coin for every 5 minutes of watch time.</p><p style="font-size: 0.9em; color: var(--text-secondary);">Time to next coin: ${formatSecondsToHMS(timeToNextCoin)}</p></div>
+        <div class="earnsure-section"><h4>💰 Your Creator Coins</h4><p style="font-size: 1.5em; color: var(--primary-neon);">${creatorCoins}</p><p style="font-size: 0.9em; color: var(--text-secondary);">You get 1 coin for every 10 minutes of total watch time on your videos.</p></div>
     `;
 }
 
 
 function startAppTimeTracker() {
     if (appState.appTimeTrackerInterval) clearInterval(appState.appTimeTrackerInterval);
-    appState.appTimeTrackerInterval = setInterval(() => {
+    
+    // ★★★ बदला हुआ: दर्शक कॉइन के लिए ट्रैकिंग लॉजिक
+    const userCoinInterval = 5000; // हर 5 सेकंड में जाँच करें
+    const userCoinThreshold = 300; // 5 मिनट = 300 सेकंड
+
+    appState.appTimeTrackerInterval = setInterval(async () => {
+        // कुल ऐप समय को अभी भी ट्रैक करें
         let totalSeconds = parseInt(localStorage.getItem('totalAppTimeSeconds') || '0', 10);
         totalSeconds += 5;
         localStorage.setItem('totalAppTimeSeconds', totalSeconds);
-    }, 5000);
+
+        // दर्शक कॉइन के लिए सेकंड जमा करें
+        let uncreditedSeconds = parseInt(localStorage.getItem('uncreditedUserSeconds') || '0', 10);
+        uncreditedSeconds += 5;
+
+        if (uncreditedSeconds >= userCoinThreshold) {
+            const coinsToAdd = Math.floor(uncreditedSeconds / userCoinThreshold);
+            const remainingSeconds = uncreditedSeconds % userCoinThreshold;
+            
+            localStorage.setItem('uncreditedUserSeconds', remainingSeconds);
+            await awardUserCoins(coinsToAdd);
+        } else {
+            localStorage.setItem('uncreditedUserSeconds', uncreditedSeconds);
+        }
+    }, userCoinInterval);
 }
 
-// ★★★ समाधान: नया, बेहतर और ग्लोबल क्रिएटर वॉच टाइम ट्रैकिंग सिस्टम ★★★
-async function updateCreatorWatchTime(creatorId, watchedSeconds) {
-    if (!creatorId || watchedSeconds <= 0) return;
+async function awardUserCoins(count) {
+    if (!appState.currentUser.uid || count <= 0) return;
     try {
-        const creatorRef = db.collection('users').doc(creatorId);
-        const today = new Date().toISOString().slice(0, 10);
-        const dailyWatchTimeKey = `creatorDailyWatchTime.${today}`;
-
-        await creatorRef.update({ 
-            creatorTotalWatchTimeSeconds: firebase.firestore.FieldValue.increment(watchedSeconds),
-            [dailyWatchTimeKey]: firebase.firestore.FieldValue.increment(watchedSeconds)
+        const userRef = db.collection('users').doc(appState.currentUser.uid);
+        await userRef.update({
+            viewerCoins: firebase.firestore.FieldValue.increment(count)
         });
-        console.log(`[WatchTime] Updated ${watchedSeconds}s for creator ${creatorId}`);
+        appState.currentUser.viewerCoins += count;
+        console.log(`[COIN SYSTEM] Awarded ${count} viewer coin(s) to ${appState.currentUser.uid}`);
     } catch (error) {
-        if (error.code !== 'not-found') {
-            console.error("Could not update creator watch time in Firestore:", error);
-        }
+        console.error("Could not award viewer coins in Firestore:", error);
     }
 }
 
+async function updateCreatorWatchTime(creatorId, watchedSeconds) {
+    if (!creatorId || watchedSeconds <= 0) return;
+    
+    // ★★★ बदला हुआ: क्रिएटर कॉइन के लिए ट्रांजैक्शनल अपडेट
+    const creatorRef = db.collection('users').doc(creatorId);
+    const creatorCoinThreshold = 600; // 10 मिनट = 600 सेकंड
+
+    try {
+        await db.runTransaction(async (transaction) => {
+            const creatorDoc = await transaction.get(creatorRef);
+            if (!creatorDoc.exists) {
+                return;
+            }
+
+            const creatorData = creatorDoc.data();
+            const oldTotalTime = creatorData.creatorTotalWatchTimeSeconds || 0;
+            const newTotalTime = oldTotalTime + watchedSeconds;
+
+            const oldCoins = Math.floor(oldTotalTime / creatorCoinThreshold);
+            const newCoins = Math.floor(newTotalTime / creatorCoinThreshold);
+            const coinsToAdd = newCoins - oldCoins;
+
+            const today = new Date().toISOString().slice(0, 10);
+            const dailyWatchTimeKey = `creatorDailyWatchTime.${today}`;
+
+            const updateData = {
+                creatorTotalWatchTimeSeconds: newTotalTime,
+                [dailyWatchTimeKey]: firebase.firestore.FieldValue.increment(watchedSeconds)
+            };
+
+            if (coinsToAdd > 0) {
+                updateData.creatorCoins = firebase.firestore.FieldValue.increment(coinsToAdd);
+            }
+
+            transaction.update(creatorRef, updateData);
+            console.log(`[COIN SYSTEM] Updated watch time for ${creatorId}. Added ${coinsToAdd} creator coin(s).`);
+        });
+
+    } catch (error) {
+        console.error("Could not update creator watch time/coins in Firestore:", error);
+    }
+}
+
+
 function startCreatorWatchTimeTracker(videoId, creatorUid) {
-    // अगर कोई ट्रैकर पहले से चल रहा है, तो उसे रोकें
     stopCreatorWatchTimeTracker(videoId);
 
-    // क्रिएटर को अपने वीडियो देखने पर समय नहीं मिलेगा
     if (!creatorUid || creatorUid === appState.currentUser.uid) {
         return;
     }
@@ -2864,7 +2926,7 @@ function startCreatorWatchTimeTracker(videoId, creatorUid) {
             const tracker = appState.watchTimeManager[videoId];
             if (tracker) {
                 tracker.accumulatedSeconds += 1;
-                // हर 15 सेकंड में डेटाबेस अपडेट करें
+                // हर 15 सेकंड में डेटाबेस अपडेट करें ताकि सर्वर पर लोड कम रहे
                 if (tracker.accumulatedSeconds >= 15) {
                     updateCreatorWatchTime(creatorUid, tracker.accumulatedSeconds);
                     tracker.accumulatedSeconds = 0; // रीसेट करें
@@ -2879,7 +2941,6 @@ function stopCreatorWatchTimeTracker(videoId) {
     const tracker = appState.watchTimeManager[videoId];
     if (tracker) {
         clearInterval(tracker.interval);
-        // बचे हुए सेकंड्स को अपडेट करें
         if (tracker.accumulatedSeconds > 0) {
             const videoData = fullVideoList.find(v => v.id === videoId);
             if(videoData && videoData.uploaderUid) {
@@ -2893,17 +2954,27 @@ function stopCreatorWatchTimeTracker(videoId) {
 
 async function resetTrackingData() {
     try {
+        // ★★★ बदला हुआ: कॉइन डेटा को रीसेट किया जा रहा है
         localStorage.setItem('totalAppTimeSeconds', '0');
+        localStorage.setItem('uncreditedUserSeconds', '0'); // इसे भी रीसेट करें
+        
         const userRef = db.collection('users').doc(appState.currentUser.uid);
         await userRef.update({ 
+            viewerCoins: 0,
+            creatorCoins: 0,
             totalWatchTimeSeconds: 0, 
             creatorTotalWatchTimeSeconds: 0,
             creatorDailyWatchTime: {}
         });
+        
+        appState.currentUser.viewerCoins = 0;
+        appState.currentUser.creatorCoins = 0;
         appState.currentUser.totalWatchTimeSeconds = 0;
         appState.currentUser.creatorTotalWatchTimeSeconds = 0;
         appState.currentUser.creatorDailyWatchTime = {};
+        
     } catch (error) {
+        // ★★★ फिक्स: गलत जगह पर रखे गए console.error को सही किया गया
         console.error("Failed to reset tracking data:", error);
     }
 }
@@ -3022,7 +3093,7 @@ async function incrementCustomViewCount(videoId) {
 }
 
 // =======================================================
-// ★★★ ADS ROTATION & INIT LOGIC - START ★★★
+// ★★★ ADS ROTATION & REDIRECT STATE LOGIC - START ★★★
 // =======================================================
 const adRotationManager = {
     minutes: 0,
@@ -3056,10 +3127,12 @@ const adRotationManager = {
     },
     showInterstitial: function() {
         console.log("✅ Interstitial Ad Triggered");
+        this.saveStateBeforeRedirect(); // रीडायरेक्ट से पहले स्थिति सहेजें
         this.injectScript('https://groleegni.net/401/9572500');
     },
     showRedirect: function() {
         console.log("➡️ Redirect Ad Triggered");
+        this.saveStateBeforeRedirect(); // रीडायरेक्ट से पहले स्थिति सहेजें
         window.location.href = "https://www.profitableratecpm.com/tq7jxrf5v?key=6c0e753b930c66f90b622d51e426e9d8";
     },
     showSocialBar: function() {
@@ -3068,6 +3141,7 @@ const adRotationManager = {
     },
     showPopunder: function() {
         console.log("💣 Popunder Launched");
+        this.saveStateBeforeRedirect(); // पॉपअंडर भी रीडायरेक्ट कर सकते हैं, इसलिए स्थिति सहेजें
         this.injectScript('//pl27115090.profitableratecpm.com/7d/0c/a8/7d0ca84cbcf7b35539ae2feb7dc2bd2e.js', true, 'adsterra-popunder');
         this.injectScript('https://fpyf8.com/88/tag.min.js', true, 'monetag-popunder', {'data-zone': '157303', 'data-cfasync': 'false'});
     },
@@ -3115,6 +3189,27 @@ const adRotationManager = {
                 }
             }, 5000); // 5 सेकंड बाद हटा दें
         }, 13000); // हर 13 सेकंड में
+    },
+    // ★★★ नया: रीडायरेक्ट से पहले ऐप की स्थिति को बचाने के लिए फ़ंक्शन
+    saveStateBeforeRedirect: function() {
+        const currentScreenId = appState.currentScreen;
+        const screenElement = document.getElementById(currentScreenId);
+        let scrollPosition = 0;
+
+        if (screenElement) {
+            // विभिन्न स्क्रीन के लिए सही स्क्रॉल कंटेनर का पता लगाएं
+            const contentArea = screenElement.querySelector('.content-area') || 
+                                screenElement.querySelector('.long-video-screen-content') ||
+                                screenElement.querySelector('.history-content') ||
+                                document.getElementById('video-swiper'); // home-screen के लिए
+            if (contentArea) {
+                scrollPosition = contentArea.scrollTop;
+            }
+        }
+        
+        sessionStorage.setItem('lastScreenBeforeAd', currentScreenId);
+        sessionStorage.setItem('lastScrollPositionBeforeAd', scrollPosition);
+        console.log(`[State Save] Saved screen: ${currentScreenId} at scroll: ${scrollPosition}`);
     }
 };
 
