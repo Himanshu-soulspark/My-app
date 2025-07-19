@@ -396,7 +396,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'long-video-screen') setupLongVideoScreen();
     if (nextScreenId === 'history-screen') initializeHistoryScreen();
     if (nextScreenId === 'your-zone-screen') populateYourZoneScreen();
-    if (nextScreenId === 'home-screen') setTimeout(setupVideoObserver, 100);
+    if (nextScreenId === 'home-screen') initializeHomeScreen(); // ★ बदला हुआ
     if (nextScreenId === 'earnsure-screen') initializeEarnsureScreen();
     if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
@@ -425,48 +425,45 @@ function navigateBack() {
 
     if (previousScreenId === 'profile-screen') loadUserVideosFromFirebase();
     if (previousScreenId === 'long-video-screen') setupLongVideoScreen();
+    if (previousScreenId === 'home-screen') initializeHomeScreen(); // ★ बदला हुआ
 }
 
 async function checkUserProfileAndProceed(user) {
-    if (!user) return;
+    if (!user) return; 
     appState.currentUser.uid = user.uid;
     const userRef = db.collection('users').doc(user.uid);
-    try {
-        const doc = await userRef.get();
-        if (doc.exists) {
-            let userData = doc.data();
-            if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
-                userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
-            }
-            appState.currentUser = { ...appState.currentUser, ...userData };
-            updateProfileUI();
-            
-            if (userData.name && userData.state) {
-                await startAppLogic();
-            } else {
-                navigateTo('information-screen');
-            }
+    const doc = await userRef.get();
+    if (doc.exists) {
+        let userData = doc.data();
+        if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
+            userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
+        }
+        appState.currentUser = { ...appState.currentUser, ...userData };
+        updateProfileUI();
+        
+        if (userData.name && userData.state) {
+            await startAppLogic();
         } else {
-            const initialData = {
-                uid: user.uid, name: '', email: user.email || '',
-                avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                likedVideos: [], 
-                totalWatchTimeSeconds: 0,
-                viewerCoins: 0,
-                creatorTotalWatchTimeSeconds: 0,
-                creatorCoins: 0,
-                creatorDailyWatchTime: {},
-                friends: [],
-                referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
-            };
-            await userRef.set(initialData);
-            appState.currentUser = { ...appState.currentUser, ...initialData };
-            updateProfileUI();
             navigateTo('information-screen');
         }
-    } catch (error) {
-        console.error("Error in checkUserProfileAndProceed:", error);
+    } else {
+        const initialData = {
+            uid: user.uid, name: '', email: user.email || '',
+            avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            likedVideos: [], 
+            totalWatchTimeSeconds: 0,
+            viewerCoins: 0,
+            creatorTotalWatchTimeSeconds: 0,
+            creatorCoins: 0,
+            creatorDailyWatchTime: {},
+            friends: [],
+            referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
+        };
+        await userRef.set(initialData);
+        appState.currentUser = { ...appState.currentUser, ...initialData };
+        updateProfileUI();
+        navigateTo('information-screen');
     }
 }
 
@@ -522,22 +519,26 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
-    try {
-        const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
-        const snapshot = await videosRef.get();
-        const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        fullVideoList = [...loadedVideos];
-        
-        let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
-        
-        shortVideos = shuffleArray(shortVideos);
-        appState.allVideos = shortVideos;
-        
-        renderVideoSwiper(shortVideos);
-    } catch (error) {
-        console.error("Error refreshing feed:", error);
-        videoSwiper.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load videos. Please check your connection.</p>';
-    }
+    return new Promise(async (resolve, reject) => {
+        try {
+            const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
+            const snapshot = await videosRef.get();
+            const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            fullVideoList = [...loadedVideos];
+            
+            let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
+            
+            shortVideos = shuffleArray(shortVideos);
+            appState.allVideos = shortVideos;
+            
+            renderVideoSwiper(shortVideos); 
+            resolve();
+        } catch (error) {
+            console.error("Error refreshing feed:", error);
+            if(videoSwiper) videoSwiper.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load videos. Please check your connection.</p>';
+            reject(error);
+        }
+    });
 }
 
 
@@ -921,27 +922,44 @@ function renderVideoSwiper(itemsToRender) {
             </div>`;
         videoSwiper.appendChild(slide);
     });
+}
 
-    if (isYouTubeApiReady) {
+// ==============================================================================
+// ★★★ वीडियो प्लेबैक लॉजिक - START (पूरी तरह से नया और बेहतर) ★★★
+// ==============================================================================
+
+function onYouTubeIframeAPIReady() {
+    console.log("[Player Flow] YouTube IFrame API is ready.");
+    isYouTubeApiReady = true;
+    
+    // यदि होम स्क्रीन पहले से ही सक्रिय है, तो प्लेयर शुरू करें
+    if (appState.currentScreen === 'home-screen') {
         initializePlayers();
     }
 }
 
-
-function onYouTubeIframeAPIReady() {
-    isYouTubeApiReady = true;
-    if (window.pendingAppStartResolve) {
-        window.pendingAppStartResolve();
-        delete window.pendingAppStartResolve;
-    }
-    if (appState.currentScreen === 'home-screen' && appState.allVideos.length > 0) {
-         initializePlayers();
+// यह फ़ंक्शन अब केवल होम स्क्रीन पर नेविगेट करने पर कॉल होगा।
+function initializeHomeScreen() {
+    if (isYouTubeApiReady) {
+        initializePlayers();
+    } else {
+        console.warn("[Player Flow] Waiting for YouTube API to be ready...");
     }
 }
 
 function initializePlayers() {
-    const visibleSlides = Array.from(videoSwiper.querySelectorAll('.video-slide:not(.native-ad-slide)'));
-    visibleSlides.forEach((slide) => {
+    if (!isYouTubeApiReady) {
+        console.error("[Player Flow] Attempted to initialize players, but YouTube API is not ready.");
+        return;
+    }
+    
+    const slides = document.querySelectorAll('#video-swiper .video-slide');
+    console.log(`[Player Flow] Initializing players for ${slides.length} slides.`);
+    
+    if (videoObserver) videoObserver.disconnect();
+    setupVideoObserver();
+
+    slides.forEach((slide) => {
         const videoId = slide.dataset.videoId;
         const videoData = fullVideoList.find(v => v.id === videoId);
 
@@ -951,7 +969,8 @@ function initializePlayers() {
         const playerElement = document.getElementById(playerId);
 
         if (!playerElement || playerElement.tagName === 'IFRAME') return;
-
+        
+        console.log(`[Player Flow] Creating YT.Player for videoId: ${videoId}`);
         players[videoId] = new YT.Player(playerId, {
             height: '100%', width: '100%', videoId: videoData.videoUrl,
             playerVars: {
@@ -965,20 +984,30 @@ function initializePlayers() {
             }
         });
     });
-    setupVideoObserver();
 }
 
+// ★★★ मुख्य बदलाव: प्लेयर के तैयार होने के बाद ही उसे ऑब्जर्वर में जोड़ें
 function onPlayerReady(event) {
     const iframe = event.target.getIframe();
     const slide = iframe.closest('.video-slide');
     if (!slide) return;
+
     const videoId = slide.dataset.videoId;
+    console.log(`[Player Flow] onPlayerReady for videoId: ${videoId}. Adding to observer.`);
+    
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
 
-     if (videoId === activePlayerId || (!activePlayerId && isElementVisible(slide, videoSwiper))) {
-         playActivePlayer(videoId);
-     }
+    // अब यह स्लाइड देखने के लिए तैयार है
+    if (videoObserver) {
+        videoObserver.observe(slide);
+    }
+    
+    // यदि यह पहली वीडियो है तो इसे चलाने का प्रयास करें
+    const firstSlide = document.querySelector('.video-slide');
+    if (slide === firstSlide && !activePlayerId) {
+        handleIntersection([{ isIntersecting: true, target: slide }]);
+    }
 }
 
 function onPlayerStateChange(event) {
@@ -997,40 +1026,13 @@ function onPlayerStateChange(event) {
     const videoId = slide.dataset.videoId;
     const videoData = fullVideoList.find(v => v.id === videoId);
 
-    const preloader = slide.querySelector('.video-preloader');
-    if (event.data !== YT.PlayerState.UNSTARTED && preloader) {
-        preloader.style.display = 'none';
-    }
-    
-    if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
-    if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
-    manageShortVideoTimedAd('hide');
-
     if (event.data === YT.PlayerState.PLAYING) {
         startVideoViewTracker(videoId, 'short');
-        
         if (videoData) {
             startCreatorWatchTimeTracker(videoId, videoData.uploaderUid);
         }
-
         if (userHasInteracted && typeof event.target.unMute === 'function' && event.target.isMuted()) {
             event.target.unMute();
-            console.log(`[Audio] Unmuting video via onStateChange: ${videoId}`);
-        }
-        
-        appState.adState.timers.shortVideoAdShow = setTimeout(() => {
-            manageShortVideoTimedAd('show');
-        }, 15000);
-
-        appState.adState.timers.shortVideoAdHide = setTimeout(() => {
-            manageShortVideoTimedAd('hide');
-        }, 18000);
-        
-        if (userHasInteracted) {
-             if (typeof event.target.isMuted === 'function' && event.target.isMuted() && !hasShownAudioPopup) {
-                 document.getElementById('audio-issue-popup').classList.add('active');
-                 hasShownAudioPopup = true;
-             }
         }
     } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
         stopVideoViewTracker(videoId);
@@ -1039,6 +1041,91 @@ function onPlayerStateChange(event) {
         }
     }
 }
+
+function setupVideoObserver() {
+    if (videoObserver) videoObserver.disconnect();
+
+    const options = {
+        root: videoSwiper,
+        threshold: 0.75
+    };
+
+    videoObserver = new IntersectionObserver(handleIntersection, options);
+    console.log("[Player Flow] IntersectionObserver is set up.");
+}
+
+const handleIntersection = (entries) => {
+    entries.forEach(entry => {
+        const videoId = entry.target.dataset.videoId;
+        if (!videoId || !players[videoId]) return;
+
+        console.log(`[Player Flow] Intersection for ${videoId}, isIntersecting: ${entry.isIntersecting}`);
+
+        if (entry.isIntersecting) {
+            // यदि कोई और वीडियो चल रहा है, तो उसे रोकें
+            if (activePlayerId && activePlayerId !== videoId) {
+                pauseActivePlayer();
+            }
+            playActivePlayer(videoId);
+        } else {
+            // यदि यह वही वीडियो है जो स्क्रीन से बाहर जा रहा है, तो उसे रोकें
+            if (videoId === activePlayerId) {
+                pauseActivePlayer();
+            }
+        }
+    });
+};
+
+
+function playActivePlayer(videoId) {
+    if (!videoId) return;
+    const player = players[videoId];
+
+    // खेलने से पहले कई जांचें
+    if (!player || typeof player.playVideo !== 'function') {
+        console.warn(`[Player Flow] Play aborted: Player object for ${videoId} not found or invalid.`);
+        return;
+    }
+    if (!player.getIframe() || !document.body.contains(player.getIframe())) {
+        console.warn(`[Player Flow] Play aborted: Player for ${videoId} is not in the DOM.`);
+        return;
+    }
+    
+    console.log(`[Player Flow] Calling playVideo() for ${videoId}`);
+    activePlayerId = videoId;
+    addVideoToHistory(videoId);
+    player.playVideo();
+    
+    if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
+        player.unMute();
+        console.log(`[Player Flow] Unmuting video: ${videoId}`);
+    }
+}
+
+function pauseActivePlayer() {
+    if (!activePlayerId) return;
+    const player = players[activePlayerId];
+    if (player && typeof player.pauseVideo === 'function') {
+        console.log(`[Player Flow] Calling pauseVideo() for ${activePlayerId}`);
+        player.pauseVideo();
+    }
+    activePlayerId = null;
+}
+
+function togglePlayPause(videoId) {
+    const player = players[videoId];
+    if (!player || typeof player.getPlayerState !== 'function') return;
+
+    const state = player.getPlayerState();
+    if (state === YT.PlayerState.PLAYING) {
+        player.pauseVideo();
+    } else {
+        playActivePlayer(videoId);
+    }
+}
+// ==============================================================================
+// ★★★ वीडियो प्लेबैक लॉजिक - END ★★★
+// ==============================================================================
 
 function addVideoToHistory(videoId) {
     if (!videoId) return;
@@ -1058,122 +1145,6 @@ function addVideoToHistory(videoId) {
     }
     localStorage.setItem('shubhzoneViewingHistory', JSON.stringify(appState.viewingHistory));
 }
-
-
-function isElementVisible(el, container) {
-    if (!el || !container) return false;
-    const containerRect = container.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const threshold = 0.75;
-    return (
-        elRect.top + elRect.height * threshold >= containerRect.top &&
-        elRect.bottom - elRect.height * threshold <= containerRect.bottom
-    );
-}
-
-function togglePlayPause(videoId) {
-    const player = players[videoId];
-    if (!player || typeof player.getPlayerState !== 'function') return;
-
-    const state = player.getPlayerState();
-    if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
-        player.pauseVideo();
-    } else {
-        if (activePlayerId && activePlayerId !== videoId) {
-            pauseActivePlayer();
-        }
-        playActivePlayer(videoId);
-    }
-}
-
-
-function playActivePlayer(videoId) {
-    if (!videoId) return;
-    const player = players[videoId];
-    if (!player || typeof player.playVideo !== 'function') return;
-
-    if (!player.getIframe() || !document.body.contains(player.getIframe())) {
-        console.warn(`Player for video ${videoId} is not in the DOM. Aborting play.`);
-        return;
-    }
-
-    activePlayerId = videoId;
-    addVideoToHistory(videoId);
-
-    player.playVideo();
-    
-    if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
-        player.unMute();
-        console.log(`[Audio] Unmuting video: ${videoId}`);
-    }
-}
-
-function pauseActivePlayer() {
-    if (!activePlayerId) return;
-    const player = players[activePlayerId];
-    if (!player || typeof player.stopVideo !== 'function') return;
-    
-    if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
-    if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
-    manageShortVideoTimedAd('hide');
-
-    player.stopVideo();
-    
-    console.log(`[Player Control] Stopped and reset active player: ${activePlayerId}`);
-    activePlayerId = null;
-}
-
-function setupVideoObserver() {
-    if (videoObserver) videoObserver.disconnect();
-    if (!videoSwiper) return;
-
-    const options = {
-        root: videoSwiper,
-        threshold: 0.75
-    };
-
-    const handleIntersection = (entries) => {
-        entries.forEach(entry => {
-            if (entry.target.classList.contains('native-ad-slide')) {
-                return;
-            }
-
-            const videoId = entry.target.dataset.videoId;
-            if (!videoId || !players[videoId]) return;
-
-            if (entry.isIntersecting) {
-                if (activePlayerId && activePlayerId !== videoId) {
-                    pauseActivePlayer();
-                }
-                playActivePlayer(videoId);
-            } else {
-                if (videoId === activePlayerId) {
-                    pauseActivePlayer();
-                }
-            }
-        });
-    };
-
-    videoObserver = new IntersectionObserver(handleIntersection, options);
-
-    const allSlides = document.querySelectorAll('.video-slide');
-    if (allSlides.length > 0) {
-        allSlides.forEach(slide => videoObserver.observe(slide));
-
-        setTimeout(() => {
-            if (!activePlayerId) {
-                const firstVideoSlide = document.querySelector('.video-slide:not(.native-ad-slide)');
-                if (firstVideoSlide && isElementVisible(firstVideoSlide, videoSwiper)) {
-                    const firstVideoId = firstVideoSlide.dataset.videoId;
-                    if(firstVideoId) {
-                        playActivePlayer(firstVideoId);
-                    }
-                }
-            }
-        }, 500);
-    }
-}
-
 
 async function openCommentsModal(videoId, videoOwnerUid) {
     appState.activeComments = { videoId, videoOwnerUid };
@@ -1375,21 +1346,18 @@ function filterVideosByCategory(category, element) {
     document.querySelectorAll('#category-scroller .category-chip').forEach(chip => chip.classList.remove('active'));
     if (element) element.classList.add('active');
 
-    if (activePlayerId) {
-         pauseActivePlayer();
-         activePlayerId = null;
-    }
+    pauseActivePlayer();
 
     let filtered = fullVideoList.filter(v => v.videoLengthType !== 'long');
     if (category !== 'All') {
         filtered = filtered.filter(video => video.category === category);
     }
     
-    const displayItems = shuffleArray(filtered);
-    appState.allVideos = displayItems;
+    appState.allVideos = shuffleArray(filtered);
 
-    renderVideoSwiper(displayItems);
-
+    renderVideoSwiper(appState.allVideos);
+    
+    // फ़िल्टर करने के बाद प्लेयर को फिर से शुरू करें
     setTimeout(initializePlayers, 100);
 }
 
@@ -1585,21 +1553,26 @@ let appStartLogicHasRun = false;
 const startAppLogic = async () => {
     if (appStartLogicHasRun) return;
     appStartLogicHasRun = true;
-
-    await checkAndShowPriorityAd();
     
     adRotationManager.init();
 
-    const getStartedBtn = document.getElementById('get-started-btn');
+    await checkAndShowPriorityAd();
+    
     const loadingContainer = document.getElementById('loading-container');
-    if (getStartedBtn) getStartedBtn.style.display = 'none';
     if (loadingContainer) loadingContainer.style.display = 'flex';
     
     renderCategories();
     renderCategoriesInBar();
     
-    await refreshAndRenderFeed();
+    try {
+        await refreshAndRenderFeed();
+    } catch (e) {
+        if (loadingContainer) loadingContainer.style.display = 'none';
+        return; 
+    }
     
+    if (loadingContainer) loadingContainer.style.display = 'none';
+
     const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
     const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
     
@@ -3079,82 +3052,32 @@ async function incrementCustomViewCount(videoId) {
     }
 }
 
-// =======================================================
-// ★★★ ADS ROTATION & REDIRECT STATE LOGIC - START ★★★
-// ★★★ बदला हुआ कोड: विज्ञापन शेड्यूलिंग और कूलडाउन सिस्टम ★★★
-// =======================================================
+// =====================================================================================
+// ★★★ ADS ROTATION & REDIRECT STATE LOGIC - START (सरल और सटीक) ★★★
+// =====================================================================================
 const adRotationManager = {
-    minutes: 0,
-    adCooldownActive: false,
+    adTimer: null,
     init: function() {
-        setInterval(this.adScheduler.bind(this), 60000); // हर 60 सेकंड में एक बार चलेगा
+        if (this.adTimer) {
+            clearInterval(this.adTimer);
+        }
+        // हर 60 सेकंड में एक विज्ञापन दिखाने के लिए सख्त टाइमर।
+        this.adTimer = setInterval(this.showPrimaryAd.bind(this), 60000); 
+        console.log("[Ad Manager] Initialized with a strict 60-second timer.");
+        
         this.showBanner();
     },
-    adScheduler: function() {
-        if (this.adCooldownActive) {
-            console.log("[Ad Scheduler] Cooldown active. Skipping ad this minute.");
-            return;
-        }
+    
+    showPrimaryAd: function() {
+        console.log("[Ad Trigger @ 60s] Showing a redirect ad.");
+        this.showRedirect();
+    },
 
-        this.minutes++;
-        const adCycle = this.minutes % 3;
-
-        console.log(`[Ad Scheduler] Minute: ${this.minutes}. Cycle step: ${adCycle}.`);
-
-        switch (adCycle) {
-            case 1:
-                this.showInterstitial();
-                break;
-            case 2:
-                this.showSocialBar();
-                break;
-            case 0:
-                this.showRedirect();
-                break;
-        }
-    },
-    triggerCooldown: function() {
-        console.log("[Ad Cooldown] Starting 60-second cooldown.");
-        this.adCooldownActive = true;
-        setTimeout(() => {
-            console.log("[Ad Cooldown] Cooldown finished. Ads are enabled again.");
-            this.adCooldownActive = false;
-        }, 60000); // 60 सेकंड
-    },
-    injectScript: function(src, isAsync = true, id = null, attributes = {}) {
-        // स्क्रिप्ट को दोबारा इंजेक्ट होने से रोकें
-        if (id && document.getElementById(id)) {
-            console.log(`[Ad Inject] Script with ID ${id} already exists. Skipping.`);
-            return document.getElementById(id);
-        }
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = isAsync;
-        if (id) script.id = id;
-        for (const key in attributes) {
-            script.setAttribute(key, attributes[key]);
-        }
-        document.head.appendChild(script);
-        console.log(`[Ad Inject] Script injected: ${src}`);
-        return script;
-    },
-    showInterstitial: function() {
-        console.log("[Ad Trigger] ✅ Interstitial Ad Triggered");
-        this.saveStateBeforeRedirect(); 
-        this.injectScript('https://groleegni.net/401/9572500');
-        this.triggerCooldown();
-    },
     showRedirect: function() {
-        console.log("[Ad Trigger] ➡️ Redirect Ad Triggered");
-        this.saveStateBeforeRedirect();
-        this.triggerCooldown();
+        this.saveStateBeforeRedirect(); 
         window.location.href = "https://www.profitableratecpm.com/tq7jxrf5v?key=6c0e753b930c66f90b622d51e426e9d8";
     },
-    showSocialBar: function() {
-        console.log("[Ad Trigger] 📢 Social Bar Loaded");
-        this.injectScript('//pl27114870.profitableratecpm.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js', true, 'adsterra-social-bar');
-        this.triggerCooldown();
-    },
+
     showBanner: function() {
         let bannerContainer = document.getElementById('static-banner-container');
         if (!bannerContainer) {
@@ -3167,6 +3090,7 @@ const adRotationManager = {
             showBannerAdWithFallback(bannerContainer);
         }
     },
+    
     saveStateBeforeRedirect: function() {
         const currentScreenId = appState.currentScreen;
         const screenElement = document.getElementById(currentScreenId);
@@ -3174,8 +3098,6 @@ const adRotationManager = {
 
         if (screenElement) {
             const contentArea = screenElement.querySelector('.content-area') || 
-                                screenElement.querySelector('.long-video-screen-content') ||
-                                screenElement.querySelector('.history-content') ||
                                 document.getElementById('video-swiper'); 
             if (contentArea) {
                 scrollPosition = contentArea.scrollTop;
