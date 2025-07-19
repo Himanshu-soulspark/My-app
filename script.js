@@ -1008,7 +1008,6 @@ function onPlayerStateChange(event) {
         startWatchTimeTracker();
         startVideoViewTracker(videoId, 'short');
         
-        // ★★★ ऑडियो समाधान: जब वीडियो चलना शुरू हो, तब अनम्यूट करें
         if (userHasInteracted && typeof event.target.unMute === 'function' && event.target.isMuted()) {
             event.target.unMute();
             console.log(`[Audio] Unmuting video via onStateChange: ${videoId}`);
@@ -1096,25 +1095,33 @@ function playActivePlayer(videoId) {
 
     player.playVideo();
     
-    // ★★★ ऑडियो समाधान: इस लॉजिक को onPlayerStateChange में ले जाया गया है ताकि यह ज़्यादा विश्वसनीय हो
     if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
         player.unMute();
         console.log(`[Audio] Unmuting video: ${videoId}`);
     }
 }
 
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+// ★★★ समाधान: ऑडियो मिक्सिंग की समस्या का हल ★★★
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 function pauseActivePlayer() {
     if (!activePlayerId) return;
     const player = players[activePlayerId];
-    if (!player || typeof player.pauseVideo !== 'function') return;
+    // जांचें कि प्लेयर मौजूद है और उसमें stopVideo फंक्शन है
+    if (!player || typeof player.stopVideo !== 'function') return;
     
+    // विज्ञापन टाइमर को साफ़ करें
     if (appState.adState.timers.shortVideoAdShow) clearTimeout(appState.adState.timers.shortVideoAdShow);
     if (appState.adState.timers.shortVideoAdHide) clearTimeout(appState.adState.timers.shortVideoAdHide);
     manageShortVideoTimedAd('hide');
 
-    if (player.getPlayerState() === YT.PlayerState.PLAYING || player.getPlayerState() === YT.PlayerState.BUFFERING) {
-         player.pauseVideo();
-    }
+    // ★★★ समाधान: pauseVideo() की जगह stopVideo() का उपयोग करें
+    // यह वीडियो को पूरी तरह से बंद कर देता है, जिससे ऑडियो मिक्सिंग की समस्या हल हो जाती है।
+    player.stopVideo();
+    
+    // ★★★ सुधार: सक्रिय प्लेयर आईडी को तुरंत रीसेट करें
+    console.log(`[Player Control] Stopped and reset active player: ${activePlayerId}`);
+    activePlayerId = null;
 }
 
 function setupVideoObserver() {
@@ -1816,7 +1823,7 @@ function renderHistoryShortsScroller() {
     if (!scroller) return;
     scroller.innerHTML = '';
 
-    let historyVideos = appState.viewingHistory
+    const historyVideos = appState.viewingHistory
         .map(entry => fullVideoList.find(v => v.id === entry.id && v.videoLengthType !== 'long'))
         .filter(Boolean);
 
@@ -1824,11 +1831,10 @@ function renderHistoryShortsScroller() {
         scroller.innerHTML = `<p class="static-message" style="color: var(--text-secondary);">No short video history.</p>`;
         return;
     }
-    
-    // ★★★ समाधान: हिस्ट्री को हर बार शफल करें
-    historyVideos = shuffleArray(historyVideos);
 
-    historyVideos.forEach(video => {
+    const shuffledVideos = shuffleArray(historyVideos);
+
+    shuffledVideos.forEach(video => {
         const card = document.createElement('div');
         card.className = 'history-short-card haptic-trigger';
         card.style.backgroundImage = `url(${escapeHTML(video.thumbnailUrl)})`;
@@ -1844,7 +1850,7 @@ function renderHistoryLongVideoList() {
     if (!list) return;
     list.innerHTML = '';
 
-    let historyVideos = appState.viewingHistory
+    const historyVideos = appState.viewingHistory
         .map(entry => fullVideoList.find(v => v.id === entry.id && v.videoLengthType === 'long'))
         .filter(Boolean);
 
@@ -1853,10 +1859,9 @@ function renderHistoryLongVideoList() {
         return;
     }
 
-    // ★★★ समाधान: हिस्ट्री को हर बार शफल करें
-    historyVideos = shuffleArray(historyVideos);
+    const shuffledVideos = shuffleArray(historyVideos);
 
-    historyVideos.forEach((video, index) => {
+    shuffledVideos.forEach((video, index) => {
         const item = document.createElement('div');
         item.className = 'history-list-item haptic-trigger';
         item.innerHTML = `
@@ -3070,10 +3075,6 @@ const adRotationManager = {
             const adDiv = document.createElement('div');
             adDiv.id = 'special-timed-ad';
             
-            // ★★★ समाधान: गंभीर त्रुटि पैदा करने वाले टूटे हुए और कंप्रेस्ड कोड को हटा दिया गया है।
-            // यह ऐप को ठीक से काम करने और विज्ञापनों को लोड होने देगा।
-            // यहाँ एक मानक विज्ञापन स्क्रिप्ट होनी चाहिए।
-            // उदाਹਰਣ के लिए, हम एक ज्ञात विज्ञापन नेटवर्क से एक और बैनर लोड करने का प्रयास कर सकते हैं।
             const script = document.createElement('script');
             script.type = 'text/javascript';
             script.async = true;
