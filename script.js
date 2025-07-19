@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v6.6 === */
+/* === Shubhzone App Script (Code 2) - FINAL v6.5 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -384,7 +384,9 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     appState.currentScreenPayload = payload;
 
     setTimeout(() => {
-        const contentArea = document.querySelector(`#${nextScreenId} .content-area, #${nextScreenId} .screen-content, #video-swiper`);
+        const contentArea = document.querySelector(`#${nextScreenId} .content-area`) || 
+                            document.getElementById('video-swiper') ||
+                            document.getElementById(nextScreenId);
         if (contentArea && scrollPosition > 0) {
             contentArea.scrollTop = scrollPosition;
         }
@@ -394,7 +396,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'long-video-screen') setupLongVideoScreen();
     if (nextScreenId === 'history-screen') initializeHistoryScreen();
     if (nextScreenId === 'your-zone-screen') populateYourZoneScreen();
-    if (nextScreenId === 'home-screen') initializeHomeScreen();
+    if (nextScreenId === 'home-screen') initializeHomeScreen(); 
     if (nextScreenId === 'earnsure-screen') initializeEarnsureScreen();
     if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
@@ -426,74 +428,48 @@ function navigateBack() {
     if (previousScreenId === 'home-screen') initializeHomeScreen();
 }
 
-
-// ★★★ नया, सरल और विश्वसनीय स्टार्टअप लॉजिक ★★★
-let appInitializationComplete = false;
-let userListener = null;
-
-function initializeApp() {
-    if (appInitializationComplete) return;
-    appInitializationComplete = true;
-
-    console.log("[App Start] initializeApp called.");
-    
-    activateScreen('splash-screen');
-    startAppTimeTracker();
-
-    auth.onAuthStateChanged(async (user) => {
-        console.log("[App Start] onAuthStateChanged triggered.");
-        if (user) {
-            await checkUserProfileAndProceed(user);
-        } else {
-            console.log("[App Start] No user found, signing in anonymously.");
-            auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
-        }
-    });
-}
-
 async function checkUserProfileAndProceed(user) {
-    console.log("[App Start] checkUserProfileAndProceed for user:", user.uid);
+    if (!user) return; 
     appState.currentUser.uid = user.uid;
     const userRef = db.collection('users').doc(user.uid);
-    try {
-        const doc = await userRef.get();
-        if (doc.exists) {
-            let userData = doc.data();
-            appState.currentUser = { ...appState.currentUser, ...userData };
-            listenToUserUpdates(user.uid);
-            updateProfileUI();
-
-            if (userData.name && userData.state) {
-                console.log("[App Start] User profile complete. Starting main app logic.");
-                await startAppLogic();
-            } else {
-                console.log("[App Start] User profile incomplete. Navigating to information-screen.");
-                navigateTo('information-screen');
-            }
+    const doc = await userRef.get();
+    if (doc.exists) {
+        let userData = doc.data();
+        if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
+            userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
+        }
+        appState.currentUser = { ...appState.currentUser, ...userData };
+        updateProfileUI();
+        
+        if (userData.name && userData.state) {
+            await startAppLogic();
         } else {
-            console.log("[App Start] New user. Creating profile.");
-            const initialData = {
-                uid: user.uid, name: '', email: user.email || '',
-                avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                likedVideos: [], 
-                totalWatchTimeSeconds: 0, viewerCoins: 0,
-                creatorTotalWatchTimeSeconds: 0, creatorCoins: 0,
-                creatorDailyWatchTime: {}, friends: [],
-                referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
-            };
-            await userRef.set(initialData);
-            appState.currentUser = { ...appState.currentUser, ...initialData };
-            updateProfileUI();
             navigateTo('information-screen');
         }
-    } catch (error) {
-        console.error("[App Start] Error in checkUserProfileAndProceed:", error);
-        // एक त्रुटि संदेश दिखाएं या फॉलबैक करें
-        const loadingContainer = document.getElementById('loading-container');
-        if(loadingContainer) loadingContainer.innerHTML = `<p style="color: var(--error-red);">Could not load user profile. Check connection.</p>`;
+    } else {
+        const initialData = {
+            uid: user.uid, name: '', email: user.email || '',
+            avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            likedVideos: [], 
+            totalWatchTimeSeconds: 0,
+            viewerCoins: 0,
+            creatorTotalWatchTimeSeconds: 0,
+            creatorCoins: 0,
+            creatorDailyWatchTime: {},
+            friends: [],
+            referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
+        };
+        await userRef.set(initialData);
+        appState.currentUser = { ...appState.currentUser, ...initialData };
+        updateProfileUI();
+        navigateTo('information-screen');
     }
 }
+
+
+let appInitializationComplete = false;
+let userListener = null;
 
 function listenToUserUpdates(uid) {
     if (userListener) userListener();
@@ -507,6 +483,35 @@ function listenToUserUpdates(uid) {
             }
         }
     }, (error) => console.error("Error listening to user updates:", error));
+}
+
+function initializeApp() {
+    if (appInitializationComplete) return;
+    appInitializationComplete = true;
+
+    // ★★★ मुख्य बदलाव: विज्ञापन से वापसी को संभालने के लिए यह सबसे पहले चलेगा
+    const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
+    if (lastScreen) {
+        console.log("[State Restore] Detected return from ad. Restoring state.");
+        // वेलकम स्क्रीन को छिपाएं और लोडर दिखाएं
+        document.getElementById('splash-screen').style.display = 'none';
+        document.getElementById('loading-container').style.display = 'flex';
+    } else {
+        activateScreen('splash-screen');
+    }
+
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            await checkUserProfileAndProceed(user);
+            if (appState.currentUser.uid) {
+                listenToUserUpdates(appState.currentUser.uid);
+            }
+        } else {
+            auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
+        }
+    });
+    
+    startAppTimeTracker();
 }
 
 
@@ -525,7 +530,6 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
-    console.log("[App Start] Refreshing video feed...");
     return new Promise(async (resolve, reject) => {
         try {
             const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
@@ -534,11 +538,11 @@ async function refreshAndRenderFeed() {
             fullVideoList = [...loadedVideos];
             
             let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
+            
             shortVideos = shuffleArray(shortVideos);
             appState.allVideos = shortVideos;
             
             renderVideoSwiper(shortVideos); 
-            console.log("[App Start] Video feed refreshed successfully.");
             resolve();
         } catch (error) {
             console.error("Error refreshing feed:", error);
@@ -932,14 +936,14 @@ function renderVideoSwiper(itemsToRender) {
 }
 
 // ==============================================================================
-// ★★★ वीडियो प्लेबैक लॉजिक - START (विश्वसनीय) ★★★
+// ★★★ वीडियो प्लेबैक लॉजिक - START (पूरी तरह से नया और बेहतर) ★★★
 // ==============================================================================
 
 function onYouTubeIframeAPIReady() {
     console.log("[Player Flow] YouTube IFrame API is ready.");
     isYouTubeApiReady = true;
     
-    if (appState.currentScreen === 'home-screen') {
+    if (appState.currentScreen === 'home-screen' || sessionStorage.getItem('lastScreenBeforeAd')) {
         initializePlayers();
     }
 }
@@ -977,7 +981,6 @@ function initializePlayers() {
 
         if (!playerElement || playerElement.tagName === 'IFRAME') return;
         
-        console.log(`[Player Flow] Creating YT.Player for videoId: ${videoId}`);
         players[videoId] = new YT.Player(playerId, {
             height: '100%', width: '100%', videoId: videoData.videoUrl,
             playerVars: {
@@ -999,7 +1002,7 @@ function onPlayerReady(event) {
     if (!slide) return;
 
     const videoId = slide.dataset.videoId;
-    console.log(`[Player Flow] onPlayerReady for videoId: ${videoId}. Adding to observer.`);
+    console.log(`[Player Flow] onPlayerReady for videoId: ${videoId}.`);
     
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
@@ -1008,10 +1011,12 @@ function onPlayerReady(event) {
         videoObserver.observe(slide);
     }
     
-    const firstSlide = document.querySelector('.video-slide');
-    if (slide === firstSlide && !activePlayerId) {
-        handleIntersection([{ isIntersecting: true, target: slide }]);
+    // यह सुनिश्चित करने के लिए कि पहली वीडियो अपने आप चले
+    const firstVisibleSlide = document.querySelector('.video-slide:not(.player-ready)');
+    if (slide === firstVisibleSlide && !activePlayerId) {
+       setTimeout(() => handleIntersection([{ isIntersecting: true, target: slide }]), 250);
     }
+    slide.classList.add('player-ready');
 }
 
 function onPlayerStateChange(event) {
@@ -1063,8 +1068,6 @@ const handleIntersection = (entries) => {
         const videoId = entry.target.dataset.videoId;
         if (!videoId || !players[videoId]) return;
 
-        console.log(`[Player Flow] Intersection for ${videoId}, isIntersecting: ${entry.isIntersecting}`);
-
         if (entry.isIntersecting) {
             if (activePlayerId && activePlayerId !== videoId) {
                 pauseActivePlayer();
@@ -1083,23 +1086,15 @@ function playActivePlayer(videoId) {
     if (!videoId) return;
     const player = players[videoId];
 
-    if (!player || typeof player.playVideo !== 'function') {
-        console.warn(`[Player Flow] Play aborted: Player object for ${videoId} not found or invalid.`);
-        return;
-    }
-    if (!player.getIframe() || !document.body.contains(player.getIframe())) {
-        console.warn(`[Player Flow] Play aborted: Player for ${videoId} is not in the DOM.`);
-        return;
-    }
+    if (!player || typeof player.playVideo !== 'function') return;
+    if (!player.getIframe() || !document.body.contains(player.getIframe())) return;
     
-    console.log(`[Player Flow] Calling playVideo() for ${videoId}`);
     activePlayerId = videoId;
     addVideoToHistory(videoId);
     player.playVideo();
     
     if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
         player.unMute();
-        console.log(`[Player Flow] Unmuting video: ${videoId}`);
     }
 }
 
@@ -1107,7 +1102,6 @@ function pauseActivePlayer() {
     if (!activePlayerId) return;
     const player = players[activePlayerId];
     if (player && typeof player.pauseVideo === 'function') {
-        console.log(`[Player Flow] Calling pauseVideo() for ${activePlayerId}`);
         player.pauseVideo();
     }
     activePlayerId = null;
@@ -1121,6 +1115,9 @@ function togglePlayPause(videoId) {
     if (state === YT.PlayerState.PLAYING) {
         player.pauseVideo();
     } else {
+        if (activePlayerId && activePlayerId !== videoId) {
+            pauseActivePlayer();
+        }
         playActivePlayer(videoId);
     }
 }
@@ -1550,44 +1547,40 @@ async function checkAndShowPriorityAd() {
 }
 
 let appStartLogicHasRun = false;
-async function startAppLogic() {
+const startAppLogic = async () => {
     if (appStartLogicHasRun) return;
     appStartLogicHasRun = true;
-
-    console.log("[App Start] startAppLogic initiated.");
+    
+    adRotationManager.init();
+    await checkAndShowPriorityAd();
+    
     const loadingContainer = document.getElementById('loading-container');
     if (loadingContainer) loadingContainer.style.display = 'flex';
-
-    // विज्ञापन प्रबंधक केवल तभी शुरू करें जब ऐप वास्तव में शुरू हो रहा हो
-    adRotationManager.init();
-
+    
+    renderCategories();
+    renderCategoriesInBar();
+    
     try {
-        await checkAndShowPriorityAd();
-        renderCategories();
-        renderCategoriesInBar();
         await refreshAndRenderFeed();
-
-        const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
-        const lastScroll = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
-        
-        if (lastScreen && document.getElementById(lastScreen)) {
-            console.log(`[State Restore] Restoring to screen: ${lastScreen} at scroll: ${lastScroll}`);
-            navigateTo(lastScreen, null, lastScroll);
-            sessionStorage.removeItem('lastScreenBeforeAd');
-            sessionStorage.removeItem('lastScrollPositionBeforeAd');
-        } else {
-            navigateTo('home-screen');
-        }
-    } catch (error) {
-        console.error("[App Start] A critical error occurred during app startup:", error);
-        if (loadingContainer) {
-            loadingContainer.innerHTML = `<p style="color: var(--error-red);">App failed to start. Please refresh.</p>`;
-        }
-    } finally {
-        console.log("[App Start] Hiding main loader.");
+    } catch (e) {
         if (loadingContainer) loadingContainer.style.display = 'none';
+        return; 
     }
-}
+    
+    if (loadingContainer) loadingContainer.style.display = 'none';
+
+    const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
+    const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
+    
+    if (lastScreen && document.getElementById(lastScreen)) {
+        console.log(`[State Restore] Restoring to screen: ${lastScreen}`);
+        navigateTo(lastScreen, null, lastScrollPosition);
+        sessionStorage.removeItem('lastScreenBeforeAd');
+        sessionStorage.removeItem('lastScrollPositionBeforeAd');
+    } else {
+        navigateTo('home-screen');
+    }
+};
 
 function setupLongVideoScreen() {
     populateLongVideoCategories();
@@ -3085,11 +3078,15 @@ const adRotationManager = {
         if (!bannerContainer) {
             bannerContainer = document.createElement('div');
             bannerContainer.id = 'static-banner-container';
-            appContainer.appendChild(bannerContainer);
-        }
-        if (bannerContainer) {
-            console.log("🖼️ Static Banner Loaded");
-            showBannerAdWithFallback(bannerContainer);
+            // सुनिश्चित करें कि यह स्प्लैश स्क्रीन के ऊपर न आए
+            if(appState.currentScreen !== 'splash-screen') {
+                appContainer.appendChild(bannerContainer);
+                console.log("🖼️ Static Banner Loaded");
+                showBannerAdWithFallback(bannerContainer);
+            }
+        } else if (appState.currentScreen !== 'splash-screen'){
+             console.log("🖼️ Static Banner Loaded");
+             showBannerAdWithFallback(bannerContainer);
         }
     },
     
@@ -3100,8 +3097,9 @@ const adRotationManager = {
 
         if (screenElement) {
             const contentArea = screenElement.querySelector('.content-area') || 
-                                screenElement.querySelector('.screen-content') ||
-                                document.getElementById('video-swiper'); 
+                                screenElement.querySelector('#video-swiper') ||
+                                screenElement.querySelector('.creator-page-view.active .creator-video-viewer') ||
+                                screenElement; 
             if (contentArea) {
                 scrollPosition = contentArea.scrollTop;
             }
@@ -3167,7 +3165,6 @@ document.addEventListener('DOMContentLoaded', () => {
         getStartedBtn.addEventListener('click', () => {
             getStartedBtn.style.display = 'none';
             document.getElementById('loading-container').style.display = 'flex';
-            // स्टार्टअप अब पूरी तरह से initializeApp द्वारा नियंत्रित है
         }); 
     }
     
