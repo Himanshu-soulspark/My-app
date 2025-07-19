@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v6.5 === */
+/* === Shubhzone App Script (Code 2) - FINAL v6.6 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -426,101 +426,74 @@ function navigateBack() {
     if (previousScreenId === 'home-screen') initializeHomeScreen();
 }
 
-// ★★★ बदला हुआ और सबसे महत्वपूर्ण फ़ंक्शन ★★★
-async function initializeApp() {
+
+// ★★★ नया, सरल और विश्वसनीय स्टार्टअप लॉजिक ★★★
+let appInitializationComplete = false;
+let userListener = null;
+
+function initializeApp() {
     if (appInitializationComplete) return;
     appInitializationComplete = true;
 
-    const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
-    const lastScroll = sessionStorage.getItem('lastScrollPositionBeforeAd');
-
-    // यदि हम विज्ञापन से वापस आ रहे हैं
-    if (lastScreen) {
-        console.log("[State Restore] Detected return from an ad. Restoring state.");
-        document.getElementById('splash-screen').style.display = 'none';
-        document.getElementById('loading-container').style.display = 'flex';
-        
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                // उपयोगकर्ता डेटा प्राप्त करें लेकिन अभी नेविगेट न करें
-                appState.currentUser.uid = user.uid;
-                const userRef = db.collection('users').doc(user.uid);
-                const doc = await userRef.get();
-                if (doc.exists) {
-                    appState.currentUser = { ...appState.currentUser, ...doc.data() };
-                    listenToUserUpdates(user.uid);
-                    updateProfileUI();
-                    
-                    // अब ऐप शुरू करें और सहेजी गई स्थिति को बहाल करें
-                    await restoreStateOrStartNormally(true);
-                } else {
-                    // यदि उपयोगकर्ता मौजूद नहीं है, तो सामान्य प्रवाह पर वापस जाएं
-                    await restoreStateOrStartNormally(false);
-                }
-            } else {
-                 // यदि उपयोगकर्ता नहीं है, तो सामान्य प्रवाह पर वापस जाएं
-                auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
-                await restoreStateOrStartNormally(false);
-            }
-        });
-    } else {
-        // सामान्य ऐप स्टार्टअप
-        console.log("[State Restore] Normal startup sequence.");
-        activateScreen('splash-screen');
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                await checkUserProfileAndProceed(user);
-            } else {
-                auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
-            }
-        });
-    }
+    console.log("[App Start] initializeApp called.");
+    
+    activateScreen('splash-screen');
     startAppTimeTracker();
-}
 
+    auth.onAuthStateChanged(async (user) => {
+        console.log("[App Start] onAuthStateChanged triggered.");
+        if (user) {
+            await checkUserProfileAndProceed(user);
+        } else {
+            console.log("[App Start] No user found, signing in anonymously.");
+            auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
+        }
+    });
+}
 
 async function checkUserProfileAndProceed(user) {
-    if (!user) return; 
+    console.log("[App Start] checkUserProfileAndProceed for user:", user.uid);
     appState.currentUser.uid = user.uid;
     const userRef = db.collection('users').doc(user.uid);
-    const doc = await userRef.get();
-    if (doc.exists) {
-        let userData = doc.data();
-        if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
-            userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
-        }
-        appState.currentUser = { ...appState.currentUser, ...userData };
-        listenToUserUpdates(user.uid);
-        updateProfileUI();
-        
-        if (userData.name && userData.state) {
-            await startAppLogic();
+    try {
+        const doc = await userRef.get();
+        if (doc.exists) {
+            let userData = doc.data();
+            appState.currentUser = { ...appState.currentUser, ...userData };
+            listenToUserUpdates(user.uid);
+            updateProfileUI();
+
+            if (userData.name && userData.state) {
+                console.log("[App Start] User profile complete. Starting main app logic.");
+                await startAppLogic();
+            } else {
+                console.log("[App Start] User profile incomplete. Navigating to information-screen.");
+                navigateTo('information-screen');
+            }
         } else {
+            console.log("[App Start] New user. Creating profile.");
+            const initialData = {
+                uid: user.uid, name: '', email: user.email || '',
+                avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                likedVideos: [], 
+                totalWatchTimeSeconds: 0, viewerCoins: 0,
+                creatorTotalWatchTimeSeconds: 0, creatorCoins: 0,
+                creatorDailyWatchTime: {}, friends: [],
+                referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
+            };
+            await userRef.set(initialData);
+            appState.currentUser = { ...appState.currentUser, ...initialData };
+            updateProfileUI();
             navigateTo('information-screen');
         }
-    } else {
-        const initialData = {
-            uid: user.uid, name: '', email: user.email || '',
-            avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            likedVideos: [], 
-            totalWatchTimeSeconds: 0,
-            viewerCoins: 0,
-            creatorTotalWatchTimeSeconds: 0,
-            creatorCoins: 0,
-            creatorDailyWatchTime: {},
-            friends: [],
-            referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
-        };
-        await userRef.set(initialData);
-        appState.currentUser = { ...appState.currentUser, ...initialData };
-        updateProfileUI();
-        navigateTo('information-screen');
+    } catch (error) {
+        console.error("[App Start] Error in checkUserProfileAndProceed:", error);
+        // एक त्रुटि संदेश दिखाएं या फॉलबैक करें
+        const loadingContainer = document.getElementById('loading-container');
+        if(loadingContainer) loadingContainer.innerHTML = `<p style="color: var(--error-red);">Could not load user profile. Check connection.</p>`;
     }
 }
-
-
-let userListener = null;
 
 function listenToUserUpdates(uid) {
     if (userListener) userListener();
@@ -552,6 +525,7 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
+    console.log("[App Start] Refreshing video feed...");
     return new Promise(async (resolve, reject) => {
         try {
             const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
@@ -560,11 +534,11 @@ async function refreshAndRenderFeed() {
             fullVideoList = [...loadedVideos];
             
             let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
-            
             shortVideos = shuffleArray(shortVideos);
             appState.allVideos = shortVideos;
             
             renderVideoSwiper(shortVideos); 
+            console.log("[App Start] Video feed refreshed successfully.");
             resolve();
         } catch (error) {
             console.error("Error refreshing feed:", error);
@@ -958,20 +932,18 @@ function renderVideoSwiper(itemsToRender) {
 }
 
 // ==============================================================================
-// ★★★ वीडियो प्लेबैक लॉजिक - START (पूरी तरह से नया और बेहतर) ★★★
+// ★★★ वीडियो प्लेबैक लॉजिक - START (विश्वसनीय) ★★★
 // ==============================================================================
 
 function onYouTubeIframeAPIReady() {
     console.log("[Player Flow] YouTube IFrame API is ready.");
     isYouTubeApiReady = true;
     
-    // यदि होम स्क्रीन पहले से ही सक्रिय है, तो प्लेयर शुरू करें
     if (appState.currentScreen === 'home-screen') {
         initializePlayers();
     }
 }
 
-// यह फ़ंक्शन अब केवल होम स्क्रीन पर नेविगेट करने पर कॉल होगा।
 function initializeHomeScreen() {
     if (isYouTubeApiReady) {
         initializePlayers();
@@ -987,6 +959,8 @@ function initializePlayers() {
     }
     
     const slides = document.querySelectorAll('#video-swiper .video-slide');
+    if (slides.length === 0) return;
+    
     console.log(`[Player Flow] Initializing players for ${slides.length} slides.`);
     
     if (videoObserver) videoObserver.disconnect();
@@ -1019,7 +993,6 @@ function initializePlayers() {
     });
 }
 
-// ★★★ मुख्य बदलाव: प्लेयर के तैयार होने के बाद ही उसे ऑब्जर्वर में जोड़ें
 function onPlayerReady(event) {
     const iframe = event.target.getIframe();
     const slide = iframe.closest('.video-slide');
@@ -1031,12 +1004,10 @@ function onPlayerReady(event) {
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
 
-    // अब यह स्लाइड देखने के लिए तैयार है
     if (videoObserver) {
         videoObserver.observe(slide);
     }
     
-    // यदि यह पहली वीडियो है तो इसे चलाने का प्रयास करें
     const firstSlide = document.querySelector('.video-slide');
     if (slide === firstSlide && !activePlayerId) {
         handleIntersection([{ isIntersecting: true, target: slide }]);
@@ -1095,13 +1066,11 @@ const handleIntersection = (entries) => {
         console.log(`[Player Flow] Intersection for ${videoId}, isIntersecting: ${entry.isIntersecting}`);
 
         if (entry.isIntersecting) {
-            // यदि कोई और वीडियो चल रहा है, तो उसे रोकें
             if (activePlayerId && activePlayerId !== videoId) {
                 pauseActivePlayer();
             }
             playActivePlayer(videoId);
         } else {
-            // यदि यह वही वीडियो है जो स्क्रीन से बाहर जा रहा है, तो उसे रोकें
             if (videoId === activePlayerId) {
                 pauseActivePlayer();
             }
@@ -1114,7 +1083,6 @@ function playActivePlayer(videoId) {
     if (!videoId) return;
     const player = players[videoId];
 
-    // खेलने से पहले कई जांचें
     if (!player || typeof player.playVideo !== 'function') {
         console.warn(`[Player Flow] Play aborted: Player object for ${videoId} not found or invalid.`);
         return;
@@ -1581,50 +1549,43 @@ async function checkAndShowPriorityAd() {
     });
 }
 
-// ★★★ बदला हुआ फ़ंक्शन ★★★
 let appStartLogicHasRun = false;
 async function startAppLogic() {
     if (appStartLogicHasRun) return;
     appStartLogicHasRun = true;
-    
-    await restoreStateOrStartNormally(false);
-};
 
-// ★★★ नया हेल्पर फ़ंक्शन ★★★
-async function restoreStateOrStartNormally(isRestoring) {
+    console.log("[App Start] startAppLogic initiated.");
     const loadingContainer = document.getElementById('loading-container');
     if (loadingContainer) loadingContainer.style.display = 'flex';
 
-    await checkAndShowPriorityAd();
-    renderCategories();
-    renderCategoriesInBar();
-    
-    try {
-        await refreshAndRenderFeed();
-    } catch (e) {
-        if (loadingContainer) loadingContainer.style.display = 'none';
-        return; 
-    }
-    
-    if (loadingContainer) loadingContainer.style.display = 'none';
-
-    // विज्ञापन प्रबंधक केवल मुख्य ऐप तर्क चलने पर ही शुरू करें
+    // विज्ञापन प्रबंधक केवल तभी शुरू करें जब ऐप वास्तव में शुरू हो रहा हो
     adRotationManager.init();
 
-    if (isRestoring) {
+    try {
+        await checkAndShowPriorityAd();
+        renderCategories();
+        renderCategoriesInBar();
+        await refreshAndRenderFeed();
+
         const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
         const lastScroll = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
         
         if (lastScreen && document.getElementById(lastScreen)) {
             console.log(`[State Restore] Restoring to screen: ${lastScreen} at scroll: ${lastScroll}`);
             navigateTo(lastScreen, null, lastScroll);
+            sessionStorage.removeItem('lastScreenBeforeAd');
+            sessionStorage.removeItem('lastScrollPositionBeforeAd');
         } else {
             navigateTo('home-screen');
         }
-        sessionStorage.removeItem('lastScreenBeforeAd');
-        sessionStorage.removeItem('lastScrollPositionBeforeAd');
-    } else {
-        navigateTo('home-screen');
+    } catch (error) {
+        console.error("[App Start] A critical error occurred during app startup:", error);
+        if (loadingContainer) {
+            loadingContainer.innerHTML = `<p style="color: var(--error-red);">App failed to start. Please refresh.</p>`;
+        }
+    } finally {
+        console.log("[App Start] Hiding main loader.");
+        if (loadingContainer) loadingContainer.style.display = 'none';
     }
 }
 
@@ -3103,7 +3064,6 @@ const adRotationManager = {
         if (this.adTimer) {
             clearInterval(this.adTimer);
         }
-        // हर 60 सेकंड में एक विज्ञापन दिखाने के लिए सख्त टाइमर।
         this.adTimer = setInterval(this.showPrimaryAd.bind(this), 60000); 
         console.log("[Ad Manager] Initialized with a strict 60-second timer.");
         
@@ -3207,6 +3167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         getStartedBtn.addEventListener('click', () => {
             getStartedBtn.style.display = 'none';
             document.getElementById('loading-container').style.display = 'flex';
+            // स्टार्टअप अब पूरी तरह से initializeApp द्वारा नियंत्रित है
         }); 
     }
     
