@@ -1,6 +1,6 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v6.1 === */
+/* === Shubhzone App Script (Code 2) - FINAL v6.2 === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -324,7 +324,6 @@ let activePlayerId = null;
 let userHasInteracted = false;
 let hasShownAudioPopup = false;
 let hapticFeedbackEnabled = true;
-let lastScreenBeforeAd = null;
 
 const appContainer = document.getElementById('app-container');
 const screens = document.querySelectorAll('.screen');
@@ -429,62 +428,44 @@ function navigateBack() {
 }
 
 async function checkUserProfileAndProceed(user) {
-    if (!user) return Promise.resolve();
+    if (!user) return; // Promise को हल करने की आवश्यकता नहीं है
     appState.currentUser.uid = user.uid;
     const userRef = db.collection('users').doc(user.uid);
-    try {
-        const doc = await userRef.get();
-        if (doc.exists) {
-            let userData = doc.data();
-            if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
-                userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
-            }
-            userData.likedVideos = userData.likedVideos || [];
-            userData.totalWatchTimeSeconds = userData.totalWatchTimeSeconds || 0;
-            userData.viewerCoins = userData.viewerCoins || 0;
-            userData.creatorTotalWatchTimeSeconds = userData.creatorTotalWatchTimeSeconds || 0;
-            userData.creatorCoins = userData.creatorCoins || 0;
-            userData.creatorDailyWatchTime = userData.creatorDailyWatchTime || {};
-            userData.friends = userData.friends || []; 
-            appState.currentUser = { ...appState.currentUser, ...userData };
-
-            const savedHistory = localStorage.getItem('shubhzoneViewingHistory');
-            if (savedHistory) {
-                try {
-                    appState.viewingHistory = JSON.parse(savedHistory);
-                } catch (e) {
-                    console.error("Error parsing viewing history from localStorage", e);
-                    appState.viewingHistory = [];
-                }
-            }
-            
-            updateProfileUI();
-            if (!userData.name || !userData.state) {
-                navigateTo('information-screen');
-            }
+    const doc = await userRef.get();
+    if (doc.exists) {
+        let userData = doc.data();
+        if (!userData.referralCode || !userData.referralCode.startsWith('@')) {
+            userData.referralCode = await generateAndSaveReferralCode(user.uid, userData.name);
+        }
+        appState.currentUser = { ...appState.currentUser, ...userData };
+        updateProfileUI();
+        // ★★★ महत्वपूर्ण: यहीं से तय होगा कि ऐप शुरू करना है या जानकारी स्क्रीन पर भेजना है
+        if (userData.name && userData.state) {
+            await startAppLogic();
         } else {
-            const initialData = {
-                uid: user.uid, name: '', email: user.email || '',
-                avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                likedVideos: [], 
-                totalWatchTimeSeconds: 0,
-                viewerCoins: 0,
-                creatorTotalWatchTimeSeconds: 0,
-                creatorCoins: 0,
-                creatorDailyWatchTime: {},
-                friends: [],
-                referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
-            };
-            await userRef.set(initialData);
-            appState.currentUser = { ...appState.currentUser, ...initialData };
-            updateProfileUI();
             navigateTo('information-screen');
         }
-    } catch (error) {
-        console.error("Error checking user profile:", error);
+    } else {
+        const initialData = {
+            uid: user.uid, name: '', email: user.email || '',
+            avatar: user.photoURL || 'https://via.placeholder.com/120/222/FFFFFF?text=+',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            likedVideos: [], 
+            totalWatchTimeSeconds: 0,
+            viewerCoins: 0,
+            creatorTotalWatchTimeSeconds: 0,
+            creatorCoins: 0,
+            creatorDailyWatchTime: {},
+            friends: [],
+            referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
+        };
+        await userRef.set(initialData);
+        appState.currentUser = { ...appState.currentUser, ...initialData };
+        updateProfileUI();
+        navigateTo('information-screen');
     }
 }
+
 
 let appInitializationComplete = false;
 let userListener = null;
@@ -503,6 +484,7 @@ function listenToUserUpdates(uid) {
     }, (error) => console.error("Error listening to user updates:", error));
 }
 
+// ★★★ बदला हुआ कोड: आरंभीकरण तर्क को सरल बनाया गया ★★★
 function initializeApp() {
     if (appInitializationComplete) return;
     appInitializationComplete = true;
@@ -512,19 +494,16 @@ function initializeApp() {
             await checkUserProfileAndProceed(user);
             if (appState.currentUser.uid) {
                 listenToUserUpdates(appState.currentUser.uid);
-                // ★★★ बदला हुआ कोड: अब यह जांचा जाएगा कि ऐप को शुरू करना है या नहीं
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists() && userDoc.data().name && userDoc.data().state) {
-                    startAppLogic();
-                }
             }
         } else {
+            // अगर कोई यूज़र नहीं है, तो अनाम रूप से साइन इन करें
             auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
         }
     });
     activateScreen('splash-screen');
     startAppTimeTracker();
 }
+
 
 async function loadUserVideosFromFirebase() {
     if (!appState.currentUser.uid) return;
@@ -541,17 +520,22 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
-    const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
-    const snapshot = await videosRef.get();
-    const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    fullVideoList = [...loadedVideos];
-    
-    let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
-    
-    shortVideos = shuffleArray(shortVideos);
-    appState.allVideos = shortVideos;
-    
-    renderVideoSwiper(shortVideos); 
+    try {
+        const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(50);
+        const snapshot = await videosRef.get();
+        const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        fullVideoList = [...loadedVideos];
+        
+        let shortVideos = fullVideoList.filter(v => v.videoLengthType !== 'long');
+        
+        shortVideos = shuffleArray(shortVideos);
+        appState.allVideos = shortVideos;
+        
+        renderVideoSwiper(shortVideos); 
+    } catch (error) {
+        console.error("Error refreshing feed:", error);
+        videoSwiper.innerHTML = '<p class="static-message" style="color: var(--error-red);">Could not load videos. Please check your connection.</p>';
+    }
 }
 
 
@@ -648,6 +632,7 @@ async function saveAndContinue() {
         appState.currentUser = { ...appState.currentUser, ...userData };
         updateProfileUI();
         
+        // ★★★ महत्वपूर्ण: प्रोफ़ाइल सहेजने के बाद ऐप तर्क शुरू करें
         await startAppLogic();
         
     } catch (error) {
@@ -1596,15 +1581,13 @@ async function checkAndShowPriorityAd() {
 }
 
 let appStartLogicHasRun = false;
-// ★★★ बदला हुआ कोड: रीडायरेक्ट से वापस आने पर ऐप की स्थिति को सही ढंग से बहाल करने के लिए
 const startAppLogic = async () => {
     if (appStartLogicHasRun) return;
+    appStartLogicHasRun = true;
 
     await checkAndShowPriorityAd();
     
     adRotationManager.init();
-
-    appStartLogicHasRun = true;
 
     const getStartedBtn = document.getElementById('get-started-btn');
     const loadingContainer = document.getElementById('loading-container');
@@ -1615,18 +1598,15 @@ const startAppLogic = async () => {
     renderCategoriesInBar();
     await refreshAndRenderFeed();
     
-    // जांचें कि क्या हम किसी रीडायरेक्ट से वापस आए हैं
     const lastScreen = sessionStorage.getItem('lastScreenBeforeAd');
     const lastScrollPosition = parseInt(sessionStorage.getItem('lastScrollPositionBeforeAd') || '0', 10);
     
     if (lastScreen && document.getElementById(lastScreen)) {
         console.log(`[State Restore] Restoring to screen: ${lastScreen} at scroll: ${lastScrollPosition}`);
         navigateTo(lastScreen, null, lastScrollPosition);
-        // एक बार उपयोग करने के बाद सत्र भंडारण को साफ़ करें
         sessionStorage.removeItem('lastScreenBeforeAd');
         sessionStorage.removeItem('lastScrollPositionBeforeAd');
     } else {
-        // सामान्य ऐप स्टार्ट
         navigateTo('home-screen');
     }
 };
@@ -2979,12 +2959,6 @@ async function resetTrackingData() {
             creatorDailyWatchTime: {}
         });
         
-        appState.currentUser.viewerCoins = 0;
-        appState.currentUser.creatorCoins = 0;
-        appState.currentUser.totalWatchTimeSeconds = 0;
-        appState.currentUser.creatorTotalWatchTimeSeconds = 0;
-        appState.currentUser.creatorDailyWatchTime = {};
-        
     } catch (error) {
         console.error("Failed to reset tracking data:", error);
     }
@@ -3110,29 +3084,27 @@ const adRotationManager = {
     minutes: 0,
     shortAdTimer: null,
     init: function() {
-        // setInterval को 60000 (1 मिनट) पर सेट करें
         setInterval(this.adScheduler.bind(this), 60000); 
         this.startSpecialAdTimer();
         this.showBanner();
     },
-    // ★★★ बदला हुआ कोड: विज्ञापन शेड्यूलिंग को ठीक किया गया ★★★
     adScheduler: function() {
         this.minutes++;
-        const adCycle = this.minutes % 3; // 3 मिनट का चक्र (0, 1, 2)
+        const adCycle = this.minutes % 3;
 
         console.log(`[Ad Scheduler] Minute: ${this.minutes}. Cycle step: ${adCycle}.`);
 
         switch (adCycle) {
-            case 1: // पहले मिनट (और हर 3 मिनट बाद)
+            case 1:
                 console.log("[Ad Trigger] Type: Interstitial");
                 this.showInterstitial();
                 break;
-            case 2: // दूसरे मिनट (और हर 3 मिनट बाद)
+            case 2:
                 console.log("[Ad Trigger] Type: Social Bar / Popunder");
                 this.showSocialBar();
                 this.showPopunder();
                 break;
-            case 0: // तीसरे मिनट (और हर 3 मिनट बाद)
+            case 0:
                 console.log("[Ad Trigger] Type: Redirect");
                 this.showRedirect();
                 break;
@@ -3278,13 +3250,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('navigate-to-advertisement-btn')?.addEventListener('click', () => navigateTo('advertisement-screen'));
     const sidebar = document.getElementById('main-sidebar');
     if (sidebar) { const reportButton = document.createElement('button'); reportButton.id = 'navigate-to-report-btn'; reportButton.className = 'sidebar-option haptic-trigger'; reportButton.innerHTML = `<i class="fas fa-flag" style="margin-right: 10px;"></i>Report`; reportButton.onclick = () => navigateTo('report-screen'); const adButton = document.getElementById('navigate-to-advertisement-btn'); if (adButton && adButton.nextSibling) sidebar.insertBefore(reportButton, adButton.nextSibling); else sidebar.appendChild(reportButton); }
-    initializeApp();
+    
+    // ★★★ महत्वपूर्ण: ऐप को शुरू करने के लिए get-started-btn अब सीधे startAppLogic को नहीं बुलाएगा।
+    // इसके बजाय, यह केवल लोडर दिखाएगा और onAuthStateChanged प्रक्रिया को संभालने देगा।
     const getStartedBtn = document.getElementById('get-started-btn');
-    if (getStartedBtn) { getStartedBtn.classList.add('haptic-trigger'); getStartedBtn.addEventListener('click', () => {
-        document.getElementById('get-started-btn').style.display = 'none';
-        document.getElementById('loading-container').style.display = 'flex';
-        // The rest of the logic will be handled by the onAuthStateChanged listener
-    });}
+    if (getStartedBtn) { 
+        getStartedBtn.classList.add('haptic-trigger'); 
+        getStartedBtn.addEventListener('click', () => {
+            getStartedBtn.style.display = 'none';
+            document.getElementById('loading-container').style.display = 'flex';
+            // तर्क अब initializeApp में auth स्थिति द्वारा नियंत्रित किया जाता है
+        }); 
+    }
+    
+    initializeApp();
+
     if (appContainer) { appContainer.addEventListener('click', (event) => { userHasInteracted = true; if (event.target.closest('.haptic-trigger')) provideHapticFeedback(); }); }
     initializeMessagingInterface();
     document.getElementById('add-friend-search-btn')?.addEventListener('click', searchUser);
