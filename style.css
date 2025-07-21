@@ -3411,6 +3411,191 @@ input:checked + .slider:before {
 }
 
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ NEW UI STYLES FOR AD POPUP AND TRACK PAYMENT (v5.5) - START ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+
+/* --- Improved Ad Request Popup --- */
+.ad-request-content {
+    border: 2px solid var(--primary-neon) !important;
+    box-shadow: 0 0 25px rgba(var(--primary-neon-rgb), 0.4) !important;
+    padding: 0 !important;
+    overflow: hidden;
+    text-align: center;
+}
+
+.ad-popup-header {
+    background-color: rgba(var(--primary-neon-rgb), 0.1);
+    padding: 20px;
+    border-bottom: 1px solid rgba(var(--primary-neon-rgb), 0.2);
+}
+
+.ad-popup-header .popup-icon {
+    font-size: 2.5em;
+    color: var(--primary-neon);
+    margin-bottom: 10px;
+}
+
+.ad-popup-header h3 {
+    margin: 0;
+    font-size: 1.6em;
+    color: var(--primary-neon);
+}
+
+.ad-popup-description {
+    padding: 20px;
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.ad-popup-reward-info {
+    background-color: rgba(var(--text-primary-rgb), 0.05);
+    padding: 15px;
+    margin: 0 20px;
+    border-radius: 8px;
+    font-size: 1em;
+    border: 1px solid rgba(var(--text-primary-rgb), 0.1);
+}
+
+.ad-popup-warning {
+    padding: 20px;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.ad-popup-actions {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(var(--text-primary-rgb), 0.05);
+    border-top: 1px solid rgba(var(--text-primary-rgb), 0.1);
+}
+
+.popup-btn {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.popup-btn.cancel-btn {
+    background-color: var(--error-red);
+    color: var(--text-primary);
+}
+.popup-btn.cancel-btn:hover {
+    opacity: 0.9;
+}
+
+.popup-btn.accept-btn {
+    background-color: var(--success-green);
+    color: var(--background);
+}
+.popup-btn.accept-btn:hover {
+    opacity: 0.9;
+}
+
+.popup-btn:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+}
+
+/* --- Track Payment Screen Redesign --- */
+#track-payment-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.track-payment-card {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: var(--secondary-background);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--text-secondary);
+}
+
+.card-strip {
+    padding: 10px 15px;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.card-strip.red {
+    background-color: var(--error-red);
+}
+.card-strip.yellow {
+    background-color: #FFD700; /* Gold/Yellow color */
+    color: var(--background);
+}
+
+.card-content {
+    flex-grow: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+.card-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.coin-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.coin-icon {
+    font-size: 3em;
+}
+.coin-icon.creator {
+    color: var(--error-red);
+}
+.coin-icon.viewer {
+    color: #FFD700;
+}
+
+.coin-count {
+    font-size: 3em;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.unconverted-time {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+.unconverted-time strong {
+    color: var(--primary-neon);
+}
+/* ================================================= */
+/* ★★★ NEW UI STYLES (v5.5) - END ★★★ */
+/* ================================================= */
+
+
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 /* ★★★ MEDIA QUERY FOR DESKTOP AND BROWSER COMPATIBILITY ★★★ */
 /* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
