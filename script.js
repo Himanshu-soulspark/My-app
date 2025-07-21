@@ -83,17 +83,14 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
  * @param {HTMLElement} container - विज्ञापन के लिए कंटेनर।
  */
 async function showMainBannerAd(container) {
-    if (!container) return;
-    
-    container.style.display = 'flex';
-    container.style.justifyContent = 'center';
-    container.style.alignItems = 'center';
-    
-    const bannerOptions = `atOptions = {'key' : '5cf688a48641e2cfd0aac4e4d4019604', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {}};`;
-    const bannerSrc = "//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js";
-    
-    console.log('[AD] Injecting main banner ad into:', container.id || container.className);
-    await injectAdScript(container, bannerOptions, bannerSrc);
+    // ★★★ महत्वपूर्ण बदलाव ★★★
+    // इस विज्ञापन नेटवर्क (highperformanceformat) को निष्क्रिय कर दिया गया है क्योंकि यह अनचाहे पॉप-अंडर विज्ञापन दिखा रहा था।
+    // इस फंक्शन को खाली छोड़ने से यह विज्ञापन कहीं भी लोड नहीं होगा, और आपकी ऐप में त्रुटि भी नहीं आएगी।
+    console.log('[AD DISABLED] Main banner ad (highperformanceformat) was disabled to prevent pop-unders.');
+    if (container) {
+        container.style.display = 'none'; // कंटेनर को छिपा दें ताकि खाली जगह न दिखे
+    }
+    return;
 }
 
 
@@ -101,36 +98,15 @@ async function showMainBannerAd(container) {
  * ★★★ नया फ़ंक्शन: वीडियो फ़ीड में विज्ञापन स्लाइड इंजेक्ट करता है ★★★
  */
 function injectAdSlideScript(containerId) {
+    // ★★★ महत्वपूर्ण बदलाव ★★★
+    // इस विज्ञापन नेटवर्क (profitableratecpm) को भी निष्क्रिय कर दिया गया है क्योंकि यह भी पॉप-अंडर का स्रोत हो सकता है।
+    // इसे खाली छोड़ने से यह विज्ञापन फीड में लोड नहीं होगा।
+    console.log('[AD DISABLED] Native ad slide (profitableratecpm) was disabled to prevent pop-unders.');
     const mainContainer = document.getElementById(containerId);
-    if (!mainContainer) {
-        console.error(`[AD] Ad slide container #${containerId} not found.`);
-        return;
+     if (mainContainer) {
+        mainContainer.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.8em; text-align: center; padding: 20px;">Advertisement space</div>';
     }
-    
-    mainContainer.innerHTML = '<div class="loader"></div>';
-
-    const primaryAdContainerId = 'container-f218d914c870fc85f6dd64b9c8c31249';
-    const primaryAdDiv = document.createElement('div');
-    primaryAdDiv.id = primaryAdContainerId;
-
-    const primaryAdScript = document.createElement('script');
-    primaryAdScript.async = true;
-    primaryAdScript.setAttribute('data-cfasync', 'false');
-    primaryAdScript.src = '//pl27114897.profitableratecpm.com/f218d914c870fc85f6dd64b9c8c31249/invoke.js';
-    
-    mainContainer.appendChild(primaryAdScript);
-    mainContainer.appendChild(primaryAdDiv);
-
-    setTimeout(() => {
-        const loadedAdContent = mainContainer.querySelector(`#${primaryAdContainerId}`);
-        if (!loadedAdContent || loadedAdContent.innerHTML.trim() === '' || loadedAdContent.offsetHeight < 50) {
-            console.warn('[AD] Primary Native Banner failed to load. Injecting fallback banner.');
-            mainContainer.innerHTML = '';
-            showMainBannerAd(mainContainer);
-        } else {
-            console.log('[AD] Primary Native Banner loaded successfully.');
-        }
-    }, 3000);
+    return;
 }
 
 
@@ -159,7 +135,7 @@ function manageLongVideoPlayerBanner(action) {
         adContainer.appendChild(adSlot);
         adContainer.appendChild(closeBtn);
         playerWrapper.appendChild(adContainer);
-        showMainBannerAd(adSlot);
+        showMainBannerAd(adSlot); // यह अब कुछ नहीं करेगा, इसलिए विज्ञापन नहीं दिखेगा
     }
     
     const isRotated = playerWrapper.closest('.main-video-card-wrapper')?.classList.contains('rotated');
@@ -473,7 +449,7 @@ const closeDescriptionBtn = document.getElementById('close-description-btn');
 const categories = [ "Entertainment", "Comedy", "Music", "Dance", "Education", "Travel", "Food", "DIY", "Sports", "Gaming", "News", "Lifestyle" ];
 const earnsureContent = {
     hi: `<h4>🌟 आपका अपना वीडियो प्लेटफॉर्म – जहां हर व्यू की क़ीमत है! 🎥💰</h4><hr><p><strong>👀 दर्शकों के लिए (Viewers):</strong></p><p>अगर आप इस ऐप पर वीडियो देखते हैं, तो हर सेकंड का Watch Time रिकॉर्ड होता है। आप जितना ज़्यादा देखेंगे, उतनी ज़्यादा आपकी कमाई (Ad Revenue Share) होगी।</p><p>🎉 अब वीडियो देखना सिर्फ़ मनोरंजन नहीं – कमाई का ज़रिया भी है!</p><hr><p><strong>🎥 क्रिएटर्स के लिए (Creators):</strong></p><p>अगर आप अपना खुद का वीडियो इस प्लेटफ़ॉर्म पर डालते हैं और लोग उसे देखते हैं, तो आपके वीडियो के Watch Time के आधार पर आपको भी कमाई दी जाएगी।</p><p>🛑 <strong>अगर आप किसी और का वीडियो डालते हैं, तो:</strong></p><ul><li>आपको उससे कोई कमाई नहीं मिलेगी।</li><li>लेकिन अगर आप खुद वह वीडियो देखें, तो एक Viewer के रूप में आप कमाई कर सकते हैं।</li></ul><hr><p><strong>🧾 पेमेंट पॉलिसी (Payment Policy):</strong></p><p>🗓️ <strong>हर सोमवार को पेमेंट Apply करें – 24 घंटे का समय!</strong></p><p>अब से, आप हर सोमवार को पूरे दिन (00:00 से 23:59 तक) "Payment Apply" बटन पर क्लिक कर सकते हैं।</p><p>✅ अगर आप सोमवार को अप्लाई नहीं करते, तो उस सप्ताह की कमाई रद्द (forfeit) मानी जाएगी।</p><hr><p><strong>💵 पेमेंट कब मिलेगा?</strong></p><p>पहली बार पेमेंट तब मिलेगा जब आपकी कुल कमाई ₹5000 (लगभग $60 USD) हो जाएगी।</p><p>इसके बाद आप चाहे ₹2 (लगभग $0.02 USD) भी कमाएं, आप उसे कभी भी निकाल सकते हैं।</p><hr><p><strong>💼 ऐप की दो खास विशेषताएं:</strong></p><p>📢 <strong>1. ब्रांड प्रमोशन का मौका</strong></p><p>इस ऐप पर आप अपने ब्रांड, प्रोडक्ट या सर्विस का विज्ञापन कर सकते हैं — वो भी सही टारगेटेड ऑडियंस के सामने।</p><p>📬 <strong>2. सीधे यूज़र से संपर्क करें</strong></p><p>अगर आपको किसी यूज़र से बात करनी है – सुझाव, फीडबैक या काम के लिए – तो आप ऐप के ज़रिए सीधे मैसेज या संपर्क कर सकते हैं।</p><hr><p><strong>✅ वेरिफिकेशन के नियम:</strong></p><p>अगर आप अपने वीडियो से क्रिएटर के रूप में कमाई करना चाहते हैं, तो आपको:</p><ol><li>अपनी कम से कम 5 यूट्यूब वीडियो में ऐप का नाम या लिंक (Shout-out) देना होगा।</li><li>इससे हम यह पुष्टि कर सकेंगे कि चैनल आपका है।</li></ol><hr><p><strong>🔒 ईमानदारी और पारदर्शिता हमारी प्राथमिकता है</strong></p><p>हम चाहते हैं कि हर Viewer और Creator को उनका पूरा हक़ मिले — बिना किसी धोखे और बिना किसी मुश्किल के।</p><blockquote>"कमाई और विश्वास का रिश्ता तभी टिकता है, जब दोनों तरफ से इज्ज़त हो।"</blockquote><hr><p><strong>📩 संपर्क करें:</strong></p><p>कोई सवाल या सहायता चाहिए? ईमेल करें 👉 udbhavscience12@gmail.com</p><hr><h4>🌈 आइए, साथ मिलकर कुछ बड़ा बनाएं।</h4><p>आप देखिए, कमाइए, प्रमोट कीजिए, जुड़िए — यह मंच आपका है। 🚀💖</p>`,
-    en: `<h4>🌟 Your Own Video Platform – Where Every View Has Value! 🎥💰</h4><hr><p><strong>👀 For Viewers:</strong></p><p>When you watch videos on this app, every second of your Watch Time is recorded. The more you watch, the more you earn (Ad Revenue Share).</p><p>🎉 Watching videos is no longer just entertainment — it’s also a way to earn!</p><hr><p><strong>🎥 For Creators:</strong></p><p>If you upload your own videos to this platform and people watch them, you earn money based on the watch time of those videos.</p><p>🛑 <strong>But if you upload someone else’s video:</strong></p><ul><li>You won’t earn any revenue from it.</li><li>However, if you watch it yourself, you will still earn as a viewer.</li></ul><hr><p><strong>🧾 Payment Policy:</strong></p><p>🗓️ <strong>Apply for Payment Every Monday – Full 24 Hours!</strong></p><p>You can apply for payment every Monday, anytime between 00:00 and 23:59 (24 hours window).</p><p>✅ If you do not apply on Monday, the earnings for that week will be forfeited.</p><hr><p><strong>💵 When Will You Get Paid?</strong></p><p>Your first payment will be released only when your total earnings reach ₹5000 (approx. $60 USD).</p><p>After that, even if you earn just ₹2 (approx. $0.02 USD), you can withdraw it anytime.</p><hr><p><strong>💼 Two Special Features of This App:</strong></p><p>📢 <strong>1. Promote Your Own Brand</strong></p><p>You can advertise your brand, product, or services directly on this platform — to a real, engaged audience who already loves content.</p><p>📬 <strong>2. Contact Any User Directly</strong></p><p>Need to reach out to a user for collaboration, feedback, or business? The app allows you to directly contact any user via messaging.</p><hr><p><strong>✅ Verification Rules for Creators:</strong></p><p>If you want to earn revenue as a creator, you must:</p><ol><li>Give a shout-out (mention/link to this app) in at least 5 videos on your YouTube channel.</li><li>This helps us verify that the channel is genuinely yours.</li></ol><hr><p><strong>🔒 Honesty & Transparency Come First</strong></p><p>We are committed to giving every viewer and creator their fair share, with zero cheating and zero complications.</p><blockquote>"True earnings and trust grow only when there's respect on both sides."</blockquote><hr><p><strong>📩 Need Help? Contact Us:</strong></p><p>Have questions or suggestions? 📧 Email us at: udbhavscience12@gmail.com</p><hr><h4>🌈 Let’s build something great, together.</h4><p>Watch, Earn, Promote, and Connect — This platform is truly yours. 🚀💖</p>`
+    en: `<h4>🌟 Your Own Video Platform – Where Every View Has Value! 🎥💰</h4><hr><p><strong>👀 For Viewers:</strong></p><p>When you watch videos on this app, every second of your Watch Time is recorded. The more you watch, the more you earn (Ad Revenue Share).</p><p>🎉 Watching videos is no longer just entertainment — it’s also a way to earn!</p><hr><p><strong>🎥 For Creators:</strong></p><p>If you upload your own videos to this platform and people watch them, you earn money based on the watch time of those videos.</p><p>🛑 <strong>But if you upload someone else’s video:</strong></p><ul><li>You won’t earn any revenue from it.</li><li>However, if you watch it yourself, you will still earn as a viewer.</li></ul><hr><p><strong>🧾 Payment Policy:</strong></p><p>🗓️ <strong>Apply for Payment Every Monday – Full 24 Hours!</strong></p><p>You can apply for payment every Monday, anytime between 00:00 and 23:59 (24 hours window).</p><p>✅ If you do not apply on Monday, the earnings for that week will be forfeited.</p><hr><p><strong>💵 When Will You Get Paid?</strong></p><p>Your first payment will be released only when your total earnings reach ₹5000 (approx. $60 USD).</p><p>After that, even if you earn just ₹2 (approx. $0.02 USD), you can withdraw it anytime.</p><hr><p><strong>💼 Two Special Features of This App:</strong></p><p>📢 <strong>1. Promote Your Own Brand</strong></p><p>You can advertise your brand, product, or services directly on this platform — to a real, engaged audience who already loves content.</p><p>📬 <strong>2. Contact Any User Directly</strong></p><p>Need to reach out to a user for collaboration, feedback, or business? The app allows you to directly contact any user via messaging.</p><hr><p><strong>✅ Verification Rules for Creators:</strong></p><p>If you want to earn revenue as a creator, you must:</p><ol><li>Give a shout-out (mentioning/link to this app) in at least 5 videos on your YouTube channel.</li><li>This helps us verify that the channel is genuinely yours.</li></ol><hr><p><strong>🔒 Honesty & Transparency Come First</strong></p><p>We are committed to giving every viewer and creator their fair share, with zero cheating and zero complications.</p><blockquote>"True earnings and trust grow only when there's respect on both sides."</blockquote><hr><p><strong>📩 Need Help? Contact Us:</strong></p><p>Have questions or suggestions? 📧 Email us at: udbhavscience12@gmail.com</p><hr><h4>🌈 Let’s build something great, together.</h4><p>Watch, Earn, Promote, and Connect — This platform is truly yours. 🚀💖</p>`
 };
 let currentEarnsureLanguage = 'hi';
 
@@ -1072,7 +1048,7 @@ function renderVideoSwiper(itemsToRender) {
             // ★★★ बदलाव: विज्ञापन काउंटर को बढ़ाया गया ★★★
             adCount++; 
 
-            setTimeout(() => showMainBannerAd(document.getElementById(adContainerId)), 200);
+            setTimeout(() => injectAdSlideScript(adContainerId), 200);
         }
     });
 
