@@ -1,8 +1,8 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v5.6 === */
+/* === Shubhzone App Script (Code 2) - FINAL v5.7 === */
 /* === MODIFIED AS PER USER REQUEST - JULY 2025   === */
-/* === SOLVED: Ad Coins, Autoplay, Performance    === */
+/* === SOLVED: Add Friends List & Button Text     === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -84,12 +84,9 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
  * @param {HTMLElement} container - विज्ञापन के लिए कंटेनर।
  */
 async function showMainBannerAd(container) {
-    // ★★★ महत्वपूर्ण बदलाव ★★★
-    // इस विज्ञापन नेटवर्क (highperformanceformat) को निष्क्रिय कर दिया गया है क्योंकि यह अनचाहे पॉप-अंडर विज्ञापन दिखा रहा था।
-    // इस फंक्शन को खाली छोड़ने से यह विज्ञापन कहीं भी लोड नहीं होगा, और आपकी ऐप में त्रुटि भी नहीं आएगी।
     console.log('[AD DISABLED] Main banner ad (highperformanceformat) was disabled to prevent pop-unders.');
     if (container) {
-        container.style.display = 'none'; // कंटेनर को छिपा दें ताकि खाली जगह न दिखे
+        container.style.display = 'none';
     }
     return;
 }
@@ -99,9 +96,6 @@ async function showMainBannerAd(container) {
  * ★★★ नया फ़ंक्शन: वीडियो फ़ीड में विज्ञापन स्लाइड इंजेक्ट करता है ★★★
  */
 function injectAdSlideScript(containerId) {
-    // ★★★ महत्वपूर्ण बदलाव ★★★
-    // इस विज्ञापन नेटवर्क (profitableratecpm) को भी निष्क्रिय कर दिया गया है क्योंकि यह भी पॉप-अंडर का स्रोत हो सकता है।
-    // इसे खाली छोड़ने से यह विज्ञापन फीड में लोड नहीं होगा।
     console.log('[AD DISABLED] Native ad slide (profitableratecpm) was disabled to prevent pop-unders.');
     const mainContainer = document.getElementById(containerId);
      if (mainContainer) {
@@ -136,7 +130,7 @@ function manageLongVideoPlayerBanner(action) {
         adContainer.appendChild(adSlot);
         adContainer.appendChild(closeBtn);
         playerWrapper.appendChild(adContainer);
-        showMainBannerAd(adSlot); // यह अब कुछ नहीं करेगा, इसलिए विज्ञापन नहीं दिखेगा
+        showMainBannerAd(adSlot);
     }
     
     const isRotated = playerWrapper.closest('.main-video-card-wrapper')?.classList.contains('rotated');
@@ -157,9 +151,6 @@ function triggerAdDisplay() {
     const adType = sequence[currentIndex];
 
     console.log(`[AD] Triggering Ad Display. Type: ---> ${adType.toUpperCase()} <---`);
-
-    // बाहरी लिंक पर जाने से पहले localStorage में स्थिति सहेजने की आवश्यकता नहीं है,
-    // क्योंकि अब navigateTo फंक्शन यह काम कर रहा है।
 
     switch (adType) {
         case 'direct':
@@ -245,7 +236,6 @@ async function handleAcceptAdRequest() {
     document.getElementById('ad-request-popup').classList.remove('active');
     triggerAdDisplay();
     
-    // ★ बदलाव: गिनती को localStorage में सेव किया जाएगा ताकि यह ऐप बंद होने पर भी याद रहे।
     let currentCount = appState.currentUser.tempState.acceptedAds + 1;
     appState.currentUser.tempState.acceptedAds = currentCount;
     if (appState.currentUser.uid) {
@@ -261,7 +251,6 @@ async function handleAcceptAdRequest() {
             await userRef.update({ viewerCoins: firebase.firestore.FieldValue.increment(1) });
             appState.currentUser.viewerCoins += 1;
             
-            // ★ बदलाव: कॉइन मिलने के बाद गिनती को रीसेट करें।
             appState.currentUser.tempState.acceptedAds = 0;
             if (appState.currentUser.uid) {
                 localStorage.setItem(`shubhzone_adCount_${appState.currentUser.uid}`, 0);
@@ -271,14 +260,12 @@ async function handleAcceptAdRequest() {
         } catch (error) {
             console.error("Error awarding viewer coin:", error);
             alert("Could not award coin. Please try again.");
-            // ★ बदलाव: त्रुटि होने पर गिनती वापस घटाई जाएगी।
             appState.currentUser.tempState.acceptedAds = 4;
             if (appState.currentUser.uid) {
                localStorage.setItem(`shubhzone_adCount_${appState.currentUser.uid}`, 4);
             }
         }
     }
-    // ★ बदलाव: पेमेंट ट्रैकिंग स्क्रीन को अपडेट करें ताकि नई गिनती दिखे।
     if(appState.currentScreen === 'track-payment-screen') {
         initializeTrackPaymentScreen();
     }
@@ -332,10 +319,8 @@ function clearAllAdTimers() {
 // =======================================================================
 
 
-// ... (Helper Functions, appState, etc. remain the same) ...
-
 // =================================================
-// ★★★ Helper Functions - START (यह सेक्शन ज़रूरी है और रहेगा) ★★★
+// ★★★ Helper Functions - START ★★★
 // =================================================
 
 function shuffleArray(array) {
@@ -424,7 +409,7 @@ let appState = {
     },
     appTimeTrackerInterval: null, watchTimeInterval: null,
     videoWatchTrackers: {},
-    specialVideoPlayer: null, // ★ नया: स्पेशल वीडियो प्लेयर के लिए स्टेट
+    specialVideoPlayer: null,
 };
 
 let isYouTubeApiReady = false;
@@ -440,7 +425,6 @@ let hapticFeedbackEnabled = true;
 const appContainer = document.getElementById('app-container');
 const screens = document.querySelectorAll('.screen');
 const navItems = document.querySelectorAll('.nav-item');
-// ... (अन्य सभी DOM एलिमेंट वेरिएबल्स वैसे ही रहेंगे)
 const profileImageInput = document.getElementById('profile-image-input');
 const profileImagePreview = document.getElementById('profile-image-preview');
 const uploadDetailsModal = document.getElementById('upload-details-modal');
@@ -483,13 +467,9 @@ function activateScreen(screenId) {
     appState.currentScreen = screenId;
 }
 
-// <<< ★★★ बदलाव ★★★ >>>
-// इस फंक्शन को स्थायी मेमोरी (`localStorage`) का उपयोग करने के लिए अपडेट किया गया है।
 function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (appState.currentScreen === nextScreenId && !payload) return;
 
-    // हर नेविगेशन पर, वर्तमान स्क्रीन को localStorage में सहेजें।
-    // यह बाहरी लिंक से वापस आने पर स्थिति को पुनर्स्थापित करने में मदद करेगा।
     if (nextScreenId !== 'splash-screen' && nextScreenId !== 'information-screen') {
         localStorage.setItem('shubhzone_lastScreen', nextScreenId);
     }
@@ -498,7 +478,6 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.navigationStack.push(nextScreenId);
     }
     
-    // मौजूदा लॉजिक अपरिवर्तित रहता है
     if (appState.currentScreen === 'creator-page-screen' || appState.currentScreen === 'home-screen') clearAllAdTimers();
     if (appState.currentScreen === 'home-screen' && activePlayerId && players[activePlayerId]) pauseActivePlayer();
     if (appState.currentScreen === 'creator-page-screen') {
@@ -511,7 +490,6 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     activateScreen(nextScreenId);
     appState.currentScreenPayload = payload;
 
-    // स्क्रीन के आधार पर विभिन्न फंक्शन को कॉल करना
     if (nextScreenId === 'profile-screen') loadUserVideosFromFirebase();
     if (nextScreenId === 'long-video-screen') setupLongVideoScreen();
     if (nextScreenId === 'history-screen') initializeHistoryScreen();
@@ -549,11 +527,9 @@ function navigateBack() {
         }
     }
     
-    navigateTo(previousScreenId); // Use navigateTo to ensure state is saved
+    navigateTo(previousScreenId);
 }
 
-// <<< ★★★ बदलाव ★★★ >>>
-// यह फंक्शन अब `lastScreenToRestore` पैरामीटर लेता है।
 async function checkUserProfileAndProceed(user, lastScreenToRestore = null) {
     if (!user) return;
     appState.currentUser.uid = user.uid;
@@ -573,7 +549,6 @@ async function checkUserProfileAndProceed(user, lastScreenToRestore = null) {
         userData.viewerCoins = userData.viewerCoins || 0;
         userData.unconvertedViewerSeconds = userData.unconvertedViewerSeconds || 0;
         
-        // ★ बदलाव: विज्ञापन की गिनती को localStorage से लोड किया जाएगा।
         const savedAdCount = localStorage.getItem(`shubhzone_adCount_${user.uid}`);
         userData.tempState = { acceptedAds: savedAdCount ? parseInt(savedAdCount, 10) : 0 };
         
@@ -584,12 +559,11 @@ async function checkUserProfileAndProceed(user, lastScreenToRestore = null) {
         }
         updateProfileUI();
         
-        // पुनर्स्थापना का मुख्य लॉजिक
         if (lastScreenToRestore) {
             console.log(`[App Restore] Found last screen in localStorage: ${lastScreenToRestore}. Restoring...`);
             await startAppLogic(lastScreenToRestore);
         } else if (userData.name && userData.state) {
-            await startAppLogic(); // सामान्य स्टार्टअप
+            await startAppLogic();
         } else {
             navigateTo('information-screen');
         }
@@ -605,7 +579,6 @@ async function checkUserProfileAndProceed(user, lastScreenToRestore = null) {
             referralCode: await generateAndSaveReferralCode(user.uid, user.displayName || 'user')
         };
         await userRef.set(initialData);
-        // ★ बदलाव: नए यूज़र के लिए भी विज्ञापन गिनती 0 पर सेट होगी।
         appState.currentUser = { ...appState.currentUser, ...initialData, tempState: { acceptedAds: 0 } };
         localStorage.setItem(`shubhzone_adCount_${user.uid}`, 0);
         updateProfileUI();
@@ -618,13 +591,10 @@ function initializeApp() {
     if (appInitializationComplete) return;
     appInitializationComplete = true;
 
-    // <<< ★★★ बदलाव ★★★ >>>
-    // ऐप शुरू होते ही localStorage को जाँचेगा।
     const lastScreenToRestore = localStorage.getItem('shubhzone_lastScreen');
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            // पुनर्स्थापित करने के लिए स्क्रीन की जानकारी को पास करें।
             checkUserProfileAndProceed(user, lastScreenToRestore);
         } else {
             auth.signInAnonymously().catch(error => console.error("Anonymous sign-in failed:", error));
@@ -651,7 +621,6 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
-    // ★ बदलाव: लोडिंग स्पीड के लिए एक बार में कम वीडियो लोड किए जाएंगे। पहले 50 थे।
     const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(15);
     const snapshot = await videosRef.get();
     const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -912,7 +881,6 @@ async function saveNewVideo() {
             channelName: modalChannelNameInput.value.trim(),
             channelLink: modalChannelLinkInput.value.trim(),
             videoUrl: videoUrlValue,
-            // ★ बदलाव: लोडिंग स्पीड के लिए मीडियम क्वालिटी थंबनेल का उपयोग।
             thumbnailUrl: `https://img.youtube.com/vi/${videoUrlValue}/mqdefault.jpg`,
             videoType: 'youtube', videoLengthType: lengthType,
             category, audience: appState.uploadDetails.audience || 'all',
@@ -1093,13 +1061,12 @@ function initializePlayers() {
 
         if (!playerElement || playerElement.tagName === 'IFRAME') return;
         
-        // ★ बदलाव: ऑटोप्ले और ऑटो-म्यूट को हटाने के लिए प्लेयर की सेटिंग्स बदली गईं।
         players[videoId] = new YT.Player(playerId, {
             height: '100%', width: '100%', videoId: videoData.videoUrl,
             playerVars: {
-                'autoplay': 0,      // ऑटो-प्ले बंद (पहले 0 था, लेकिन ऑब्जर्वर चलाता था)
-                'controls': 0,      // कंट्रोल्स छिपे रहेंगे
-                'mute': 0,          // वीडियो में आवाज़ आएगी (पहले 1 था)
+                'autoplay': 0,
+                'controls': 0,
+                'mute': 0,
                 'rel': 0, 
                 'showinfo': 0,
                 'modestbranding': 1, 
@@ -1122,11 +1089,6 @@ function onPlayerReady(event) {
     if (!slide) return;
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
-
-    // ★ बदलाव: ऑटो-प्ले बंद कर दिया गया है, इसलिए onReady पर वीडियो नहीं चलेगा।
-    // if (videoId === activePlayerId || (!activePlayerId && isElementVisible(slide, videoSwiper))) {
-    //     playActivePlayer(videoId);
-    // }
 }
 
 function onPlayerStateChange(event) {
@@ -1150,14 +1112,6 @@ function onPlayerStateChange(event) {
     if (event.data === YT.PlayerState.PLAYING) {
         startWatchTimeTracker();
         startVideoViewTracker(videoId, 'short');
-        
-        // ★ बदलाव: क्योंकि वीडियो अब म्यूट नहीं है, पॉपअप की ज़रूरत नहीं है।
-        // if (userHasInteracted) {
-        //      if (typeof event.target.isMuted === 'function' && event.target.isMuted() && !hasShownAudioPopup) {
-        //          document.getElementById('audio-issue-popup').classList.add('active');
-        //          hasShownAudioPopup = true;
-        //      }
-        // }
     } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
         stopWatchTimeTracker();
         stopVideoViewTracker(videoId);
@@ -1225,12 +1179,6 @@ function playActivePlayer(videoId) {
     addVideoToHistory(videoId);
 
     player.playVideo();
-    
-    // ★ बदलाव: अब प्लेयर डिफॉल्ट रूप से अनम्यूट है, इसलिए इस कोड की आवश्यकता नहीं।
-    // if (userHasInteracted && typeof player.unMute === 'function' && player.isMuted()) {
-    //     player.unMute();
-    //     console.log(`[Audio] Unmuting video: ${videoId}`);
-    // }
 }
 
 function pauseActivePlayer() {
@@ -1260,20 +1208,6 @@ function setupVideoObserver() {
 
             const videoId = entry.target.dataset.videoId;
             if (!videoId || !players[videoId]) return;
-            
-            // ★ बदलाव: ऑटो-प्ले बंद कर दिया गया है। अब स्क्रॉल करने पर कुछ नहीं होगा।
-            // प्लेयर को मैन्युअल रूप से चलाना होगा।
-            // if (entry.isIntersecting) {
-            //     if (activePlayerId && activePlayerId !== videoId) {
-            //         pauseActivePlayer();
-            //     }
-            //     // playActivePlayer(videoId); // यह लाइन हटा दी गई है
-            // } else {
-            //     if (videoId === activePlayerId) {
-            //         pauseActivePlayer();
-            //         activePlayerId = null;
-            //     }
-            // }
         });
     };
 
@@ -1452,7 +1386,6 @@ async function toggleLikeAction(videoId, slideElement) {
 function logoutUser() {
     if (confirm("Are you sure you want to log out?")) {
         localStorage.removeItem('shubhzone_lastScreen');
-        // ★ बदलाव: लॉगआउट करते समय विज्ञापन की गिनती भी localStorage से हटा दें।
         if (appState.currentUser && appState.currentUser.uid) {
             localStorage.removeItem(`shubhzone_adCount_${appState.currentUser.uid}`);
         }
@@ -2252,8 +2185,9 @@ async function populateAddFriendsList(featuredUser = null) {
     userListContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
 
     try {
-        // ★ बदलाव: लोडिंग स्पीड के लिए एक बार में कम यूज़र्स लोड किए जाएंगे।
-        const usersSnapshot = await db.collection('users').orderBy('name').limit(30).get();
+        // ★ बदलाव: सभी यूज़र्स को लोड करने के लिए limit हटा दी गई है।
+        // कृपया ध्यान दें: अगर आपके ऐप में बहुत ज़्यादा यूज़र्स हो जाएंगे, तो यह लिस्ट लोड होने में ज़्यादा समय ले सकती है।
+        const usersSnapshot = await db.collection('users').orderBy('name').get();
         if (usersSnapshot.empty) {
             userListContainer.innerHTML = '<p class="static-message">No other users found.</p>';
             return;
@@ -2647,13 +2581,12 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         appState.creatorPagePlayers[type].destroy();
     }
     
-    // ★ बदलाव: ऑटो-प्ले बंद कर दिया गया है।
     appState.creatorPagePlayers[type] = new YT.Player(containerId, {
         height: '100%',
         width: '100%',
         videoId: videoId,
         playerVars: {
-            'autoplay': 0, // पहले 1 था
+            'autoplay': 0,
             'controls': 1, 
             'rel': 0,
             'showinfo': 0,
@@ -2664,8 +2597,6 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         },
         events: {
             'onReady': (event) => { 
-                // ★ बदलाव: onReady पर अब वीडियो नहीं चलेगा।
-                // event.target.playVideo(); 
                 if (type === 'long') {
                     manageLongVideoPlayerBanner('hide');
                 }
@@ -2865,7 +2796,6 @@ function initializeTrackPaymentScreen() {
 
     const user = appState.currentUser;
     
-    // ★ बदलाव: विज्ञापन की गिनती और क्रिएटर के लिए जानकारी जोड़ी गई।
     content.innerHTML = `
         <div class="track-payment-card creator-card">
             <div class="card-strip red">
@@ -2910,11 +2840,10 @@ function startAppTimeTracker() {
 }
 
 async function updateCreatorWatchTime(creatorId, watchedSeconds) {
-    // ★ बदलाव: 15 मिनट = 1 कॉइन का नियम (यह पहले से सही था)।
     if (!creatorId || !watchedSeconds || creatorId === appState.currentUser.uid) return;
 
     const creatorRef = db.collection('users').doc(creatorId);
-    const coinConversionThreshold = 900; // 900 सेकंड = 15 मिनट
+    const coinConversionThreshold = 900;
 
     try {
         await db.runTransaction(async (transaction) => {
@@ -2982,7 +2911,6 @@ async function resetTrackingData() {
             creatorCoins: 0,
             unconvertedCreatorSeconds: 0
         });
-        // ★ बदलाव: विज्ञापन की गिनती भी रीसेट होगी।
         appState.currentUser.viewerCoins = 0;
         appState.currentUser.creatorCoins = 0;
         appState.currentUser.unconvertedCreatorSeconds = 0;
@@ -3423,7 +3351,7 @@ function showSpecialVideoPlayer() {
         modal = document.createElement('div');
         modal.id = 'special-video-player-modal';
         modal.className = 'modal-overlay active';
-        modal.style.zIndex = '9997'; // High z-index
+        modal.style.zIndex = '9997';
         modal.innerHTML = `
             <div class="modal-content" style="padding: 10px; background-color: #000; border: 2px solid var(--primary-neon);">
                 <span class="close-button" onclick="closeSpecialVideoPlayer()" style="top: 15px; right: 15px; color: #fff; font-size: 2em;">&times;</span>
@@ -3555,11 +3483,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadContainerNew = document.querySelector('#upload-screen .upload-container-new');
     if (uploadContainerNew) {
         
+        // ★ बदलाव: बटन का टेक्स्ट और आइकन बदला गया है।
         const specialVideoButton = document.createElement('button');
-        specialVideoButton.id = 'play-special-video-btn';
+        specialVideoButton.id = 'how-to-upload-btn';
         specialVideoButton.className = 'upload-action-button haptic-trigger';
         specialVideoButton.style.backgroundColor = 'var(--error-red)';
-        specialVideoButton.innerHTML = '<i class="fas fa-play-circle" style="margin-right: 10px;"></i> Watch Special Video';
+        specialVideoButton.innerHTML = '<i class="fas fa-upload" style="margin-right: 10px;"></i> How to Upload';
         specialVideoButton.onclick = showSpecialVideoPlayer;
 
         const uploadLongBtn = document.getElementById('upload-long-video-btn');
