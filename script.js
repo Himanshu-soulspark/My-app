@@ -1024,18 +1024,17 @@ function initializePlayers() {
 
         if (!playerElement || playerElement.tagName === 'IFRAME') return;
         
-        // ★ बदलाव: ऑटो-प्ले के लिए सेटिंग्स वापस बदली गईं।
         players[videoId] = new YT.Player(playerId, {
             height: '100%', width: '100%', videoId: videoData.videoUrl,
             playerVars: {
-                'autoplay': 0,      // ऑटो-प्ले ऑब्जर्वर द्वारा नियंत्रित होगा
+                'autoplay': 0,
                 'controls': 0,
-                'mute': 0,          // वीडियो में आवाज़ आएगी
+                'mute': 1,      // ★ बदला गया: वीडियो अब स्क्रॉल करने पर डिफ़ॉल्ट रूप से म्यूट रहेंगे
                 'rel': 0, 
                 'showinfo': 0,
                 'modestbranding': 1, 
-                'loop': 1, // लूप के लिए
-                'playlist': videoData.videoUrl, // लूप के लिए
+                'loop': 1,
+                'playlist': videoData.videoUrl,
                 'fs': 0, 
                 'iv_load_policy': 3, 
                 'origin': window.location.origin
@@ -1057,8 +1056,6 @@ function onPlayerReady(event) {
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
     
-    // ★ बदलाव: ऑटो-प्ले के लिए यह लाइन वापस जोड़ी गई।
-    // यह जाँचता है कि क्या वीडियो स्क्रीन पर है और अगर है तो उसे चलाता है।
     if (videoId === activePlayerId || (!activePlayerId && isElementVisible(slide, videoSwiper))) {
         playActivePlayer(videoId);
     }
@@ -1182,7 +1179,6 @@ function setupVideoObserver() {
             const videoId = entry.target.dataset.videoId;
             if (!videoId || !players[videoId]) return;
             
-            // ★ बदलाव: ऑटो-प्ले के लिए यह लॉजिक वापस जोड़ा गया है।
             if (entry.isIntersecting) {
                 if (activePlayerId && activePlayerId !== videoId) {
                     pauseActivePlayer();
@@ -1203,7 +1199,6 @@ function setupVideoObserver() {
     if (allSlides.length > 0) {
         allSlides.forEach(slide => videoObserver.observe(slide));
         
-        // ★ बदलाव: ऐप खुलने पर पहले वीडियो को ऑटो-प्ले करने के लिए।
         setTimeout(() => {
             if (!activePlayerId) {
                 const firstVideoSlide = document.querySelector('.video-slide:not(.native-ad-slide)');
@@ -2904,6 +2899,9 @@ async function stopWatchTimeTracker() {
 async function resetTrackingData() {
     try {
         const userRef = db.collection('users').doc(appState.currentUser.uid);
+        // ★ नोट: यह अपडेट तभी काम करेगा जब आपके फायरबेस सिक्योरिटी रूल्स सही होंगे।
+        // अगर कॉइन रीसेट नहीं हो रहे हैं, तो सुनिश्चित करें कि आपके रूल्स
+        // यूज़र को इन तीनों फील्ड्स को एक साथ अपडेट करने की अनुमति देते हैं।
         await userRef.update({ 
             viewerCoins: 0, 
             creatorCoins: 0,
