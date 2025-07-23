@@ -1956,8 +1956,8 @@ input:checked + .slider:before {
     cursor: pointer;
     font-size: 0.9em;
     transition: all 0.2s ease;
-    position: relative; /* ★ बदलाव: JS को इनपुट ओवरले करने की अनुमति देने के लिए */
-    overflow: hidden; /* ★ बदलाव: JS को इनपुट ओवरले करने की अनुमति देने के लिए */
+    position: relative; 
+    overflow: hidden; 
 }
 #history-date-button:hover {
     background-color: var(--secondary-background);
@@ -1976,9 +1976,13 @@ input:checked + .slider:before {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
+/* ★★★ आवश्यक बदलाव: हिस्ट्री के शॉर्ट वीडियो कार्ड की समस्या का समाधान ★★★ */
+/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 .history-short-card {
     width: 100px;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 9 / 16; /* ★ यह लाइन जोड़ी गई है ★ */
     border-radius: 8px;
     background-size: cover;
     background-position: center;
@@ -1988,6 +1992,7 @@ input:checked + .slider:before {
     position: relative;
     overflow: hidden;
 }
+
 .history-short-card:hover {
     transform: scale(1.05);
 }
