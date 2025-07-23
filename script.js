@@ -1,8 +1,8 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v5.7 === */
+/* === Shubhzone App Script (Code 2) - FINAL v5.8 === */
 /* === MODIFIED AS PER USER REQUEST - JULY 2025   === */
-/* === SOLVED: Add Friends List & Button Text     === */
+/* === SOLVED: Autoplay Restored, Full Video List === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -30,23 +30,16 @@ const analytics = firebase.analytics();
 
 
 // =======================================================================
-// ★★★ ADVERTISEMENT LOGIC - START (v5.1) ★★★
+// ★★★ ADVERTISEMENT LOGIC - START ★★★
 // =======================================================================
 
-/**
- * एक सामान्य फ़ंक्शन जो दिए गए कंटेनर में विज्ञापन स्क्रिप्ट को इंजेक्ट करता है।
- * @param {HTMLElement} container - वह HTML एलिमेंट जिसमें विज्ञापन डालना है।
- * @param {string} optionsScriptContent - `atOptions` वाला स्क्रिप्ट का टेक्स्ट।
- * @param {string} invokeScriptSrc - `invoke.js` वाली स्क्रिप्ट का URL।
- * @returns {Promise<boolean>} - विज्ञापन लोड होने पर true या विफल होने पर false रिजॉल्व करता है।
- */
 function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
     return new Promise((resolve) => {
         if (!container) {
             console.warn("[AD] Ad container not found. Cannot inject ad.");
             return resolve(false);
         }
-        container.innerHTML = ''; // पुराने विज्ञापन को साफ़ करें
+        container.innerHTML = '';
 
         const innerDiv = document.createElement('div');
         container.appendChild(innerDiv);
@@ -79,10 +72,6 @@ function injectAdScript(container, optionsScriptContent, invokeScriptSrc) {
     });
 }
 
-/**
- * 300x250 बैनर विज्ञापन को इंजेक्ट करता है।
- * @param {HTMLElement} container - विज्ञापन के लिए कंटेनर।
- */
 async function showMainBannerAd(container) {
     console.log('[AD DISABLED] Main banner ad (highperformanceformat) was disabled to prevent pop-unders.');
     if (container) {
@@ -91,10 +80,6 @@ async function showMainBannerAd(container) {
     return;
 }
 
-
-/**
- * ★★★ नया फ़ंक्शन: वीडियो फ़ीड में विज्ञापन स्लाइड इंजेक्ट करता है ★★★
- */
 function injectAdSlideScript(containerId) {
     console.log('[AD DISABLED] Native ad slide (profitableratecpm) was disabled to prevent pop-unders.');
     const mainContainer = document.getElementById(containerId);
@@ -104,10 +89,6 @@ function injectAdSlideScript(containerId) {
     return;
 }
 
-
-/**
- * ★ बदलाव: लॉन्ग वीडियो प्लेयर पर विज्ञापन का प्रबंधन करता है।
- */
 function manageLongVideoPlayerBanner(action) {
     const playerWrapper = document.querySelector('#creator-page-long-view .main-video-card');
     if (!playerWrapper) return;
@@ -142,10 +123,7 @@ function manageLongVideoPlayerBanner(action) {
     }
 }
 
-
-/**
- * ★★★ नया: विज्ञापन अनुक्रम से अगला विज्ञापन दिखाता है।
- */
+// ★ स्पष्टीकरण: यह फंक्शन सिर्फ तभी चलता है जब यूज़र "Accept" पर क्लिक करता है।
 function triggerAdDisplay() {
     const { sequence, currentIndex } = appState.adState.fullscreenAd;
     const adType = sequence[currentIndex];
@@ -186,10 +164,7 @@ function triggerAdDisplay() {
     appState.adState.fullscreenAd.currentIndex = (currentIndex + 1) % sequence.length;
 }
 
-
-/**
- * ★★★ नया: विज्ञापन अनुरोध पॉपअप दिखाता है।
- */
+// ★ स्पष्टीकरण: यह फंक्शन सिर्फ Ad Request Popup दिखाता है।
 function showAdRequestPopup() {
     const isAnyModalActive = document.querySelector('.modal-overlay.active, .comments-modal-overlay.active');
     if (isAnyModalActive) {
@@ -228,13 +203,9 @@ function showAdRequestPopup() {
     popup.classList.add('active');
 }
 
-
-/**
- * ★★★ नया: विज्ञापन अनुरोध स्वीकार करने को संभालता है।
- */
 async function handleAcceptAdRequest() {
     document.getElementById('ad-request-popup').classList.remove('active');
-    triggerAdDisplay();
+    triggerAdDisplay(); // विज्ञापन सिर्फ यहीं से चलता है
     
     let currentCount = appState.currentUser.tempState.acceptedAds + 1;
     appState.currentUser.tempState.acceptedAds = currentCount;
@@ -271,9 +242,6 @@ async function handleAcceptAdRequest() {
     }
 }
 
-/**
- * ★★★ नया: विज्ञापन अनुरोध रद्द करने को संभालता है।
- */
 async function handleCancelAdRequest() {
     document.getElementById('ad-request-popup').classList.remove('active');
     if (appState.currentUser.viewerCoins < 5) {
@@ -293,29 +261,21 @@ async function handleCancelAdRequest() {
     }
 }
 
-
-/**
- * ★★★ संशोधित: विज्ञापन अनुरोध अंतराल सेट करता है।
- */
+// ★ स्पष्टीकरण: यह टाइमर सिर्फ Ad Request Popup को हर 60 सेकंड में दिखाता है।
 function setupAdRequestInterval() {
     if (appState.adState.timers.fullscreenAdLoop) {
         clearInterval(appState.adState.timers.fullscreenAdLoop);
     }
-    appState.adState.timers.fullscreenAdLoop = setInterval(showAdRequestPopup, 60000); // 60 सेकंड
+    appState.adState.timers.fullscreenAdLoop = setInterval(showAdRequestPopup, 60000);
 }
 
-
-/**
- * सभी सक्रिय वीडियो-संबंधित विज्ञापन टाइमर्स को साफ़ करता है।
- */
 function clearAllAdTimers() {
     const adContainer = document.getElementById('in-player-timed-ad');
     if (adContainer) adContainer.style.display = 'none';
 }
 
-
 // =======================================================================
-// ★★★ ADVERTISEMENT LOGIC - END (v5.1) ★★★
+// ★★★ ADVERTISEMENT LOGIC - END ★★★
 // =======================================================================
 
 
@@ -478,8 +438,10 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.navigationStack.push(nextScreenId);
     }
     
-    if (appState.currentScreen === 'creator-page-screen' || appState.currentScreen === 'home-screen') clearAllAdTimers();
-    if (appState.currentScreen === 'home-screen' && activePlayerId && players[activePlayerId]) pauseActivePlayer();
+    // ★ बदलाव: यह सुनिश्चित करता है कि स्क्रीन बदलने पर पिछला वीडियो बंद हो जाए।
+    if (appState.currentScreen === 'home-screen' && activePlayerId && players[activePlayerId]) {
+        pauseActivePlayer();
+    }
     if (appState.currentScreen === 'creator-page-screen') {
         if (appState.creatorPagePlayers.short) appState.creatorPagePlayers.short.destroy();
         if (appState.creatorPagePlayers.long) appState.creatorPagePlayers.long.destroy();
@@ -621,7 +583,8 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
-    const videosRef = db.collection('videos').orderBy('createdAt', 'desc').limit(15);
+    // ★ बदलाव: सभी वीडियो लोड करने के लिए .limit() को हटा दिया गया है।
+    const videosRef = db.collection('videos').orderBy('createdAt', 'desc');
     const snapshot = await videosRef.get();
     const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     fullVideoList = [...loadedVideos];
@@ -1061,15 +1024,18 @@ function initializePlayers() {
 
         if (!playerElement || playerElement.tagName === 'IFRAME') return;
         
+        // ★ बदलाव: ऑटो-प्ले के लिए सेटिंग्स वापस बदली गईं।
         players[videoId] = new YT.Player(playerId, {
             height: '100%', width: '100%', videoId: videoData.videoUrl,
             playerVars: {
-                'autoplay': 0,
+                'autoplay': 0,      // ऑटो-प्ले ऑब्जर्वर द्वारा नियंत्रित होगा
                 'controls': 0,
-                'mute': 0,
+                'mute': 0,          // वीडियो में आवाज़ आएगी
                 'rel': 0, 
                 'showinfo': 0,
                 'modestbranding': 1, 
+                'loop': 1, // लूप के लिए
+                'playlist': videoData.videoUrl, // लूप के लिए
                 'fs': 0, 
                 'iv_load_policy': 3, 
                 'origin': window.location.origin
@@ -1087,8 +1053,15 @@ function onPlayerReady(event) {
     const iframe = event.target.getIframe();
     const slide = iframe.closest('.video-slide');
     if (!slide) return;
+    const videoId = slide.dataset.videoId;
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
+    
+    // ★ बदलाव: ऑटो-प्ले के लिए यह लाइन वापस जोड़ी गई।
+    // यह जाँचता है कि क्या वीडियो स्क्रीन पर है और अगर है तो उसे चलाता है।
+    if (videoId === activePlayerId || (!activePlayerId && isElementVisible(slide, videoSwiper))) {
+        playActivePlayer(videoId);
+    }
 }
 
 function onPlayerStateChange(event) {
@@ -1208,6 +1181,19 @@ function setupVideoObserver() {
 
             const videoId = entry.target.dataset.videoId;
             if (!videoId || !players[videoId]) return;
+            
+            // ★ बदलाव: ऑटो-प्ले के लिए यह लॉजिक वापस जोड़ा गया है।
+            if (entry.isIntersecting) {
+                if (activePlayerId && activePlayerId !== videoId) {
+                    pauseActivePlayer();
+                }
+                playActivePlayer(videoId);
+            } else {
+                if (videoId === activePlayerId) {
+                    pauseActivePlayer();
+                    activePlayerId = null;
+                }
+            }
         });
     };
 
@@ -1216,6 +1202,19 @@ function setupVideoObserver() {
     const allSlides = document.querySelectorAll('.video-slide');
     if (allSlides.length > 0) {
         allSlides.forEach(slide => videoObserver.observe(slide));
+        
+        // ★ बदलाव: ऐप खुलने पर पहले वीडियो को ऑटो-प्ले करने के लिए।
+        setTimeout(() => {
+            if (!activePlayerId) {
+                const firstVideoSlide = document.querySelector('.video-slide:not(.native-ad-slide)');
+                if (firstVideoSlide && isElementVisible(firstVideoSlide, videoSwiper)) {
+                    const firstVideoId = firstVideoSlide.dataset.videoId;
+                    if(firstVideoId) {
+                        playActivePlayer(firstVideoId);
+                    }
+                }
+            }
+        }, 500);
     }
 }
 
@@ -2185,8 +2184,6 @@ async function populateAddFriendsList(featuredUser = null) {
     userListContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
 
     try {
-        // ★ बदलाव: सभी यूज़र्स को लोड करने के लिए limit हटा दी गई है।
-        // कृपया ध्यान दें: अगर आपके ऐप में बहुत ज़्यादा यूज़र्स हो जाएंगे, तो यह लिस्ट लोड होने में ज़्यादा समय ले सकती है।
         const usersSnapshot = await db.collection('users').orderBy('name').get();
         if (usersSnapshot.empty) {
             userListContainer.innerHTML = '<p class="static-message">No other users found.</p>';
@@ -2586,7 +2583,7 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         width: '100%',
         videoId: videoId,
         playerVars: {
-            'autoplay': 0,
+            'autoplay': 1,
             'controls': 1, 
             'rel': 0,
             'showinfo': 0,
@@ -2597,6 +2594,7 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         },
         events: {
             'onReady': (event) => { 
+                event.target.playVideo(); 
                 if (type === 'long') {
                     manageLongVideoPlayerBanner('hide');
                 }
@@ -3483,7 +3481,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadContainerNew = document.querySelector('#upload-screen .upload-container-new');
     if (uploadContainerNew) {
         
-        // ★ बदलाव: बटन का टेक्स्ट और आइकन बदला गया है।
         const specialVideoButton = document.createElement('button');
         specialVideoButton.id = 'how-to-upload-btn';
         specialVideoButton.className = 'upload-action-button haptic-trigger';
