@@ -1,8 +1,8 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v5.8 === */
-/* === MODIFIED AS PER USER REQUEST - JULY 2025   === */
-/* === SOLVED: Autoplay Restored, Full Video List === */
+/* === Shubhzone App Script (Code 2) - FINAL v5.10 === */
+/* === MODIFIED AS PER USER REQUEST - JULY 2025    === */
+/* === SOLVED: Correct Profile Info in Chat        === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -123,7 +123,6 @@ function manageLongVideoPlayerBanner(action) {
     }
 }
 
-// ★ स्पष्टीकरण: यह फंक्शन सिर्फ तभी चलता है जब यूज़र "Accept" पर क्लिक करता है।
 function triggerAdDisplay() {
     const { sequence, currentIndex } = appState.adState.fullscreenAd;
     const adType = sequence[currentIndex];
@@ -164,7 +163,6 @@ function triggerAdDisplay() {
     appState.adState.fullscreenAd.currentIndex = (currentIndex + 1) % sequence.length;
 }
 
-// ★ स्पष्टीकरण: यह फंक्शन सिर्फ Ad Request Popup दिखाता है।
 function showAdRequestPopup() {
     const isAnyModalActive = document.querySelector('.modal-overlay.active, .comments-modal-overlay.active');
     if (isAnyModalActive) {
@@ -205,7 +203,7 @@ function showAdRequestPopup() {
 
 async function handleAcceptAdRequest() {
     document.getElementById('ad-request-popup').classList.remove('active');
-    triggerAdDisplay(); // विज्ञापन सिर्फ यहीं से चलता है
+    triggerAdDisplay();
     
     let currentCount = appState.currentUser.tempState.acceptedAds + 1;
     appState.currentUser.tempState.acceptedAds = currentCount;
@@ -261,7 +259,6 @@ async function handleCancelAdRequest() {
     }
 }
 
-// ★ स्पष्टीकरण: यह टाइमर सिर्फ Ad Request Popup को हर 60 सेकंड में दिखाता है।
 function setupAdRequestInterval() {
     if (appState.adState.timers.fullscreenAdLoop) {
         clearInterval(appState.adState.timers.fullscreenAdLoop);
@@ -291,8 +288,38 @@ function shuffleArray(array) {
     return array;
 }
 
+// ★ बदलाव: क्लिपबोर्ड फंक्शन को अपडेट किया गया है ताकि यह HTTP पर भी काम करे।
 function copyToClipboard(text, event) {
-    navigator.clipboard.writeText(text).then(() => {
+    if (navigator.clipboard && window.isSecureContext) {
+        // सुरक्षित HTTPS कनेक्शन के लिए आधुनिक तरीका
+        navigator.clipboard.writeText(text).then(() => {
+            const copyBtn = event.target.closest('button');
+            if (copyBtn) {
+                copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 1500);
+            }
+        }).catch(err => {
+            console.error('Failed to copy text with modern method: ', err);
+            fallbackCopyToClipboard(text, event); // वैकल्पिक तरीके का उपयोग करें
+        });
+    } else {
+        // HTTP या पुराने ब्राउज़रों के लिए वैकल्पिक तरीका
+        fallbackCopyToClipboard(text, event);
+    }
+}
+
+function fallbackCopyToClipboard(text, event) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed'; // इसे स्क्रीन पर दिखने से रोकें
+    textArea.style.opacity = 0;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
         const copyBtn = event.target.closest('button');
         if (copyBtn) {
             copyBtn.innerHTML = '<i class="fas fa-check"></i>';
@@ -300,10 +327,11 @@ function copyToClipboard(text, event) {
                 copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
             }, 1500);
         }
-    }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        alert('Failed to copy.');
-    });
+    } catch (err) {
+        console.error('Fallback copy to clipboard failed', err);
+        alert('Failed to copy text.');
+    }
+    document.body.removeChild(textArea);
 }
 
 async function generateAndSaveReferralCode(uid, name) {
@@ -438,7 +466,6 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
         appState.navigationStack.push(nextScreenId);
     }
     
-    // ★ बदलाव: यह सुनिश्चित करता है कि स्क्रीन बदलने पर पिछला वीडियो बंद हो जाए।
     if (appState.currentScreen === 'home-screen' && activePlayerId && players[activePlayerId]) {
         pauseActivePlayer();
     }
@@ -583,7 +610,6 @@ async function loadUserVideosFromFirebase() {
 }
 
 async function refreshAndRenderFeed() {
-    // ★ बदलाव: सभी वीडियो लोड करने के लिए .limit() को हटा दिया गया है।
     const videosRef = db.collection('videos').orderBy('createdAt', 'desc');
     const snapshot = await videosRef.get();
     const loadedVideos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -1029,7 +1055,7 @@ function initializePlayers() {
             playerVars: {
                 'autoplay': 0,
                 'controls': 0,
-                'mute': 1,      // ★ बदला गया: वीडियो अब स्क्रॉल करने पर डिफ़ॉल्ट रूप से म्यूट रहेंगे
+                'mute': 0,
                 'rel': 0, 
                 'showinfo': 0,
                 'modestbranding': 1, 
@@ -2267,11 +2293,14 @@ async function searchUser() {
     }
 }
 
-
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+// ★★★ बदलाव: इस फंक्शन को अपडेट किया गया है ताकि चैट में सही प्रोफाइल दिखे ★★★
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 async function startChat(friendId, friendName, friendAvatar) {
     const chatScreen = document.getElementById('chat-screen-overlay');
     if (!chatScreen) return;
     
+    // UI को तुरंत अपडेट करें ताकि यूज़र को इंतज़ार न करना पड़े।
     document.getElementById('chat-username').textContent = friendName;
     document.getElementById('chat-user-profile-pic').src = friendAvatar || 'https://via.placeholder.com/50';
 
@@ -2283,11 +2312,28 @@ async function startChat(friendId, friendName, friendAvatar) {
     try {
         const chatRef = db.collection('chats').doc(chatId);
         
+        // ★ नया स्टेप: डेटाबेस से दोस्त की सबसे ताज़ा जानकारी फिर से प्राप्त करें।
+        const friendDoc = await db.collection('users').doc(friendId).get();
+        let finalFriendName = friendName;
+        let finalFriendAvatar = friendAvatar;
+        
+        if (friendDoc.exists) {
+            finalFriendName = friendDoc.data().name || friendName;
+            finalFriendAvatar = friendDoc.data().avatar || friendAvatar;
+        }
+
+        // चैट दस्तावेज़ को सबसे ताज़ा और सही जानकारी के साथ बनाएं या अपडेट करें।
         await chatRef.set({
             members: uids,
             memberDetails: {
-                [appState.currentUser.uid]: {name: appState.currentUser.name, avatar: appState.currentUser.avatar},
-                [friendId]: {name: friendName, avatar: friendAvatar}
+                [appState.currentUser.uid]: {
+                    name: appState.currentUser.name, 
+                    avatar: appState.currentUser.avatar
+                },
+                [friendId]: {
+                    name: finalFriendName, 
+                    avatar: finalFriendAvatar
+                }
             }
         }, { merge: true });
 
@@ -2899,9 +2945,6 @@ async function stopWatchTimeTracker() {
 async function resetTrackingData() {
     try {
         const userRef = db.collection('users').doc(appState.currentUser.uid);
-        // ★ नोट: यह अपडेट तभी काम करेगा जब आपके फायरबेस सिक्योरिटी रूल्स सही होंगे।
-        // अगर कॉइन रीसेट नहीं हो रहे हैं, तो सुनिश्चित करें कि आपके रूल्स
-        // यूज़र को इन तीनों फील्ड्स को एक साथ अपडेट करने की अनुमति देते हैं।
         await userRef.update({ 
             viewerCoins: 0, 
             creatorCoins: 0,
