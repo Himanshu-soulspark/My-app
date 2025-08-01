@@ -1400,6 +1400,689 @@
         });
     </script>
 </body>
+</html>        .spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 217, 255, 0.1), transparent 30%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body:hover .spotlight {
+            opacity: 1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section {
+            padding: 120px 0;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+        }
+
+        p {
+            line-height: 1.7;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header {
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 7, 10, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--brand-cyan);
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .main-btn {
+            background: var(--brand-cyan);
+            color: #000;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .secondary-btn {
+             background: transparent;
+             color: var(--brand-cyan);
+             border: 1px solid var(--brand-cyan);
+        }
+
+        .main-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        
+        .secondary-btn:hover {
+            background: var(--brand-cyan);
+            color: #000;
+        }
+
+        .main-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .main-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        .hero {
+            padding-top: 200px;
+            padding-bottom: 150px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--brand-cyan), var(--brand-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 30px auto 40px auto;
+        }
+
+        .hero-skills {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .hero-skills span {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .hero-image-container {
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .hero-image-container img {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+
+        .feature-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            align-items: center;
+            gap: 80px;
+        }
+
+        .feature-layout.reverse .feature-image {
+            order: 2;
+        }
+
+        .feature-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .feature-list svg {
+            color: var(--brand-cyan);
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .feature-image img {
+            width: 100%;
+            border-radius: 12px;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .feature-image:hover img {
+            transform: scale(1.03);
+            box-shadow: 0 0 30px -5px rgba(0, 217, 255, 0.4);
+        }
+
+        .showcase-section {
+            text-align: center;
+        }
+
+        .showcase-section h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .showcase-section p {
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+        }
+
+        .showcase-image-wrapper {
+            padding: 2rem;
+            background: linear-gradient(var(--bg-card), transparent);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+        }
+
+        .showcase-image-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        
+        .cta-section {
+            background: linear-gradient(45deg, var(--bg-card), #181e28);
+            padding: 80px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+        }
+
+        .footer {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer .logo {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+        }
+
+        .footer a {
+            color: var(--brand-cyan);
+            text-decoration: none;
+        }
+        
+        /* Styles for the new Other Apps page */
+        #other-apps-page {
+            display: none; /* Initially hidden */
+            padding-top: 100px; /* Adjusted padding */
+            padding-bottom: 120px;
+            min-height: 100vh;
+        }
+
+        #other-apps-page h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 60px;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .app-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.1);
+        }
+        
+        .app-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .app-card p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .app-card img {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .download-btn {
+            background: var(--brand-blue);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .download-btn:hover {
+            background: var(--brand-cyan);
+            color: #000;
+        }
+        
+        .warning-msg {
+            font-size: 0.85rem;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 0, 0.1);
+            border: 1px solid rgba(255, 255, 0, 0.2);
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .warning-msg p {
+           margin-bottom: 5px;
+           line-height: 1.5;
+        }
+
+        #back-to-main {
+            display: block;
+            width: fit-content;
+            margin: 0 0 40px 0; /* Adjusted margin */
+            color: var(--brand-cyan);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        #back-to-main:hover {
+            background: var(--bg-card);
+        }
+
+        @media (max-width: 992px) {
+            .feature-layout {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            .feature-layout.reverse .feature-image {
+                order: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 80px 0;
+            }
+            h1 {
+                font-size: 2.8rem;
+            }
+            h2 {
+                font-size: 2.2rem;
+            }
+            .header {
+                padding: 1rem 0;
+            }
+            .hero {
+                padding-top: 150px;
+            }
+            .cta-section {
+                padding: 50px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="spotlight"></div>
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">Shubh<span>zone</span></a>
+            <div class="header-buttons">
+                <a href="./app.html" class="main-btn">
+                    <span>Start</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                </a>
+                <button id="other-apps-btn" class="main-btn secondary-btn">
+                   <span>Other Apps</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="main-content">
+        <main>
+            <section class="hero">
+                <canvas id="particle-canvas"></canvas>
+                <div class="container">
+                    <div class="reveal">
+                        <h1>The Convergence of <span>Creativity & Skill</span></h1>
+                        <p>Shubhzone is a next-generation ecosystem built for India. Learn from the best, compete with the brightest, and monetize your passion.</p>
+                        <div class="hero-skills">
+                            <span>Design</span><span>Coding</span><span>Music</span><span>Marketing</span><span>& More</span>
+                        </div>
+                        <a href="./app.html" class="main-btn" style="padding: 16px 40px; font-size: 1.1rem;">
+                            <span>Start</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                        </a>
+                    </div>
+                    <div class="hero-image-container reveal" style="transition-delay: 200ms;">
+                        <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Futuristic Dashboard Interface">
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="feature-layout">
+                        <div class="feature-content reveal">
+                            <h2>Immersive Learning Environment</h2>
+                            <p>Dive into a distraction-free space designed for deep focus. Our platform helps you absorb skills faster and more effectively.</p>
+                            <ul class="feature-list">
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>AI-curated learning paths tailored to you.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Direct chat access with creators for mentorship.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Trackable milestones and progress analytics.</li>
+                            </ul>
+                        </div>
+                        <div class="feature-image reveal" style="transition-delay: 200ms;">
+                            <img src="https://i.ibb.co/HTjy6Cjd/Leonardo-Phoenix-10-A-young-girl-sitting-in-a-cozy-dimly-lit-r-0.jpg" alt="A girl learning in a focused environment">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="feature-layout reverse">
+                        <div class="feature-content reveal">
+                            <h2>A Powerful Creator's Toolkit</h2>
+                            <p>We provide everything you need to build your brand and business. From content hosting to payment processing, it's all here.</p>
+                             <ul class="feature-list">
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Seamlessly upload and manage your video courses.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Launch promotional ads to reach a wider audience.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Secure and timely payouts for your hard work.</li>
+                            </ul>
+                        </div>
+                        <div class="feature-image reveal" style="transition-delay: 200ms;">
+                            <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Digital workspace for creators">
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section showcase-section">
+                <div class="container">
+                    <div class="reveal">
+                        <h2>Where Talent is Rewarded</h2>
+                        <p>Move beyond just learning. Our regular competitions provide a stage for you to showcase your skills, compete with the best, and win real prizes.</p>
+                        <div class="showcase-image-wrapper">
+                             <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Futuristic billboard showing winners">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="cta-section reveal">
+                        <h2>Step Into The Zone.</h2>
+                        <p>Join a community committed to growth, innovation, and success. Your future starts now.</p>
+                        <a href="./app.html" class="main-btn" style="padding: 16px 40px; font-size: 1.1rem;">
+                            <span>Start</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <a href="#" class="logo">Shubh<span>zone</span></a>
+                <p>A vision by Himanshu Kumar from India.</p>
+                <p>Contact: <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">© 2025 Shubhzone.shop. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- New Page for Other Apps -->
+    <div id="other-apps-page">
+        <div class="container">
+            <!-- Moved "Back to Home" button to the top -->
+            <a href="#" id="back-to-main">← Back to Home</a>
+            
+            <h1>Our Other Applications</h1>
+            <div class="apps-grid">
+                <!-- App 1 -->
+                <div class="app-card">
+                    <h3>SoulSpark Dating</h3>
+                    <p>This is a dating app to connect with new people.</p>
+                    <a href="https://ibb.co/Z6GS7jzZ"><img src="https://i.ibb.co/1f7MjgGS/IMG-20250801-WA0001.jpg" alt="SoulSpark Dating App"></a>
+                    <a href="https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk" class="download-btn">Download</a>
+                    <div class="warning-msg">
+                       <p><strong>English:</strong> If your device shows a "harmful for device" warning, it's just a standard message because you are not downloading from the Play Store. The app is safe to install.</p>
+                       <p><strong>हिन्दी:</strong> यदि आपका डिवाइस "harmful for device" का चेतावनी संदेश दिखाता है, तो यह केवल एक मानक संदेश है क्योंकि आप प्ले स्टोर से डाउनलोड नहीं कर रहे हैं। ऐप इंस्टॉल करने के लिए सुरक्षित है।</p>
+                    </div>
+                </div>
+                
+                 <!-- Placeholder for App 2 -->
+                <div class="app-card">
+                    <h3>Future App 2</h3>
+                    <p>Description for the second app will go here.</p>
+                     <img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 2 Icon">
+                    <a href="#" class="download-btn">Coming Soon</a>
+                </div>
+                
+                 <!-- Placeholder for App 3 -->
+                <div class="app-card">
+                    <h3>Future App 3</h3>
+                    <p>Description for the third app will go here.</p>
+                     <img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 3 Icon">
+                    <a href="#" class="download-btn">Coming Soon</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Spotlight Effect ---
+            const spotlight = document.querySelector('.spotlight');
+            document.addEventListener('mousemove', (e) => {
+                spotlight.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(0, 217, 255, 0.1), transparent 30%)`;
+            });
+
+            // --- Scroll Reveal ---
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(reveal => observer.observe(reveal));
+
+            // --- Particle Background ---
+            const canvas = document.getElementById('particle-canvas');
+            // Check if canvas exists before getting context
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                canvas.width = window.innerWidth;
+                canvas.height = document.querySelector('.hero').offsetHeight;
+                let particles = [];
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 1.5 + 0.5;
+                        this.speedX = (Math.random() * 0.5 - 0.25);
+                        this.speedY = (Math.random() * 0.5 - 0.25);
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                    }
+                    draw() {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                function initParticles() {
+                    particles = []; // Clear existing particles
+                    for (let i = 0; i < 50; i++) {
+                        particles.push(new Particle());
+                    }
+                }
+
+                function animateParticles() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+                    }
+                    requestAnimationFrame(animateParticles);
+                }
+                
+                initParticles();
+                animateParticles();
+                
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = document.querySelector('.hero').offsetHeight;
+                    initParticles();
+                });
+            }
+
+
+            // --- Page Switching Logic ---
+            const mainContent = document.getElementById('main-content');
+            const otherAppsPage = document.getElementById('other-apps-page');
+            const otherAppsBtn = document.getElementById('other-apps-btn');
+            const backToMainBtn = document.getElementById('back-to-main');
+            const header = document.querySelector('.header');
+
+            otherAppsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mainContent.style.display = 'none';
+                otherAppsPage.style.display = 'block';
+                header.style.display = 'none'; // Hide header on the new page
+                window.scrollTo(0, 0); // Scroll to top
+            });
+
+            backToMainBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                otherAppsPage.style.display = 'none';
+                mainContent.style.display = 'block';
+                 header.style.display = 'block'; // Show header again
+                window.scrollTo(0, 0); // Scroll to top
+            });
+        });
+    </script>
+</body>
 </html>            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .grid-item:hover {
