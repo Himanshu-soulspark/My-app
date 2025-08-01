@@ -3,38 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - The Nexus of Skill and Opportunity</title>
+    <title>Other Apps</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-
-        :root {
-            --brand-cyan: #00d9ff;
-            --brand-blue: #3c79ff;
-            --bg-dark: #05070a;
-            --bg-card: #10141b;
-            --text-primary: #f0f6fc;
-            --text-secondary: #a1a9b2;
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-secondary);
-            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
         }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        /* Grid Container */
+        .grid-container {
+            display: grid;
+            /* This will create a responsive grid with up to 3 columns */
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px; /* Space between grid items */
+            padding: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        /* Grid Item Styling */
+        .grid-item {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .grid-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        /* App details text */
+        .app-details {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        /* Image styling */
+        .app-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        /* Download button */
+        .download-btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 12px 30px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+        /* Warning message styling */
+        .warning-message {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: left;
+        }
+        .warning-message p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
 
-        .spotlight {
+    <h1>Our Other Apps</h1>
+
+    <div class="grid-container">
+
+        <!-- First Grid Item -->
+        <div class="grid-item">
+            <p class="app-details">This is a dating app.</p>
+            
+            <a href="https://ibb.co/Z6GS7jzZ">
+                <img src="https://i.ibb.co/1f7MjgGS/IMG-20250801-WA0001.jpg" alt="Dating App Image" class="app-image">
+            </a>
+
+            <a href="https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk" class="download-btn">Download</a>
+
+            <div class="warning-message">
+                <p><strong>English:</strong> If your device shows a "harmful for device" warning, it is just a message because you are not downloading from the Play Store. It is safe to install.</p>
+                <hr>
+                <p><strong>हिंदी:</strong> यदि आपका डिवाइस 'harmful for device' चेतावनी दिखाता है, तो यह केवल एक संदेश है क्योंकि आप Play Store से डाउनलोड नहीं कर रहे हैं। यह इंस्टॉल करना सुरक्षित है।</p>
+            </div>
+        </div>
+
+        <!-- Second Grid Item (empty) -->
+        <div class="grid-item">
+            <!-- You can add details for another app here -->
+        </div>
+
+        <!-- Third Grid Item (empty) -->
+        <div class="grid-item">
+            <!-- You can add details for another app here -->
+        </div>
+
+        <!-- You can add more items to fill the 3x3 grid -->
+
+    </div>
+
+</body>
+</html>        .spotlight {
             position: fixed;
             top: 0;
             left: 0;
