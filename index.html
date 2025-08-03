@@ -581,7 +581,6 @@
 
         /* --- RESPONSIVE DESIGN ADJUSTMENTS --- */
 
-        /* For Tablets and smaller desktops */
         @media (max-width: 992px) {
             .feature-layout {
                 grid-template-columns: 1fr;
@@ -592,7 +591,6 @@
             }
         }
 
-        /* For large mobile phones and tablets */
         @media (max-width: 768px) {
             .section {
                 padding: 80px 0;
@@ -630,7 +628,6 @@
             }
         }
 
-        /* For small mobile phones */
         @media (max-width: 480px) {
             .section {
                 padding: 60px 0;
@@ -911,7 +908,7 @@
             const adminPage = document.getElementById('admin-page');
             const allPages = [mainContent, otherAppsPage, passwordPage, adminPage];
             const header = document.querySelector('.header');
-            const bodyEl = document.body; // Reference to the body element
+            const bodyEl = document.body;
 
             function showPage(pageToShow) {
                 allPages.forEach(page => {
@@ -1005,7 +1002,6 @@
             const warningModal = document.getElementById('warning-modal');
             const modalCloseBtn = document.getElementById('modal-close-btn');
             const modalProceedBtn = document.getElementById('modal-proceed-btn');
-            const countdownTimerEl = document.getElementById('countdown-timer');
             const langHiBtn = document.getElementById('lang-hi');
             const langEnBtn = document.getElementById('lang-en');
             const messageHi = document.getElementById('message-hi');
@@ -1015,15 +1011,27 @@
             if (otherAppsBtn) {
                 otherAppsBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    if(!warningModal) return;
+                    if (!warningModal) return;
+
+                    // *** FIX START: This part resets the timer's HTML every time the button is clicked ***
+                    const countdownParagraph = document.querySelector('#warning-modal .modal-footer p');
+                    if (countdownParagraph) {
+                        countdownParagraph.innerHTML = 'You can proceed in <span id="countdown-timer">5</span> seconds...';
+                    }
+                    // Find the timer element *after* it has been recreated.
+                    const countdownTimerEl = document.getElementById('countdown-timer');
+                    if (!countdownTimerEl) return; // Exit if the element wasn't found.
+                    // *** FIX END ***
 
                     warningModal.style.display = 'flex';
-                    bodyEl.classList.add('modal-open'); // *** FIX: Disable scrolling when modal is open using a class
+                    bodyEl.classList.add('modal-open');
 
                     let timeLeft = 5;
                     countdownTimerEl.textContent = timeLeft;
                     modalProceedBtn.disabled = true;
                     modalCloseBtn.style.display = 'none';
+                    
+                    clearInterval(countdownInterval); // Clear any old interval
 
                     countdownInterval = setInterval(() => {
                         timeLeft--;
@@ -1041,13 +1049,13 @@
             function closeModal() {
                 clearInterval(countdownInterval);
                 if(warningModal) warningModal.style.display = 'none';
-                bodyEl.classList.remove('modal-open'); // *** FIX: Enable scrolling when modal is closed by removing the class
+                bodyEl.classList.remove('modal-open');
             }
 
             if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
             
             if(modalProceedBtn) modalProceedBtn.addEventListener('click', () => {
-                closeModal(); // This will now re-enable scrolling
+                closeModal();
                 renderApps();
                 showPage(otherAppsPage);
             });
