@@ -15,6 +15,7 @@
             --text-primary: #f0f6fc;
             --text-secondary: #a1a9b2;
             --border-color: rgba(255, 255, 255, 0.1);
+            --danger-color: #ff4d4d;
         }
 
         * {
@@ -32,6 +33,11 @@
             background-color: var(--bg-dark);
             color: var(--text-secondary);
             overflow-x: hidden;
+        }
+        
+        /* Class to disable body scrolling when modal is open */
+        body.modal-open {
+            overflow: hidden;
         }
 
         .spotlight {
@@ -116,6 +122,8 @@
         .header-buttons {
             display: flex;
             gap: 15px;
+            flex-wrap: wrap; /* Added for safety on very narrow screens */
+            justify-content: flex-end;
         }
 
         .main-btn {
@@ -333,20 +341,50 @@
             text-decoration: none;
         }
         
-        /* Styles for the new Other Apps page */
-        #other-apps-page {
-            display: none; /* Initially hidden */
-            padding-top: 100px; /* Adjusted padding */
+        /* Styles for hidden pages */
+        .page {
+            display: none;
+            padding-top: 40px;
             padding-bottom: 120px;
             min-height: 100vh;
         }
 
-        #other-apps-page h1 {
-            text-align: center;
-            font-size: 3rem;
+        /* Store Header */
+        .store-header {
+            background: rgba(5, 7, 10, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
             margin-bottom: 60px;
         }
-        
+        .store-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .store-back-btn {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .store-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: center;
+        }
+        .store-title span {
+            font-size: 1.2em;
+            vertical-align: middle;
+        }
+
+        /* App Grid - Inherently responsive */
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -360,11 +398,23 @@
             padding: 25px;
             text-align: center;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         
         .app-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 10px 30px rgba(0, 217, 255, 0.1);
+        }
+        
+        .app-card-top-content {
+            /* This container holds everything except the button area */
+        }
+
+        .app-card-bottom-content {
+            /* This container holds the button */
+            margin-top: 20px; /* Ensures space between content and button */
         }
         
         .app-card h3 {
@@ -377,12 +427,19 @@
             margin-bottom: 20px;
         }
         
-        .app-card img {
+        .app-card .app-image-container {
             width: 100%;
             max-width: 250px;
             height: auto;
             border-radius: 10px;
-            margin: 15px 0;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+
+        .app-card .app-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
         
         .download-btn {
@@ -393,44 +450,138 @@
             text-decoration: none;
             font-weight: 600;
             display: inline-block;
-            margin-top: 10px;
         }
         
         .download-btn:hover {
             background: var(--brand-cyan);
             color: #000;
         }
-        
-        .warning-msg {
-            font-size: 0.85rem;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: rgba(255, 255, 0, 0.1);
-            border: 1px solid rgba(255, 255, 0, 0.2);
-            border-radius: 8px;
+
+        /* Warning Modal Styles - Inherently responsive */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            /* *** FIX: Added max-height and overflow-y to make modal content scrollable on small screens *** */
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        .modal-content .lang-toggle {
+            margin-bottom: 20px;
+        }
+        .modal-content .lang-toggle button {
+            background: none;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content .lang-toggle button.active {
+            background: var(--brand-cyan);
+            border-color: var(--brand-cyan);
+            color: #000;
+        }
+        .modal-message {
+            margin-bottom: 30px;
+            font-size: 1rem;
             text-align: left;
         }
-        
-        .warning-msg p {
-           margin-bottom: 5px;
-           line-height: 1.5;
+        .modal-message p {
+            margin-bottom: 10px;
         }
-
-        #back-to-main {
-            display: block;
-            width: fit-content;
-            margin: 0 0 40px 0; /* Adjusted margin */
+        .modal-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        #modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            display: none;
+        }
+        #countdown-timer {
             color: var(--brand-cyan);
-            text-decoration: none;
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 8px;
-        }
-        
-        #back-to-main:hover {
-            background: var(--bg-card);
+            font-weight: 700;
         }
 
+        /* Password and Admin Page Styles - Inherently responsive */
+        .form-page-container {
+            max-width: 500px;
+            margin: 60px auto 0 auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 40px;
+        }
+        .form-page-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px; /* Added margin for spacing */
+        }
+        .form-group label {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .form-group input, .form-group textarea {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        #password-error {
+            color: var(--danger-color);
+            text-align: center;
+            margin-top: 15px;
+            height: 20px;
+        }
+
+
+        /* --- RESPONSIVE DESIGN ADJUSTMENTS --- */
+
+        /* For Tablets and smaller desktops */
         @media (max-width: 992px) {
             .feature-layout {
                 grid-template-columns: 1fr;
@@ -441,24 +592,95 @@
             }
         }
 
+        /* For large mobile phones and tablets */
         @media (max-width: 768px) {
             .section {
                 padding: 80px 0;
-            }
-            h1 {
-                font-size: 2.8rem;
-            }
-            h2 {
-                font-size: 2.2rem;
             }
             .header {
                 padding: 1rem 0;
             }
             .hero {
                 padding-top: 150px;
+                padding-bottom: 100px;
+            }
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            h2 {
+                font-size: 2.2rem;
+            }
+            .feature-content h2, .showcase-section h2 {
+                font-size: 2.4rem;
             }
             .cta-section {
-                padding: 50px 30px;
+                padding: 60px 40px;
+            }
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+            .form-page-container {
+                padding: 30px;
+            }
+            .store-header {
+                margin-bottom: 40px;
+            }
+        }
+
+        /* For small mobile phones */
+        @media (max-width: 480px) {
+            .section {
+                padding: 60px 0;
+            }
+            .header .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .hero {
+                padding-top: 180px; /* Adjusted for taller header */
+                padding-bottom: 80px;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .hero-skills span {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            h2 {
+                font-size: 2rem;
+            }
+            .feature-content h2, .showcase-section h2 {
+                font-size: 2rem;
+            }
+            .main-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .cta-section {
+                padding: 40px 20px;
+            }
+            .modal-content {
+                padding: 30px 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+            .store-title {
+                font-size: 1.2rem;
+            }
+            .form-page-container {
+                padding: 20px;
+                margin-top: 40px;
+            }
+            .form-page-container h1 {
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -576,71 +798,160 @@
         </footer>
     </div>
     
-    <!-- New Page for Other Apps -->
-    <div id="other-apps-page">
-        <div class="container">
-            <!-- Moved "Back to Home" button to the top -->
-            <a href="#" id="back-to-main">← Back to Home</a>
-            
-            <h1>Our Other Applications</h1>
-            <div class="apps-grid">
-                <!-- App 1 -->
-                <div class="app-card">
-                    <h3>SoulSpark Dating</h3>
-                    <p>This is a dating app to connect with new people.</p>
-                    <a href="https://ibb.co/Z6GS7jzZ"><img src="https://i.ibb.co/1f7MjgGS/IMG-20250801-WA0001.jpg" alt="SoulSpark Dating App"></a>
-                    <a href="https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk" class="download-btn">Download</a>
-                    <div class="warning-msg">
-                       <p><strong>English:</strong> If your device shows a "harmful for device" warning, it's just a standard message because you are not downloading from the Play Store. The app is safe to install.</p>
-                       <p><strong>हिन्दी:</strong> यदि आपका डिवाइस "harmful for device" का चेतावनी संदेश दिखाता है, तो यह केवल एक मानक संदेश है क्योंकि आप प्ले स्टोर से डाउनलोड नहीं कर रहे हैं। ऐप इंस्टॉल करने के लिए सुरक्षित है।</p>
-                    </div>
-                </div>
-                
-                 <!-- Placeholder for App 2 -->
-                <div class="app-card">
-                    <h3>Future App 2</h3>
-                    <p>Description for the second app will go here.</p>
-                     <img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 2 Icon">
-                    <a href="#" class="download-btn">Coming Soon</a>
-                </div>
-                
-                 <!-- Placeholder for App 3 -->
-                <div class="app-card">
-                    <h3>Future App 3</h3>
-                    <p>Description for the third app will go here.</p>
-                     <img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 3 Icon">
-                    <a href="#" class="download-btn">Coming Soon</a>
-                </div>
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="modal-close-btn">×</button>
+            <h2>🛡️ App Trust & Safety Message</h2>
+            <div class="lang-toggle">
+                <button id="lang-hi" class="active">हिन्दी</button>
+                <button id="lang-en">English</button>
+            </div>
+            <div id="message-hi" class="modal-message">
+                <p><strong>प्रिय यूज़र,</strong></p>
+                <p>हम आपकी चिंता को समझते हैं। जब आप हमारी ऐप ब्राउज़र से डाउनलोड करते हैं (Play Store के बाहर से), तो आपके फ़ोन में यह मैसेज आ सकता है – "यह ऐप आपके डिवाइस को नुकसान पहुँचा सकता है।" लेकिन कृपया घबराएं नहीं – यह मैसेज केवल इसलिए आता है क्योंकि ऐप प्ले स्टोर से नहीं है, इसका मतलब यह नहीं कि ऐप हानिकारक है।</p>
+                <p>✅ हम आपको पूरा भरोसा दिलाते हैं कि यह ऐप पूरी तरह से सुरक्षित और भरोसेमंद है।</p>
+                <p>✅ इसमें कोई वायरस, मालवेयर या ट्रैकिंग सिस्टम नहीं है।</p>
+                <p>✅ यह आपके डिवाइस, बैटरी या निजी डेटा को कोई नुकसान नहीं पहुँचाता।</p>
+                <p>✅ हम आपके किसी भी पर्सनल डाटा को इकट्ठा या गलत तरीके से इस्तेमाल नहीं करते।</p>
+                <p>यह ऐप हमने आपकी सुविधा, सुरक्षा और विश्वास को ध्यान में रखकर बनाया है। आपके भरोसे के लिए दिल से धन्यवाद। ❤️</p>
+            </div>
+            <div id="message-en" class="modal-message" style="display: none;">
+                <p><strong>Dear User,</strong></p>
+                <p>We understand your concern. When you download our app from a browser (outside of Play Store), your phone may show a warning like "This app may harm your device." But please don’t worry — this message is shown only because the app is not from the official store, not because it is harmful.</p>
+                <p>✅ We give you our full assurance that our app is developed with care and tested thoroughly.</p>
+                <p>✅ It does not contain any virus, malware, or tracking system.</p>
+                <p>✅ It does not harm your device, battery, or personal data in any way.</p>
+                <p>✅ We do not collect or misuse any of your personal information.</p>
+                <p>We have built this app with love, keeping your safety, convenience, and trust at the core. Thank you for trusting us. ❤️</p>
+            </div>
+            <div class="modal-footer">
+                <p>You can proceed in <span id="countdown-timer">5</span> seconds...</p>
+                <button id="modal-proceed-btn" class="main-btn" disabled>Proceed to Store</button>
             </div>
         </div>
     </div>
+
+    <!-- Other Apps Page (Shubhzone Store) -->
+    <div id="other-apps-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                <a href="#" id="store-back-btn" class="store-back-btn">←</a>
+                <h2 id="store-title-btn" class="store-title">Shubhzone Store <span>🏬</span></h2>
+                <div style="width: 24px;"></div> <!-- Spacer to balance the layout -->
+            </div>
+        </header>
+        <div class="container">
+            <div id="apps-grid-container" class="apps-grid">
+                <!-- Apps will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Page -->
+    <div id="password-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                <a href="#" id="password-back-btn" class="store-back-btn">←</a>
+                <h2 class="store-title">Admin Access</h2>
+                 <div style="width: 24px;"></div> <!-- Spacer -->
+            </div>
+        </header>
+        <div class="form-page-container">
+            <h1>Enter Security Code</h1>
+            <form id="password-form">
+                <div class="form-group">
+                    <input type="password" id="admin-password" placeholder="Password" required>
+                </div>
+                <div id="password-error"></div>
+                <button type="submit" class="main-btn" style="width: 100%; justify-content: center; margin-top: 20px;">Submit</button>
+            </form>
+        </div>
+    </div>
     
+    <!-- Admin App Submission Page -->
+    <div id="admin-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                 <a href="#" id="admin-back-btn" class="store-back-btn">←</a>
+                <h2 class="store-title">Add New App</h2>
+                 <div style="width: 24px;"></div> <!-- Spacer -->
+            </div>
+        </header>
+        <div class="form-page-container">
+            <h1>App Submission Form</h1>
+            <form id="app-submission-form">
+                <div class="form-group">
+                    <label for="app-name">App Name</label>
+                    <input type="text" id="app-name" placeholder="e.g., SoulSpark Dating" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-desc">App Description</label>
+                    <textarea id="app-desc" placeholder="A short description of the app." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-image-html">Image HTML from ImgBB</label>
+                    <textarea id="app-image-html" placeholder="Paste the full HTML code from ImgBB here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-download-link">Download Link (.apk)</label>
+                    <input type="url" id="app-download-link" placeholder="https://github.com/.../app.apk" required>
+                </div>
+                <button type="submit" class="main-btn" style="width: 100%; justify-content: center; margin-top: 20px;">Add App to Store</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- Spotlight Effect ---
-            const spotlight = document.querySelector('.spotlight');
-            document.addEventListener('mousemove', (e) => {
-                spotlight.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(0, 217, 255, 0.1), transparent 30%)`;
-            });
+            // --- GLOBAL PAGE ELEMENTS ---
+            const mainContent = document.getElementById('main-content');
+            const otherAppsPage = document.getElementById('other-apps-page');
+            const passwordPage = document.getElementById('password-page');
+            const adminPage = document.getElementById('admin-page');
+            const allPages = [mainContent, otherAppsPage, passwordPage, adminPage];
+            const header = document.querySelector('.header');
+            const bodyEl = document.body; // Reference to the body element
 
-            // --- Scroll Reveal ---
-            const reveals = document.querySelectorAll('.reveal');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('active');
-                    }
+            function showPage(pageToShow) {
+                allPages.forEach(page => {
+                    if (page) page.style.display = 'none';
                 });
-            }, { threshold: 0.1 });
-            reveals.forEach(reveal => observer.observe(reveal));
+                if (pageToShow) {
+                    pageToShow.style.display = 'block';
+                }
+                if (header) {
+                   header.style.display = (pageToShow === mainContent) ? 'flex' : 'none';
+                }
+                window.scrollTo(0, 0);
+            }
 
-            // --- Particle Background ---
+            // --- PARTICLE & REVEAL ANIMATIONS ---
+            const spotlight = document.querySelector('.spotlight');
+            if(spotlight) {
+                document.addEventListener('mousemove', (e) => {
+                    spotlight.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(0, 217, 255, 0.1), transparent 30%)`;
+                });
+            }
+
+            const reveals = document.querySelectorAll('.reveal');
+            if (reveals.length > 0) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                        }
+                    });
+                }, { threshold: 0.1 });
+                reveals.forEach(reveal => observer.observe(reveal));
+            }
+            
             const canvas = document.getElementById('particle-canvas');
-            // Check if canvas exists before getting context
             if (canvas) {
+                const heroSection = document.querySelector('.hero');
                 const ctx = canvas.getContext('2d');
                 canvas.width = window.innerWidth;
-                canvas.height = document.querySelector('.hero').offsetHeight;
+                canvas.height = heroSection.offsetHeight;
                 let particles = [];
 
                 class Particle {
@@ -666,54 +977,226 @@
                 }
 
                 function initParticles() {
-                    particles = []; // Clear existing particles
-                    for (let i = 0; i < 50; i++) {
+                    particles = [];
+                    let numParticles = window.innerWidth < 768 ? 30 : 50;
+                    for (let i = 0; i < numParticles; i++) {
                         particles.push(new Particle());
                     }
                 }
-
                 function animateParticles() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    for (let i = 0; i < particles.length; i++) {
-                        particles[i].update();
-                        particles[i].draw();
-                    }
+                    particles.forEach(p => { p.update(); p.draw(); });
                     requestAnimationFrame(animateParticles);
                 }
                 
+                function handleResize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = heroSection.offsetHeight;
+                    initParticles();
+                }
+
                 initParticles();
                 animateParticles();
-                
-                window.addEventListener('resize', () => {
-                    canvas.width = window.innerWidth;
-                    canvas.height = document.querySelector('.hero').offsetHeight;
-                    initParticles();
+                window.addEventListener('resize', handleResize);
+            }
+
+            // --- WARNING MODAL LOGIC ---
+            const otherAppsBtn = document.getElementById('other-apps-btn');
+            const warningModal = document.getElementById('warning-modal');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const modalProceedBtn = document.getElementById('modal-proceed-btn');
+            const countdownTimerEl = document.getElementById('countdown-timer');
+            const langHiBtn = document.getElementById('lang-hi');
+            const langEnBtn = document.getElementById('lang-en');
+            const messageHi = document.getElementById('message-hi');
+            const messageEn = document.getElementById('message-en');
+            let countdownInterval;
+
+            if (otherAppsBtn) {
+                otherAppsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if(!warningModal) return;
+
+                    warningModal.style.display = 'flex';
+                    bodyEl.classList.add('modal-open'); // *** FIX: Disable scrolling when modal is open using a class
+
+                    let timeLeft = 5;
+                    countdownTimerEl.textContent = timeLeft;
+                    modalProceedBtn.disabled = true;
+                    modalCloseBtn.style.display = 'none';
+
+                    countdownInterval = setInterval(() => {
+                        timeLeft--;
+                        countdownTimerEl.textContent = timeLeft;
+                        if (timeLeft <= 0) {
+                            clearInterval(countdownInterval);
+                            countdownTimerEl.parentElement.innerHTML = "You can now proceed.";
+                            modalProceedBtn.disabled = false;
+                            modalCloseBtn.style.display = 'block';
+                        }
+                    }, 1000);
                 });
             }
 
+            function closeModal() {
+                clearInterval(countdownInterval);
+                if(warningModal) warningModal.style.display = 'none';
+                bodyEl.classList.remove('modal-open'); // *** FIX: Enable scrolling when modal is closed by removing the class
+            }
 
-            // --- Page Switching Logic ---
-            const mainContent = document.getElementById('main-content');
-            const otherAppsPage = document.getElementById('other-apps-page');
-            const otherAppsBtn = document.getElementById('other-apps-btn');
-            const backToMainBtn = document.getElementById('back-to-main');
-            const header = document.querySelector('.header');
-
-            otherAppsBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                mainContent.style.display = 'none';
-                otherAppsPage.style.display = 'block';
-                header.style.display = 'none'; // Hide header on the new page
-                window.scrollTo(0, 0); // Scroll to top
+            if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+            
+            if(modalProceedBtn) modalProceedBtn.addEventListener('click', () => {
+                closeModal(); // This will now re-enable scrolling
+                renderApps();
+                showPage(otherAppsPage);
+            });
+            
+            if(langHiBtn) langHiBtn.addEventListener('click', () => {
+                messageHi.style.display = 'block';
+                messageEn.style.display = 'none';
+                langHiBtn.classList.add('active');
+                langEnBtn.classList.remove('active');
             });
 
-            backToMainBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                otherAppsPage.style.display = 'none';
-                mainContent.style.display = 'block';
-                 header.style.display = 'block'; // Show header again
-                window.scrollTo(0, 0); // Scroll to top
+            if(langEnBtn) langEnBtn.addEventListener('click', () => {
+                messageHi.style.display = 'none';
+                messageEn.style.display = 'block';
+                langEnBtn.classList.add('active');
+                langHiBtn.classList.remove('active');
             });
+            
+            // --- APP STORE LOGIC (using localStorage) ---
+            const appsGridContainer = document.getElementById('apps-grid-container');
+            const initialApps = [
+                {
+                    name: "SoulSpark Dating",
+                    description: "This is a dating app to connect with new people.",
+                    imageHTML: '<a href="https://ibb.co/Z6GS7jzZ"><img src="https://i.ibb.co/1f7MjgGS/IMG-20250801-WA0001.jpg" alt="SoulSpark Dating App"></a>',
+                    downloadLink: "https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk"
+                },
+                {
+                    name: "Future App 2",
+                    description: "Description for the second app will go here.",
+                    imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 2 Icon">',
+                    downloadLink: "#"
+                },
+                 {
+                    name: "Future App 3",
+                    description: "Description for the third app will go here.",
+                    imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 3 Icon">',
+                    downloadLink: "#"
+                }
+            ];
+
+            function getApps() {
+                try {
+                    const appsFromStorage = localStorage.getItem('shubhzone_apps');
+                    if (appsFromStorage) {
+                        return JSON.parse(appsFromStorage);
+                    } else {
+                        localStorage.setItem('shubhzone_apps', JSON.stringify(initialApps));
+                        return initialApps;
+                    }
+                } catch (e) {
+                    console.error("Could not access localStorage. Using default apps.", e);
+                    return initialApps;
+                }
+            }
+            
+            function renderApps() {
+                if(!appsGridContainer) return;
+                const apps = getApps();
+                appsGridContainer.innerHTML = ''; // Clear existing grid
+                apps.forEach(app => {
+                    const isComingSoon = app.downloadLink === '#';
+                    const downloadButton = `<a href="${app.downloadLink}" class="download-btn" ${isComingSoon ? 'style="background-color: grey; cursor: not-allowed;"' : ''}>${isComingSoon ? 'Coming Soon' : 'Download'}</a>`;
+                    
+                    const appCardHTML = `
+                        <div class="app-card">
+                            <div class="app-card-top-content">
+                                <h3>${app.name || ''}</h3>
+                                <p>${app.description || ''}</p>
+                                <div class="app-image-container">${app.imageHTML || ''}</div>
+                            </div>
+                            <div class="app-card-bottom-content">
+                                ${downloadButton}
+                            </div>
+                        </div>
+                    `;
+                    appsGridContainer.innerHTML += appCardHTML;
+                });
+            }
+
+            // --- NAVIGATION LOGIC ---
+            const navButtons = [
+                { id: 'store-back-btn', page: mainContent },
+                { id: 'password-back-btn', page: otherAppsPage },
+                { id: 'admin-back-btn', page: passwordPage },
+                { id: 'store-title-btn', page: passwordPage }
+            ];
+            navButtons.forEach(item => {
+                const btn = document.getElementById(item.id);
+                if (btn) {
+                    btn.addEventListener('click', e => { 
+                        e.preventDefault(); 
+                        showPage(item.page); 
+                    });
+                }
+            });
+            
+            // --- PASSWORD PAGE LOGIC ---
+            const passwordForm = document.getElementById('password-form');
+            const passwordErrorEl = document.getElementById('password-error');
+            const correctPassword = "himanshu@123";
+            
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    if (passwordErrorEl) passwordErrorEl.textContent = '';
+                    
+                    const inputElement = document.getElementById('admin-password');
+                    const enteredPassword = inputElement.value;
+
+                    if (enteredPassword === correctPassword) {
+                        showPage(adminPage);
+                        passwordForm.reset();
+                    } else {
+                        if (passwordErrorEl) passwordErrorEl.textContent = 'Incorrect password.';
+                    }
+                });
+            }
+
+            // --- ADMIN PAGE LOGIC ---
+            const appSubmissionForm = document.getElementById('app-submission-form');
+            if (appSubmissionForm) {
+                appSubmissionForm.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const newApp = {
+                        name: document.getElementById('app-name').value,
+                        description: document.getElementById('app-desc').value,
+                        imageHTML: document.getElementById('app-image-html').value,
+                        downloadLink: document.getElementById('app-download-link').value
+                    };
+                    
+                    const apps = getApps();
+                    apps.push(newApp);
+                    try {
+                       localStorage.setItem('shubhzone_apps', JSON.stringify(apps));
+                       alert('App added successfully!');
+                    } catch (err) {
+                       alert('Could not save the app. Local storage might be full or disabled.');
+                    }
+
+                    appSubmissionForm.reset();
+                    renderApps();
+                    showPage(otherAppsPage);
+                });
+            }
+
+            // Initial setup
+            showPage(mainContent);
+
         });
     </script>
 </body>
