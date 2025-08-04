@@ -3307,4 +3307,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCategories();
     renderCategoriesInBar();
 });
-```
