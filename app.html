@@ -129,7 +129,6 @@
         </div>
     </div>
     
-    <!-- ★ नया: प्रोफाइल फोटो को बड़ा करने के लिए मोडल प्लेसहोल्डर -->
     <div id="image-enlarge-modal" class="modal-overlay">
         <div class="enlarged-image-content">
             <img id="enlarged-image-src" src="" alt="Enlarged View">
@@ -261,7 +260,7 @@
             </div>
         </div>
 
-        <!-- === HOME SCREEN (SHORTS) === -->
+        <!-- === SHORTS SCREEN (Previously Home) === -->
         <div id="home-screen" class="screen">
             <div class="home-top-bar">
                 <div id="home-menu-icon" class="home-menu-icon haptic-trigger">
@@ -275,9 +274,9 @@
                 </div>
             </div>
             <div class="bottom-nav">
-                <div class="nav-item active" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="new-home"><i class="fas fa-home"></i>Home</div>
                 <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
-                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item active" data-nav="shorts"><i class="fas fa-compact-disc"></i>Shorts</div>
                 <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
                 <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
             </div>
@@ -307,9 +306,9 @@
                 <div id="long-video-grid"></div>
             </div>
             <div class="bottom-nav">
-                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="new-home"><i class="fas fa-home"></i>Home</div>
                 <div class="nav-item active" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
-                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="shorts"><i class="fas fa-compact-disc"></i>Shorts</div>
                 <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
                 <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
             </div>
@@ -331,34 +330,24 @@
                 <div id="history-long-video-list"></div>
             </div>
             <div class="bottom-nav">
-                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="new-home"><i class="fas fa-home"></i>Home</div>
                 <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
-                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="shorts"><i class="fas fa-compact-disc"></i>Shorts</div>
                 <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
                 <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
             </div>
         </div>
 
-        <!-- === UPLOAD SCREEN === -->
+        <!-- === NEW HOME SCREEN (Previously Upload) === -->
         <div id="upload-screen" class="screen">
-            <div class="upload-header">
-                <h2>Upload Content</h2>
-                <p>Share your awesome videos with the world</p>
-            </div>
-             <div class="upload-container-new">
-                <button id="upload-short-video-btn" class="upload-action-button haptic-trigger">
-                    <i class="fas fa-bolt" style="margin-right: 10px;"></i> Upload Short Video
-                </button>
-                 <button id="upload-long-video-btn" class="upload-action-button haptic-trigger" style="background-color: #ff8f00;">
-                    <i class="fas fa-film" style="margin-right: 10px;"></i> Upload Long Video
-                </button>
-                <button id="earnsure-btn" class="upload-action-button haptic-trigger" style="background-color: #4CAF50;">Earnsure</button>
-                <div id="upload-screen-ad-container"></div>
+            <div class="upload-header"></div>
+            <div class="upload-container-new">
+                <!-- JS will populate this with the new home screen UI -->
             </div>
             <div class="bottom-nav">
-                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item active" data-nav="new-home"><i class="fas fa-home"></i>Home</div>
                 <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
-                <div class="nav-item active" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="shorts"><i class="fas fa-compact-disc"></i>Shorts</div>
                 <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
                 <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
             </div>
@@ -380,16 +369,10 @@
                         <input type="text" id="add-friend-search-input" placeholder="Search by Name or @ID">
                         <button id="add-friend-search-btn" class="haptic-trigger">Search</button>
                     </div>
-                    <div id="add-friend-user-list">
-                        <!-- User list will be populated here by JS -->
-                    </div>
+                    <div id="add-friend-user-list"></div>
                 </div>
-                <div class="tab-content hidden" id="requests-content">
-                    <!-- Friend requests will be populated here by JS -->
-                </div>
-                <div class="tab-content hidden" id="members-content">
-                    <!-- Members list will be populated here by JS -->
-                </div>
+                <div class="tab-content hidden" id="requests-content"></div>
+                <div class="tab-content hidden" id="members-content"></div>
             </main>
     
             <div class="chat-screen" id="chat-screen-overlay">
@@ -406,9 +389,9 @@
             </div>
 
             <div class="bottom-nav">
-                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="new-home"><i class="fas fa-home"></i>Home</div>
                 <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
-                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="shorts"><i class="fas fa-compact-disc"></i>Shorts</div>
                 <div class="nav-item active" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
                 <div class="nav-item" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
             </div>
@@ -432,9 +415,9 @@
             </div>
 
             <div class="bottom-nav">
-                <div class="nav-item" data-nav="home"><i class="fas fa-home"></i>Home</div>
+                <div class="nav-item" data-nav="new-home"><i class="fas fa-home"></i>Home</div>
                 <div class="nav-item" data-nav="long-video"><i class="fas fa-video"></i>Long Video</div>
-                <div class="nav-item" data-nav="upload"><i class="fas fa-plus"></i>Upload</div>
+                <div class="nav-item" data-nav="shorts"><i class="fas fa-compact-disc"></i>Shorts</div>
                 <div class="nav-item" data-nav="friends"><i class="fas fa-user-friends"></i>Friends</div>
                 <div class="nav-item active" data-nav="profile"><i class="fas fa-user"></i>Profile</div>
             </div>
@@ -454,9 +437,7 @@
                 <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
                 <span class="header-title">Payment Request</span>
             </div>
-            <div id="payment-content" style="width: 100%; padding: 80px 20px 20px;">
-                <!-- Payment form will be populated by JS -->
-            </div>
+            <div id="payment-content" style="width: 100%; padding: 80px 20px 20px;"></div>
         </div>
 
         <!-- === YOUR ZONE SCREEN === -->
@@ -465,9 +446,7 @@
                 <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
                 <span class="header-title">Your Zone</span>
             </div>
-            <div id="your-zone-content">
-                <!-- JS will populate this -->
-            </div>
+            <div id="your-zone-content"></div>
         </div>
         
         <!-- === EARNSURE SCREEN === -->
@@ -477,9 +456,7 @@
                 <h4 class="header-title">Earnsure</h4>
                 <div class="earnsure-language-toggle" id="earnsure-language-toggle"></div>
             </div>
-            <div class="earnsure-content-area">
-                <!-- JS will populate this -->
-            </div>
+            <div class="earnsure-content-area"></div>
         </div>
 
         <!-- === ADVERTISEMENT SCREEN === -->
@@ -595,20 +572,14 @@
                 <div class="header-icon-left haptic-trigger"><i class="fas fa-arrow-left"></i></div>
                 <span class="header-title">Track Payment</span>
             </div>
-            <div id="track-payment-content" class="content-area" style="padding-top: 75px; padding-left: 15px; padding-right: 15px;">
-                <!-- JS will populate this -->
-            </div>
+            <div id="track-payment-content" class="content-area" style="padding-top: 75px; padding-left: 15px; padding-right: 15px;"></div>
         </div>
 
         <!-- === REPORT SCREEN === -->
-        <div id="report-screen" class="screen">
-            <!-- JS will populate this -->
-        </div>
+        <div id="report-screen" class="screen"></div>
         
         <!-- === CREDIT SCREEN === -->
-        <div id="credit-screen" class="screen">
-            <!-- JS will populate this -->
-        </div>
+        <div id="credit-screen" class="screen"></div>
 
     </div>
 
@@ -616,9 +587,7 @@
     <div id="admin-priority-ad-overlay">
         <div id="ad-timer"></div>
         <button id="ad-close-btn">×</button>
-        <div id="ad-content-container">
-            <!-- JS will inject ad content here -->
-        </div>
+        <div id="ad-content-container"></div>
     </div>
 
     <!-- === SCRIPTS (MUST BE AT THE END) === -->
