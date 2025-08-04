@@ -35,7 +35,6 @@
             overflow-x: hidden;
         }
         
-        /* Class to disable body scrolling when modal is open */
         body.modal-open {
             overflow: hidden;
         }
@@ -122,7 +121,7 @@
         .header-buttons {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap; /* Added for safety on very narrow screens */
+            flex-wrap: wrap; 
             justify-content: flex-end;
         }
 
@@ -341,7 +340,25 @@
             text-decoration: none;
         }
         
-        /* Styles for hidden pages */
+        /* --- NEW STYLES FOR POLICY LINKS --- */
+        .footer-policies {
+            padding: 20px 0 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+        .footer-policies nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .footer-policies nav a:hover {
+            color: var(--brand-cyan);
+        }
+        /* --- END OF NEW STYLES --- */
+        
         .page {
             display: none;
             padding-top: 40px;
@@ -349,7 +366,6 @@
             min-height: 100vh;
         }
 
-        /* Store Header */
         .store-header {
             background: rgba(5, 7, 10, 0.7);
             backdrop-filter: blur(10px);
@@ -384,7 +400,6 @@
             vertical-align: middle;
         }
 
-        /* App Grid - Inherently responsive */
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -408,13 +423,10 @@
             box-shadow: 0 10px 30px rgba(0, 217, 255, 0.1);
         }
         
-        .app-card-top-content {
-            /* This container holds everything except the button area */
-        }
+        .app-card-top-content {}
 
         .app-card-bottom-content {
-            /* This container holds the button */
-            margin-top: 20px; /* Ensures space between content and button */
+            margin-top: 20px; 
         }
         
         .app-card h3 {
@@ -457,7 +469,6 @@
             color: #000;
         }
 
-        /* Warning Modal Styles - Inherently responsive */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -482,7 +493,6 @@
             width: 100%;
             text-align: center;
             position: relative;
-            /* *** FIX: Added max-height and overflow-y to make modal content scrollable on small screens *** */
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -536,7 +546,6 @@
             font-weight: 700;
         }
 
-        /* Password and Admin Page Styles - Inherently responsive */
         .form-page-container {
             max-width: 500px;
             margin: 60px auto 0 auto;
@@ -552,7 +561,7 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            margin-bottom: 20px; /* Added margin for spacing */
+            margin-bottom: 20px;
         }
         .form-group label {
             margin-bottom: 8px;
@@ -577,9 +586,6 @@
             margin-top: 15px;
             height: 20px;
         }
-
-
-        /* --- RESPONSIVE DESIGN ADJUSTMENTS --- */
 
         @media (max-width: 992px) {
             .feature-layout {
@@ -637,7 +643,7 @@
                 gap: 15px;
             }
             .hero {
-                padding-top: 180px; /* Adjusted for taller header */
+                padding-top: 180px; 
                 padding-bottom: 80px;
             }
             .hero h1 {
@@ -678,6 +684,15 @@
             }
             .form-page-container h1 {
                 font-size: 1.8rem;
+            }
+            /* --- Responsive style for policies --- */
+            .footer-policies nav {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .footer-policies nav a {
+                margin: 0;
             }
         }
     </style>
@@ -790,7 +805,20 @@
                 <a href="#" class="logo">Shubh<span>zone</span></a>
                 <p>A vision by Himanshu Kumar from India.</p>
                 <p>Contact: <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+                <p>YouTube: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a></p>
                 <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">© 2025 Shubhzone.shop. All Rights Reserved.</p>
+                
+                <!-- /// --- START: ADDED POLICY SECTION --- /// -->
+                <div class="footer-policies">
+                    <nav>
+                        <a href="/terms-and-conditions.html">Terms & Conditions</a>
+                        <a href="/privacy-policy.html">Privacy Policy</a>
+                        <a href="/shipping-policy.html">Shipping Policy</a>
+                        <a href="/contact-us.html">Contact Us</a>
+                    </nav>
+                </div>
+                <!-- /// --- END: ADDED POLICY SECTION --- /// -->
+
             </div>
         </footer>
     </div>
@@ -835,12 +863,11 @@
             <div class="container">
                 <a href="#" id="store-back-btn" class="store-back-btn">←</a>
                 <h2 id="store-title-btn" class="store-title">Shubhzone Store <span>🏬</span></h2>
-                <div style="width: 24px;"></div> <!-- Spacer to balance the layout -->
+                <div style="width: 24px;"></div> 
             </div>
         </header>
         <div class="container">
             <div id="apps-grid-container" class="apps-grid">
-                <!-- Apps will be dynamically inserted here -->
             </div>
         </div>
     </div>
@@ -851,7 +878,7 @@
             <div class="container">
                 <a href="#" id="password-back-btn" class="store-back-btn">←</a>
                 <h2 class="store-title">Admin Access</h2>
-                 <div style="width: 24px;"></div> <!-- Spacer -->
+                 <div style="width: 24px;"></div> 
             </div>
         </header>
         <div class="form-page-container">
@@ -872,7 +899,7 @@
             <div class="container">
                  <a href="#" id="admin-back-btn" class="store-back-btn">←</a>
                 <h2 class="store-title">Add New App</h2>
-                 <div style="width: 24px;"></div> <!-- Spacer -->
+                 <div style="width: 24px;"></div> 
             </div>
         </header>
         <div class="form-page-container">
@@ -901,7 +928,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- GLOBAL PAGE ELEMENTS ---
             const mainContent = document.getElementById('main-content');
             const otherAppsPage = document.getElementById('other-apps-page');
             const passwordPage = document.getElementById('password-page');
@@ -923,7 +949,6 @@
                 window.scrollTo(0, 0);
             }
 
-            // --- PARTICLE & REVEAL ANIMATIONS ---
             const spotlight = document.querySelector('.spotlight');
             if(spotlight) {
                 document.addEventListener('mousemove', (e) => {
@@ -997,7 +1022,6 @@
                 window.addEventListener('resize', handleResize);
             }
 
-            // --- WARNING MODAL LOGIC ---
             const otherAppsBtn = document.getElementById('other-apps-btn');
             const warningModal = document.getElementById('warning-modal');
             const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -1013,16 +1037,13 @@
                     e.preventDefault();
                     if (!warningModal) return;
 
-                    // *** FIX START: This part resets the timer's HTML every time the button is clicked ***
                     const countdownParagraph = document.querySelector('#warning-modal .modal-footer p');
                     if (countdownParagraph) {
                         countdownParagraph.innerHTML = 'You can proceed in <span id="countdown-timer">5</span> seconds...';
                     }
-                    // Find the timer element *after* it has been recreated.
                     const countdownTimerEl = document.getElementById('countdown-timer');
-                    if (!countdownTimerEl) return; // Exit if the element wasn't found.
-                    // *** FIX END ***
-
+                    if (!countdownTimerEl) return; 
+                    
                     warningModal.style.display = 'flex';
                     bodyEl.classList.add('modal-open');
 
@@ -1031,7 +1052,7 @@
                     modalProceedBtn.disabled = true;
                     modalCloseBtn.style.display = 'none';
                     
-                    clearInterval(countdownInterval); // Clear any old interval
+                    clearInterval(countdownInterval);
 
                     countdownInterval = setInterval(() => {
                         timeLeft--;
@@ -1074,7 +1095,6 @@
                 langHiBtn.classList.remove('active');
             });
             
-            // --- APP STORE LOGIC (using localStorage) ---
             const appsGridContainer = document.getElementById('apps-grid-container');
             const initialApps = [
                 {
@@ -1115,7 +1135,7 @@
             function renderApps() {
                 if(!appsGridContainer) return;
                 const apps = getApps();
-                appsGridContainer.innerHTML = ''; // Clear existing grid
+                appsGridContainer.innerHTML = '';
                 apps.forEach(app => {
                     const isComingSoon = app.downloadLink === '#';
                     const downloadButton = `<a href="${app.downloadLink}" class="download-btn" ${isComingSoon ? 'style="background-color: grey; cursor: not-allowed;"' : ''}>${isComingSoon ? 'Coming Soon' : 'Download'}</a>`;
@@ -1136,7 +1156,6 @@
                 });
             }
 
-            // --- NAVIGATION LOGIC ---
             const navButtons = [
                 { id: 'store-back-btn', page: mainContent },
                 { id: 'password-back-btn', page: otherAppsPage },
@@ -1153,7 +1172,6 @@
                 }
             });
             
-            // --- PASSWORD PAGE LOGIC ---
             const passwordForm = document.getElementById('password-form');
             const passwordErrorEl = document.getElementById('password-error');
             const correctPassword = "himanshu@123";
@@ -1175,7 +1193,6 @@
                 });
             }
 
-            // --- ADMIN PAGE LOGIC ---
             const appSubmissionForm = document.getElementById('app-submission-form');
             if (appSubmissionForm) {
                 appSubmissionForm.addEventListener('submit', e => {
@@ -1202,7 +1219,6 @@
                 });
             }
 
-            // Initial setup
             showPage(mainContent);
 
         });
