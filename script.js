@@ -1,8 +1,8 @@
 
 /* ================================================= */
-/* === Shubhzone App Script (Code 2) - FINAL v5.10 === */
-/* === MODIFIED AS PER USER REQUEST - JULY 2025    === */
-/* === SOLVED: Correct Profile Info in Chat        === */
+/* === Shubhzone App Script (Code 2) - FINAL v5.13 === */
+/* === MODIFIED AS PER USER REQUEST - AUG 2025    === */
+/* === SOLVED: Ad Logic & YouTube URL Input Enhanced === */
 /* ================================================= */
 
 // Firebase कॉन्फ़िगरेशन
@@ -30,12 +30,12 @@ const analytics = firebase.analytics();
 
 
 // =======================================================================
-// ★★★ ADVERTISEMENT LOGIC (NEW STRATEGY) - START ★★★
+// ★★★ ADVERTISEMENT LOGIC (NEW STRATEGY - AUG 2025) - START ★★★
 // =======================================================================
 
 /**
  * Injects a banner ad into the specified container element.
- * It alternates between different ad codes for variety.
+ * It alternates between Monetag and Adsterra for variety.
  * @param {HTMLElement} container The container element to inject the ad into.
  */
 function injectBannerAd(container) {
@@ -45,62 +45,50 @@ function injectBannerAd(container) {
     }
     container.innerHTML = ''; // Clear previous content
 
-    // Alternate between two banner ad types
+    // Alternate between Monetag and Adsterra native banners
     if (Math.random() > 0.5) {
-        // Adsterra Native Banner
-        const adId = `ad-native-${Date.now()}-${Math.random()}`;
-        container.id = adId;
+        // Monetag Native Banner
+        console.log("[AD] Injecting Monetag Native Banner...");
         const adScript = document.createElement('script');
         adScript.async = true;
-        adScript.src = `//pl27114897.profitableratecpm.com/f218d914c870fc85f6dd64b9c8c31249/invoke.js`;
-        container.innerHTML = `<div id="container-f218d914c870fc85f6dd64b9c8c31249"></div>`;
+        adScript.text = `(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('gizokraijaw.net',9583482,document.createElement('script'))`;
         container.appendChild(adScript);
-        console.log(`[AD] Injected Adsterra Native Banner into #${adId}`);
     } else {
-        // HighPerformanceFormat Banner
-        const optionsScript = document.createElement('script');
-        optionsScript.type = 'text/javascript';
-        optionsScript.text = `
-            atOptions = {
-                'key' : '5cf688a48641e2cfd0aac4e4d4019604',
-                'format' : 'iframe',
-                'height' : 250,
-                'width' : 300,
-                'params' : {}
-            };
-        `;
-        const invokeScript = document.createElement('script');
-        invokeScript.type = 'text/javascript';
-        invokeScript.src = `//www.highperformanceformat.com/5cf688a48641e2cfd0aac4e4d4019604/invoke.js`;
-        container.appendChild(optionsScript);
-        container.appendChild(invokeScript);
-        console.log(`[AD] Injected HighPerformanceFormat Banner into a container.`);
+        // Adsterra Native Banner
+        console.log("[AD] Injecting Adsterra Native Banner...");
+        const adScript = document.createElement('script');
+        adScript.async = true;
+        adScript.setAttribute('data-cfasync', 'false');
+        adScript.src = `//decreaselackadmit.com/f218d914c870fc85f6dd64b9c8c31249/invoke.js`;
+        const adContainerDiv = document.createElement('div');
+        adContainerDiv.id = 'container-f218d914c870fc85f6dd64b9c8c31249';
+        container.appendChild(adScript);
+        container.appendChild(adContainerDiv);
     }
 }
 
 
 /**
- * Injects a Social Bar ad script into the document body.
+ * Injects an Adsterra Social Bar ad script into the document body.
  * This should typically be called only once.
  */
 function injectSocialBarAd() {
     if (document.querySelector('script[src*="9b9bd0548874dd7f16f6f50929864be9"]')) {
-        console.log('[AD] Social Bar script already injected.');
+        console.log('[AD] Adsterra Social Bar script already injected.');
         return;
     }
     console.log("[AD] Injecting Adsterra Social Bar script...");
     const socialScript = document.createElement('script');
     socialScript.type = 'text/javascript';
-    socialScript.src = '//pl27114870.profitableratecpm.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js';
+    socialScript.src = '//decreaselackadmit.com/9b/9b/d0/9b9bd0548874dd7f16f6f50929864be9.js';
     document.body.appendChild(socialScript);
 }
 
 /**
  * Triggers a full-page ad based on a rotating sequence.
- * This sequence prioritizes Monetag ads.
+ * This sequence heavily prioritizes Monetag Interstitial and Direct Link ads.
  */
 function triggerFullScreenAd() {
-    // Do not show intrusive ads if any modal is open
     const isAnyModalActive = document.querySelector('.modal-overlay.active, .comments-modal-overlay.active, #chat-screen-overlay.active');
     if (isAnyModalActive) {
         console.log("[AD] Modal is active, skipping full-screen ad.");
@@ -120,14 +108,6 @@ function triggerFullScreenAd() {
             document.body.appendChild(monetagInterstitial);
             break;
 
-        case 'adsterra_popunder':
-            console.log("[AD] Injecting Adsterra Popunder script...");
-            const adsterraPopunder = document.createElement('script');
-            adsterraPopunder.type = 'text/javascript';
-            adsterraPopunder.src = '//pl27115090.profitableratecpm.com/7d/0c/a8/7d0ca84cbcf7b35539ae2feb7dc2bd2e.js';
-            document.body.appendChild(adsterraPopunder);
-            break;
-
         case 'monetag_directlink':
             console.log("[AD] Attempting to open Monetag Direct Link...");
             const newWindow = window.open('https://otieu.com/4/9578561', '_blank');
@@ -137,30 +117,44 @@ function triggerFullScreenAd() {
                 console.log("[AD] Direct Link opened successfully.");
             }
             break;
+
+        case 'adsterra_popunder':
+            console.log("[AD] Injecting Adsterra Popunder script...");
+            const adsterraPopunder = document.createElement('script');
+            adsterraPopunder.type = 'text/javascript';
+            adsterraPopunder.src = '//decreaselackadmit.com/7d/0c/a8/7d0ca84cbcf7b35539ae2feb7dc2bd2e.js';
+            document.body.appendChild(adsterraPopunder);
+            break;
+        
+        case 'monetag_popunder':
+            console.log("[AD] Injecting Monetag Popunder script...");
+            const monetagPopunderScript = document.createElement('script');
+            monetagPopunderScript.text = `(s=>{s.dataset.zone='9578563',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`;
+            document.body.appendChild(monetagPopunderScript);
+            break;
     }
 
-    // Move to the next ad in the sequence
     appState.adState.fullscreenAd.currentIndex = (currentIndex + 1) % sequence.length;
 }
+
 
 /**
  * Sets up the timers for triggering ads automatically.
  */
 function setupAdTimers() {
-    // Clear existing timers to prevent duplicates
     if (appState.adState.timers.fullscreenAdLoop) {
         clearInterval(appState.adState.timers.fullscreenAdLoop);
     }
-    // Inject the persistent Social Bar ad once
+    
     injectSocialBarAd();
 
-    // Trigger a full-screen ad periodically
-    appState.adState.timers.fullscreenAdLoop = setInterval(triggerFullScreenAd, 75000); // every 75 seconds
+    // Trigger a full-screen ad every 60 seconds for higher frequency
+    appState.adState.timers.fullscreenAdLoop = setInterval(triggerFullScreenAd, 60000); // every 60 seconds
 }
 
 
 // =======================================================================
-// ★★★ ADVERTISEMENT LOGIC (NEW STRATEGY) - END ★★★
+// ★★★ ADVERTISEMENT LOGIC (NEW STRATEGY - AUG 2025) - END ★★★
 // =======================================================================
 
 
@@ -176,10 +170,8 @@ function shuffleArray(array) {
     return array;
 }
 
-// ★ बदलाव: क्लिपबोर्ड फंक्शन को अपडेट किया गया है ताकि यह HTTP पर भी काम करे।
 function copyToClipboard(text, event) {
     if (navigator.clipboard && window.isSecureContext) {
-        // सुरक्षित HTTPS कनेक्शन के लिए आधुनिक तरीका
         navigator.clipboard.writeText(text).then(() => {
             const copyBtn = event.target.closest('button');
             if (copyBtn) {
@@ -190,10 +182,9 @@ function copyToClipboard(text, event) {
             }
         }).catch(err => {
             console.error('Failed to copy text with modern method: ', err);
-            fallbackCopyToClipboard(text, event); // वैकल्पिक तरीके का उपयोग करें
+            fallbackCopyToClipboard(text, event);
         });
     } else {
-        // HTTP या पुराने ब्राउज़रों के लिए वैकल्पिक तरीका
         fallbackCopyToClipboard(text, event);
     }
 }
@@ -201,7 +192,7 @@ function copyToClipboard(text, event) {
 function fallbackCopyToClipboard(text, event) {
     const textArea = document.createElement('textarea');
     textArea.value = text;
-    textArea.style.position = 'fixed'; // इसे स्क्रीन पर दिखने से रोकें
+    textArea.style.position = 'fixed';
     textArea.style.opacity = 0;
     document.body.appendChild(textArea);
     textArea.focus();
@@ -253,6 +244,24 @@ function formatNumber(num) {
     if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
     return num;
 }
+
+/**
+ * Extracts the 11-character YouTube video ID from various URL formats.
+ * @param {string} url The YouTube URL or just the ID.
+ * @returns {string|null} The video ID or null if not found.
+ */
+function extractYouTubeId(url) {
+    if (!url) return null;
+    // First, check if the input is already a valid 11-character ID
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) {
+        return url;
+    }
+    // If not, try to extract it from a URL
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
 // =================================================
 // ★★★ Helper Functions - END ★★★
 // =================================================
@@ -279,7 +288,15 @@ let appState = {
     adState: {
         timers: { fullscreenAdLoop: null },
         fullscreenAd: { 
-            sequence: ['monetag_interstitial', 'adsterra_popunder', 'monetag_directlink'], 
+            // Heavily prioritized Monetag Interstitial & Direct Link
+            sequence: [
+                'monetag_interstitial', 
+                'monetag_directlink', 
+                'monetag_interstitial', 
+                'adsterra_popunder', 
+                'monetag_directlink', 
+                'monetag_popunder'
+            ], 
             currentIndex: 0 
         },
     },
@@ -300,7 +317,6 @@ let hapticFeedbackEnabled = true;
 // DOM Elements
 const appContainer = document.getElementById('app-container');
 const screens = document.querySelectorAll('.screen');
-const navItems = document.querySelectorAll('.nav-item');
 const profileImageInput = document.getElementById('profile-image-input');
 const profileImagePreview = document.getElementById('profile-image-preview');
 const uploadDetailsModal = document.getElementById('upload-details-modal');
@@ -337,13 +353,28 @@ const earnsureContent = {
 let currentEarnsureLanguage = 'hi';
 
 function activateScreen(screenId) {
+    // Animation logic removed for performance
     document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.toggle('active', screen.id === screenId);
+        screen.style.display = 'none';
     });
+    const activeScreen = document.getElementById(screenId);
+    if (activeScreen) {
+        activeScreen.style.display = 'flex';
+        activeScreen.classList.add('active'); // Keep class for state checking
+    }
+    
+    // Clean up active class from others
+    document.querySelectorAll('.screen').forEach(screen => {
+        if (screen.id !== screenId) {
+            screen.classList.remove('active');
+        }
+    });
+
     appState.currentScreen = screenId;
 }
 
-function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
+
+function navigateTo(nextScreenId, payload = null) {
     if (appState.currentScreen === nextScreenId && !payload) return;
 
     if (nextScreenId !== 'splash-screen' && nextScreenId !== 'information-screen') {
@@ -372,6 +403,7 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
     if (nextScreenId === 'history-screen') initializeHistoryScreen();
     if (nextScreenId === 'your-zone-screen') populateYourZoneScreen();
     if (nextScreenId === 'home-screen') setTimeout(() => setupVideoObserver(), 100);
+    if (nextScreenId === 'upload-screen') initializeNewHomeScreen();
     if (nextScreenId === 'earnsure-screen') initializeEarnsureScreen();
     if (nextScreenId === 'creator-page-screen' && payload && payload.creatorId) initializeCreatorPage(payload.creatorId, payload.startWith, payload.videoId);
     if (nextScreenId === 'advertisement-screen') initializeAdvertisementPage();
@@ -389,10 +421,6 @@ function navigateTo(nextScreenId, payload = null, scrollPosition = 0) {
 function navigateBack() {
     if (appState.navigationStack.length <= 1) return;
     
-    if (appState.currentScreen === 'creator-page-screen') {
-         // Placeholder for any cleanup needed before leaving creator page
-    }
-
     appState.navigationStack.pop();
     const previousScreenId = appState.navigationStack[appState.navigationStack.length - 1];
 
@@ -433,9 +461,9 @@ async function checkUserProfileAndProceed(user, lastScreenToRestore = null) {
         }
         updateProfileUI();
         
-        if (lastScreenToRestore) {
-            console.log(`[App Restore] Found last screen in localStorage: ${lastScreenToRestore}. Restoring...`);
-            await startAppLogic(lastScreenToRestore);
+        if (lastScreenToRestore && lastScreenToRestore !== 'upload-screen') {
+             console.log(`[App Restore] Found last screen in localStorage: ${lastScreenToRestore}. Restoring...`);
+             await startAppLogic(lastScreenToRestore);
         } else if (userData.name && userData.state) {
             await startAppLogic();
         } else {
@@ -504,21 +532,34 @@ async function refreshAndRenderFeed() {
     renderVideoSwiper(shortVideos); 
 }
 
-navItems.forEach(item => {
-    item.classList.add('haptic-trigger');
-    item.addEventListener('click', () => {
-        const targetNav = item.getAttribute('data-nav');
-        const targetScreen = `${targetNav}-screen`;
-        if (appState.currentScreen !== targetScreen) {
-            navigateTo(targetScreen);
-            document.querySelectorAll('.bottom-nav').forEach(navBar => {
-                 navBar.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                 const currentItem = navBar.querySelector(`.nav-item[data-nav="${targetNav}"]`);
-                 if(currentItem) currentItem.classList.add('active');
-            });
-        }
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+// ★★★ महत्वपूर्ण सुधार: बॉटम नेविगेशन के लिए नया सेटअप ★★★
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+function setupBottomNav() {
+    // 1. आइकनों और टेक्स्ट को बदलें
+    const shortsNavItem = document.querySelector('.nav-item[data-nav="home"]');
+    if (shortsNavItem) {
+        shortsNavItem.setAttribute('data-nav', 'shorts');
+        shortsNavItem.innerHTML = '<i class="fas fa-compact-disc"></i>Shorts';
+    }
+
+    const newHomeNavItem = document.querySelector('.nav-item[data-nav="upload"]');
+    if (newHomeNavItem) {
+        newHomeNavItem.setAttribute('data-nav', 'new-home');
+        newHomeNavItem.innerHTML = '<i class="fas fa-home"></i>Home';
+    }
+
+    // 2. सभी आइकनों के लिए एक ही बार Event Listener जोड़ें (यह अब DOMContentLoaded में होगा)
+}
+
+function updateNavActiveState(activeNav) {
+    document.querySelectorAll('.bottom-nav').forEach(navBar => {
+        navBar.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        const currentItem = navBar.querySelector(`.nav-item[data-nav="${activeNav}"]`);
+        if (currentItem) currentItem.classList.add('active');
     });
-});
+}
 
 profileImageInput.addEventListener('change', function() {
     if (this.files[0]) {
@@ -579,11 +620,19 @@ async function saveAndContinue() {
     }
 
     try {
+        // उपयोगकर्ता डेटा को अपडेट करते समय merge: true का उपयोग करें ताकि पुराने फ़ील्ड बने रहें
         await db.collection('users').doc(appState.currentUser.uid).set(userData, { merge: true });
-        if (!appState.currentUser.referralCode || !appState.currentUser.referralCode.startsWith('@')) {
-            appState.currentUser.referralCode = await generateAndSaveReferralCode(appState.currentUser.uid, name);
+
+        // यह सुनिश्चित करें कि referralCode मौजूद है
+        const userDoc = await db.collection('users').doc(appState.currentUser.uid).get();
+        if (!userDoc.data().referralCode) {
+            await generateAndSaveReferralCode(appState.currentUser.uid, name);
         }
-        appState.currentUser = { ...appState.currentUser, ...userData };
+
+        // लोकल स्टेट को अपडेट करें
+        const refreshedUserData = (await db.collection('users').doc(appState.currentUser.uid).get()).data();
+        appState.currentUser = { ...appState.currentUser, ...refreshedUserData };
+
         updateProfileUI();
         await startAppLogic();
     } catch (error) {
@@ -620,7 +669,7 @@ function openUploadDetailsModal(lengthType = 'short', videoData = null) {
         modalVideoTitle.value = videoData.title || '';
         modalVideoDescription.value = videoData.description || '';
         modalVideoHashtags.value = videoData.hashtags || '';
-        modalVideoUrlInput.value = videoData.videoUrl || '';
+        modalVideoUrlInput.value = `https://www.youtube.com/watch?v=${videoData.videoUrl || ''}`;
         modalChannelNameInput.value = videoData.channelName || '';
         modalChannelLinkInput.value = videoData.channelLink || '';
         modalVideoUrlInput.disabled = true;
@@ -714,27 +763,30 @@ async function saveVideoEdits(videoId) {
 async function saveNewVideo() {
     modalSaveButton.disabled = true;
     modalSaveButton.textContent = 'Uploading...';
-    const videoUrlValue = modalVideoUrlInput.value.trim();
+    
+    const rawUrlInput = modalVideoUrlInput.value.trim();
     const title = modalVideoTitle.value.trim();
     const category = appState.uploadDetails.category;
     const lengthType = appState.uploadDetails.lengthType;
 
-    if (!videoUrlValue || !title || !category) {
-        alert("Please fill Title, YouTube Video ID, and select a Category.");
+    if (!rawUrlInput || !title || !category) {
+        alert("Please fill Title, YouTube Video URL/ID, and select a Category.");
         modalSaveButton.disabled = false;
         modalSaveButton.textContent = 'Upload Video';
         return;
     }
-    const youtubeIdRegex = /^[a-zA-Z0-9_-]{11}$/;
-    if (!youtubeIdRegex.test(videoUrlValue)) {
-         alert("Please enter a valid YouTube Video ID (the 11-character code from the URL).");
+    
+    const videoId = extractYouTubeId(rawUrlInput);
+    
+    if (!videoId) {
+         alert("Invalid YouTube URL or ID. Please provide a valid link or the 11-character video ID.");
          modalSaveButton.disabled = false;
          modalSaveButton.textContent = 'Upload Video';
          return;
     }
 
     try {
-        const existingVideoSnapshot = await db.collection('videos').where('videoUrl', '==', videoUrlValue).limit(1).get();
+        const existingVideoSnapshot = await db.collection('videos').where('videoUrl', '==', videoId).limit(1).get();
         if (!existingVideoSnapshot.empty) {
             alert("This video has already been uploaded. Please upload a different video.");
             modalSaveButton.disabled = false;
@@ -752,12 +804,12 @@ async function saveNewVideo() {
             hashtags: modalVideoHashtags.value.trim(),
             channelName: modalChannelNameInput.value.trim(),
             channelLink: modalChannelLinkInput.value.trim(),
-            videoUrl: videoUrlValue,
-            thumbnailUrl: `https://img.youtube.com/vi/${videoUrlValue}/mqdefault.jpg`,
+            videoUrl: videoId, // Store only the 11-character ID
+            thumbnailUrl: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
             videoType: 'youtube', videoLengthType: lengthType,
             category, audience: appState.uploadDetails.audience || 'all',
             commentsEnabled: commentsToggleInput.checked,
-            likes: 0, commentCount: 0, customViewCount: 0,
+            likes: 0, commentCount: 0, customViewCount: 0, totalWatchTimeSeconds: 0
         };
 
         await db.collection("videos").add(videoData);
@@ -781,7 +833,6 @@ const startAppLogic = async (restoreScreen = null) => {
     }
     appStartLogicHasRun = true;
 
-    // Setup the new ad strategy timers
     setupAdTimers();
 
     const getStartedBtn = document.getElementById('get-started-btn');
@@ -793,10 +844,20 @@ const startAppLogic = async (restoreScreen = null) => {
     renderCategoriesInBar();
     await refreshAndRenderFeed();
     
-    const screenToNavigate = restoreScreen || 'home-screen';
+    const screenToNavigate = restoreScreen || 'upload-screen';
     
     navigateTo(screenToNavigate);
     
+    if (screenToNavigate === 'upload-screen') {
+        updateNavActiveState('new-home');
+    } else if (screenToNavigate === 'home-screen') {
+        updateNavActiveState('shorts');
+    } else {
+        const navId = screenToNavigate.replace('-screen', '');
+        updateNavActiveState(navId);
+    }
+
+
     if (restoreScreen) {
         localStorage.removeItem('shubhzone_lastScreen');
     }
@@ -831,7 +892,6 @@ function renderVideoSwiper(itemsToRender) {
     }
 
     let videoCount = 0;
-    let adCount = 0; 
 
     itemsToRender.forEach((video) => {
         const slide = document.createElement('div');
@@ -881,7 +941,7 @@ function renderVideoSwiper(itemsToRender) {
         videoSwiper.appendChild(slide);
         videoCount++;
 
-        if (videoCount > 0 && videoCount % 4 === 0) { // Show ad every 4 videos
+        if (videoCount > 0 && videoCount % 5 === 0) { // Show ad every 5 videos
             const adSlide = document.createElement('div');
             adSlide.className = 'video-slide native-ad-slide'; 
             
@@ -903,7 +963,6 @@ function renderVideoSwiper(itemsToRender) {
         initializePlayers();
     }
 }
-
 
 function onYouTubeIframeAPIReady() {
     isYouTubeApiReady = true;
@@ -935,16 +994,9 @@ function initializePlayers() {
         players[videoId] = new YT.Player(playerId, {
             height: '100%', width: '100%', videoId: videoData.videoUrl,
             playerVars: {
-                'autoplay': 0, // Autoplay is controlled by the observer
-                'controls': 0,
-                'mute': 1, // Start muted to allow autoplay
-                'rel': 0, 
-                'showinfo': 0,
-                'modestbranding': 1, 
-                'loop': 1,
-                'playlist': videoData.videoUrl,
-                'fs': 0, 
-                'iv_load_policy': 3, 
+                'autoplay': 0, 'controls': 0, 'mute': 1, 'rel': 0, 
+                'showinfo': 0, 'modestbranding': 1, 'loop': 1,
+                'playlist': videoData.videoUrl, 'fs': 0, 'iv_load_policy': 3, 
                 'origin': window.location.origin
             },
             events: {
@@ -960,13 +1012,11 @@ function onPlayerReady(event) {
     const iframe = event.target.getIframe();
     const slide = iframe.closest('.video-slide');
     if (!slide) return;
-    const videoId = slide.dataset.videoId;
     const preloader = slide.querySelector('.video-preloader');
     if(preloader) preloader.style.display = 'none';
     
-    // Autoplay if this is the first visible video
     if (!activePlayerId && isElementVisible(slide, videoSwiper)) {
-        playActivePlayer(videoId);
+        playActivePlayer(slide.dataset.videoId);
     }
 }
 
@@ -988,81 +1038,53 @@ function onPlayerStateChange(event) {
     if (event.data !== YT.PlayerState.UNSTARTED && preloader) {
         preloader.style.display = 'none';
     }
+    
+    const videoData = fullVideoList.find(v => v.id === videoId);
+    if (!videoData) return;
+
     if (event.data === YT.PlayerState.PLAYING) {
-        startWatchTimeTracker();
-        startVideoViewTracker(videoId, 'short');
+        updateWatchTimeStats(videoData.uploaderUid, videoId, true); // Start tracking
     } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-        stopWatchTimeTracker();
-        stopVideoViewTracker(videoId);
+        updateWatchTimeStats(videoData.uploaderUid, videoId, false); // Stop tracking
     }
 }
 
 function addVideoToHistory(videoId) {
     if (!videoId) return;
     const existingIndex = appState.viewingHistory.findIndex(item => item.id === videoId);
-    
-    if (existingIndex > -1) {
-        appState.viewingHistory.splice(existingIndex, 1);
-    }
-
-    appState.viewingHistory.unshift({
-        id: videoId,
-        watchedAt: new Date().toISOString()
-    });
-
-    if (appState.viewingHistory.length > 100) {
-        appState.viewingHistory.pop();
-    }
+    if (existingIndex > -1) appState.viewingHistory.splice(existingIndex, 1);
+    appState.viewingHistory.unshift({ id: videoId, watchedAt: new Date().toISOString() });
+    if (appState.viewingHistory.length > 100) appState.viewingHistory.pop();
     localStorage.setItem('shubhzoneViewingHistory', JSON.stringify(appState.viewingHistory));
 }
-
 
 function isElementVisible(el, container) {
     if (!el || !container) return false;
     const containerRect = container.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
-    const threshold = 0.75;
-    return (
-        elRect.top + elRect.height * threshold >= containerRect.top &&
-        elRect.bottom - elRect.height * threshold <= containerRect.bottom
-    );
+    return (elRect.top >= containerRect.top && elRect.bottom <= containerRect.bottom);
 }
 
 function togglePlayPause(videoId) {
     const player = players[videoId];
     if (!player || typeof player.getPlayerState !== 'function') return;
-
     const state = player.getPlayerState();
     if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
         player.pauseVideo();
     } else {
-        if (activePlayerId && activePlayerId !== videoId) {
-            pauseActivePlayer();
-        }
+        if (activePlayerId && activePlayerId !== videoId) pauseActivePlayer();
         playActivePlayer(videoId);
     }
 }
-
 
 function playActivePlayer(videoId) {
     if (!videoId) return;
     const player = players[videoId];
     if (!player || typeof player.playVideo !== 'function') return;
-
-    if (!player.getIframe() || !document.body.contains(player.getIframe())) {
-        console.warn(`Player for video ${videoId} is not in the DOM. Aborting play.`);
-        return;
-    }
-    
-    // Pause the previously active player
-    if (activePlayerId && activePlayerId !== videoId) {
-        pauseActivePlayer();
-    }
-
+    if (!player.getIframe() || !document.body.contains(player.getIframe())) return;
+    if (activePlayerId && activePlayerId !== videoId) pauseActivePlayer();
     activePlayerId = videoId;
     addVideoToHistory(videoId);
-    
-    // Play and unmute the new active player
     player.unMute();
     player.playVideo();
 }
@@ -1071,57 +1093,36 @@ function pauseActivePlayer() {
     if (!activePlayerId) return;
     const player = players[activePlayerId];
     if (!player || typeof player.pauseVideo !== 'function') return;
-
     if (player.getPlayerState() === YT.PlayerState.PLAYING || player.getPlayerState() === YT.PlayerState.BUFFERING) {
          player.pauseVideo();
-         player.mute(); // Mute when paused/inactive
+         player.mute();
     }
 }
 
 function setupVideoObserver() {
     if (videoObserver) videoObserver.disconnect();
     if (!videoSwiper) return;
-
-    const options = {
-        root: videoSwiper,
-        threshold: 0.75
-    };
-
-    const handleIntersection = (entries) => {
+    const options = { root: videoSwiper, threshold: 0.8 };
+    videoObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.target.classList.contains('native-ad-slide')) {
-                return;
-            }
-
+            if (entry.target.classList.contains('native-ad-slide')) return;
             const videoId = entry.target.dataset.videoId;
             if (!videoId || !players[videoId]) return;
-            
-            if (entry.isIntersecting) {
-                playActivePlayer(videoId);
-            } else {
-                if (videoId === activePlayerId) {
-                    pauseActivePlayer();
-                    activePlayerId = null;
-                }
+            if (entry.isIntersecting) playActivePlayer(videoId);
+            else if (videoId === activePlayerId) {
+                pauseActivePlayer();
+                activePlayerId = null;
             }
         });
-    };
-
-    videoObserver = new IntersectionObserver(handleIntersection, options);
-
+    }, options);
     const allSlides = document.querySelectorAll('.video-slide');
     if (allSlides.length > 0) {
         allSlides.forEach(slide => videoObserver.observe(slide));
-        
-        // Initial check to play the first video if it's visible
         setTimeout(() => {
             if (!activePlayerId) {
                 const firstVideoSlide = document.querySelector('.video-slide:not(.native-ad-slide)');
                 if (firstVideoSlide && isElementVisible(firstVideoSlide, videoSwiper)) {
-                    const firstVideoId = firstVideoSlide.dataset.videoId;
-                    if(firstVideoId) {
-                        playActivePlayer(firstVideoId);
-                    }
+                    playActivePlayer(firstVideoSlide.dataset.videoId);
                 }
             }
         }, 500);
@@ -1279,8 +1280,8 @@ async function toggleLikeAction(videoId, slideElement) {
             likeCountElement.textContent = formatNumber(currentLikes + 1);
             const heartPopup = slideElement.querySelector('.like-heart-popup');
             if (heartPopup) {
-                heartPopup.style.animation = 'none';
-                void heartPopup.offsetWidth;
+                heartPopup.style.animation = 'none'; // Reset animation
+                void heartPopup.offsetWidth; // Trigger reflow
                 heartPopup.style.animation = 'scale-and-fade 1s ease-out';
             }
             await videoRef.update({ likes: firebase.firestore.FieldValue.increment(1) });
@@ -1288,6 +1289,7 @@ async function toggleLikeAction(videoId, slideElement) {
         }
     } catch (error) {
         console.error("Error updating like status:", error);
+        // If an error occurs, refresh data to ensure UI consistency
         refreshAndRenderFeed();
     }
 }
@@ -1296,7 +1298,7 @@ function logoutUser() {
     if (confirm("Are you sure you want to log out?")) {
         localStorage.removeItem('shubhzone_lastScreen');
         if (appState.currentUser && appState.currentUser.uid) {
-            // No ad count to remove anymore
+            // Any specific logout logic can go here
         }
         auth.signOut().then(() => {
             window.location.reload();
@@ -1328,22 +1330,17 @@ function renderCategoriesInBar() {
 function filterVideosByCategory(category, element) {
     document.querySelectorAll('#category-scroller .category-chip').forEach(chip => chip.classList.remove('active'));
     if (element) element.classList.add('active');
-
     if (activePlayerId) {
          pauseActivePlayer();
          activePlayerId = null;
     }
-
     let filtered = fullVideoList.filter(v => v.videoLengthType !== 'long');
     if (category !== 'All') {
         filtered = filtered.filter(video => video.category === category);
     }
-    
     const displayItems = shuffleArray(filtered);
     appState.allVideos = displayItems;
-
     renderVideoSwiper(displayItems);
-
     setTimeout(initializePlayers, 100);
 }
 
@@ -1573,7 +1570,7 @@ function populateLongVideoGrid(category = 'All') {
             const card = createLongVideoCard(video);
             grid.appendChild(card);
 
-            if (index > 0 && index % 4 === 0) {
+            if (index > 0 && index % 3 === 0) {
                 const adContainer = document.createElement('div');
                 adContainer.className = 'long-video-grid-ad';
                 grid.appendChild(adContainer);
@@ -1628,6 +1625,7 @@ function createLongVideoCard(video) {
     
     card.innerHTML = `
         <div class="long-video-thumbnail" style="background-image: url(${escapeHTML(video.thumbnailUrl)})" onclick="playVideoFromProfile('${video.id}')">
+            <div class="long-video-view-count"><i class="fas fa-eye"></i> ${formatSecondsToHMS(video.totalWatchTimeSeconds || 0)}</div>
             <div class="long-video-menu haptic-trigger" onclick="event.stopPropagation(); showLongVideoMenu(event, '${video.id}')"><i class="fas fa-ellipsis-v"></i></div>
             <i class="fas fa-play play-icon-overlay"></i>
         </div>
@@ -2049,11 +2047,10 @@ async function populateMembersList() {
                 </div>`;
             
             if ((index + 1) % 5 === 0) {
-                const adContainer = document.createElement('div');
-                adContainer.className = 'friend-list-ad';
-                finalHtml += `<div class="friend-list-ad" id="friend-ad-${index}"></div>`;
+                const adContainerId = `friend-ad-${index}`;
+                finalHtml += `<div class="friend-list-ad" id="${adContainerId}"></div>`;
                 setTimeout(() => {
-                    const adElement = document.getElementById(`friend-ad-${index}`);
+                    const adElement = document.getElementById(adContainerId);
                     if (adElement) injectBannerAd(adElement);
                 }, 100);
             }
@@ -2168,14 +2165,10 @@ async function searchUser() {
     }
 }
 
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-// ★★★ बदलाव: इस फंक्शन को अपडेट किया गया है ताकि चैट में सही प्रोफाइल दिखे ★★★
-// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 async function startChat(friendId, friendName, friendAvatar) {
     const chatScreen = document.getElementById('chat-screen-overlay');
     if (!chatScreen) return;
     
-    // UI को तुरंत अपडेट करें ताकि यूज़र को इंतज़ार न करना पड़े।
     document.getElementById('chat-username').textContent = friendName;
     document.getElementById('chat-user-profile-pic').src = friendAvatar || 'https://via.placeholder.com/50';
 
@@ -2187,7 +2180,6 @@ async function startChat(friendId, friendName, friendAvatar) {
     try {
         const chatRef = db.collection('chats').doc(chatId);
         
-        // ★ नया स्टेप: डेटाबेस से दोस्त की सबसे ताज़ा जानकारी फिर से प्राप्त करें।
         const friendDoc = await db.collection('users').doc(friendId).get();
         let finalFriendName = friendName;
         let finalFriendAvatar = friendAvatar;
@@ -2197,18 +2189,11 @@ async function startChat(friendId, friendName, friendAvatar) {
             finalFriendAvatar = friendDoc.data().avatar || friendAvatar;
         }
 
-        // चैट दस्तावेज़ को सबसे ताज़ा और सही जानकारी के साथ बनाएं या अपडेट करें।
         await chatRef.set({
             members: uids,
             memberDetails: {
-                [appState.currentUser.uid]: {
-                    name: appState.currentUser.name, 
-                    avatar: appState.currentUser.avatar
-                },
-                [friendId]: {
-                    name: finalFriendName, 
-                    avatar: finalFriendAvatar
-                }
+                [appState.currentUser.uid]: { name: appState.currentUser.name, avatar: appState.currentUser.avatar },
+                [friendId]: { name: finalFriendName, avatar: finalFriendAvatar }
             }
         }, { merge: true });
 
@@ -2424,19 +2409,14 @@ async function initializeCreatorPage(creatorId, startWith = 'short', videoId = n
     
     const menuRotate = document.getElementById('more-function-menu');
     const existingRotateBtn = document.getElementById('rotate-video-btn');
-    if (existingRotateBtn) {
-        existingRotateBtn.remove();
-    }
+    if (existingRotateBtn) existingRotateBtn.remove();
 
     const rotateBtn = document.createElement('button');
     rotateBtn.id = 'rotate-video-btn';
     rotateBtn.className = 'function-menu-item haptic-trigger';
     rotateBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Rotate`;
     rotateBtn.onclick = toggleVideoRotation;
-    
-    if (menuRotate) {
-        menuRotate.appendChild(rotateBtn);
-    }
+    if (menuRotate) menuRotate.appendChild(rotateBtn);
     
     if (startWith === 'long' && startLongVideo) {
         appState.creatorPage.currentLongVideo = { id: startLongVideo.id, uploaderUid: creatorId };
@@ -2471,11 +2451,25 @@ function renderCreatorVideoView(container, videos, type, creatorId, startVideoId
         return `<img src="${v.thumbnailUrl}" class="side-video-thumb haptic-trigger ${thumbClass}" onclick="playCreatorVideo('${type}', ${index}, '${creatorId}')">`;
     }).join('');
 
+    const playerControlsHtml = `
+        <div class="custom-player-controls-overlay">
+            <div class="controls-center">
+                <i class="fas fa-backward control-btn" onclick="seekVideo('${type}', -10)"></i>
+                <i class="fas fa-play-circle control-btn-main" onclick="toggleCreatorPlayer('${type}')"></i>
+                <i class="fas fa-forward control-btn" onclick="seekVideo('${type}', 10)"></i>
+            </div>
+            <div class="controls-bottom">
+                <span class="playback-speed-btn" onclick="cyclePlaybackSpeed('${type}')">1x</span>
+            </div>
+        </div>
+    `;
+
     container.innerHTML = `
         <div class="creator-video-viewer">
             <div class="main-video-card-wrapper">
                 <div class="main-video-card">
                     <div id="creator-page-player-${type}"></div>
+                    ${type === 'long' ? playerControlsHtml : ''}
                 </div>
             </div>
             <div class="side-video-list-scroller">${videoListHtml}</div>
@@ -2498,21 +2492,44 @@ function initializeCreatorPagePlayer(videoId, containerId, type) {
         videoId: videoId,
         playerVars: {
             'autoplay': 1,
-            'controls': 1, 
-            'rel': 0,
-            'showinfo': 0,
-            'mute': 0, // Long videos can have sound on start
-            'modestbranding': 1,
-            'fs': 1,
-            'origin': window.location.origin
+            'controls': (type === 'short' ? 0 : 1), 
+            'rel': 0, 'showinfo': 0, 'mute': 0, 'modestbranding': 1,
+            'fs': 1, 'origin': window.location.origin
         },
         events: {
-            'onReady': (event) => { 
-                event.target.playVideo(); 
-            },
-            'onStateChange': onPlayerStateChange
+            'onReady': (event) => event.target.playVideo(),
+            'onStateChange': handleCreatorPlayerStateChange
         }
     });
+}
+
+function toggleCreatorPlayer(type) {
+    const player = appState.creatorPagePlayers[type];
+    if (player && typeof player.getPlayerState === 'function') {
+        const state = player.getPlayerState();
+        if (state === YT.PlayerState.PLAYING) player.pauseVideo();
+        else player.playVideo();
+    }
+}
+
+function seekVideo(type, amount) {
+    const player = appState.creatorPagePlayers[type];
+    if (player && typeof player.getCurrentTime === 'function') {
+        player.seekTo(player.getCurrentTime() + amount, true);
+    }
+}
+
+function cyclePlaybackSpeed(type) {
+    const player = appState.creatorPagePlayers[type];
+    const speedBtn = document.querySelector(`#creator-page-${type}-view .playback-speed-btn`);
+    if (player && speedBtn && typeof player.getPlaybackRate === 'function') {
+        const rates = [1, 1.25, 1.5, 2, 0.75];
+        const currentRate = player.getPlaybackRate();
+        const nextRateIndex = (rates.indexOf(currentRate) + 1) % rates.length;
+        const newRate = rates[nextRateIndex];
+        player.setPlaybackRate(newRate);
+        speedBtn.textContent = `${newRate}x`;
+    }
 }
 
 function playCreatorVideo(type, videoIndex, creatorId) {
@@ -2524,11 +2541,9 @@ function playCreatorVideo(type, videoIndex, creatorId) {
     
     if (videos[videoIndex]) {
         const videoToPlay = videos[videoIndex];
-
         if (type === 'long') {
             appState.creatorPage.currentLongVideo = { id: videoToPlay.id, uploaderUid: creatorId };
         }
-
         const player = appState.creatorPagePlayers[type];
         if (player && typeof player.loadVideoById === 'function') {
             player.loadVideoById(videoToPlay.videoUrl);
@@ -2541,27 +2556,15 @@ function toggleCreatorVideoList() {
     const activeView = document.querySelector('.creator-page-view.active');
     if (activeView) {
         const viewer = activeView.querySelector('.creator-video-viewer');
-        if (viewer) {
-            viewer.classList.toggle('show-side-list');
-        }
+        if (viewer) viewer.classList.toggle('show-side-list');
     }
 }
 
 function toggleVideoRotation() {
     const longVideoView = document.getElementById('creator-page-long-view');
-    
     if (longVideoView && longVideoView.classList.contains('active')) {
         const videoWrapper = longVideoView.querySelector('.main-video-card-wrapper');
-        const moreFunctionsMenu = document.getElementById('more-function-menu');
-        const player = appState.creatorPagePlayers.long;
-        
-        if (videoWrapper) {
-            videoWrapper.classList.toggle('rotated');
-            
-            if (moreFunctionsMenu) {
-                moreFunctionsMenu.classList.remove('open');
-            }
-        }
+        if (videoWrapper) videoWrapper.classList.toggle('rotated');
     } else {
         alert("Rotation is only available for long videos.");
     }
@@ -2573,21 +2576,20 @@ function handleCreatorPlayerStateChange(event) {
     const playerState = event.data;
     const iframe = player.getIframe();
     
-    const isLongVideo = iframe.closest('#creator-page-long-view');
+    const playPauseBtn = iframe.closest('.main-video-card').querySelector('.control-btn-main');
+    if (playPauseBtn) {
+        if (playerState === YT.PlayerState.PLAYING) playPauseBtn.classList.replace('fa-play-circle', 'fa-pause-circle');
+        else playPauseBtn.classList.replace('fa-pause-circle', 'fa-play-circle');
+    }
 
-    const videoData = player.getVideoData();
-    const videoUrl = videoData.video_id;
-
-    const currentVideo = fullVideoList.find(v => v.videoUrl === videoUrl);
+    const currentVideo = fullVideoList.find(v => v.videoUrl === player.getVideoData().video_id);
     if (!currentVideo) return;
-    const dbVideoId = currentVideo.id;
-    const videoType = currentVideo.videoLengthType === 'long' ? 'long' : 'short';
-
+    
     if (playerState === YT.PlayerState.PLAYING) {
-        startVideoViewTracker(dbVideoId, videoType);
-        addVideoToHistory(dbVideoId);
+        updateWatchTimeStats(currentVideo.uploaderUid, currentVideo.id, true);
+        addVideoToHistory(currentVideo.id);
     } else if (playerState === YT.PlayerState.PAUSED || playerState === YT.PlayerState.ENDED) {
-        stopVideoViewTracker(dbVideoId);
+        updateWatchTimeStats(currentVideo.uploaderUid, currentVideo.id, false);
     }
 }
 
@@ -2674,7 +2676,7 @@ async function handlePaymentRequest(event) {
         await db.collection("paymentRequests").add(requestData);
         await resetTrackingData();
         alert("Payment request submitted successfully! Your tracking data has been reset.");
-        navigateTo('home-screen'); 
+        navigateTo('upload-screen'); 
     } catch(error) {
         console.error("Error submitting payment request:", error);
         alert("Failed to submit request. Please try again.");
@@ -2687,14 +2689,10 @@ async function handlePaymentRequest(event) {
 function initializeTrackPaymentScreen() {
     const content = document.getElementById('track-payment-content');
     if (!content) return;
-
     const user = appState.currentUser;
-    
     content.innerHTML = `
         <div class="track-payment-card creator-card">
-            <div class="card-strip red">
-                <span><i class="fas fa-crown"></i> Red Coin for Creator</span>
-            </div>
+            <div class="card-strip red"><span><i class="fas fa-crown"></i> Red Coin for Creator</span></div>
             <div class="card-content">
                 <p>This is your income as a Creator. Earned when others watch your original videos. <br>(1 Coin ≈ 15 mins watch time)</p>
                 <div class="coin-display">
@@ -2710,75 +2708,36 @@ function initializeTrackPaymentScreen() {
     `;
 }
 
-
 function startAppTimeTracker() {
     if (appState.appTimeTrackerInterval) clearInterval(appState.appTimeTrackerInterval);
-    appState.appTimeTrackerInterval = setInterval(() => {
-    }, 5000);
+    appState.appTimeTrackerInterval = setInterval(() => {}, 5000);
 }
 
-async function updateCreatorWatchTime(creatorId, watchedSeconds) {
-    if (!creatorId || !watchedSeconds || creatorId === appState.currentUser.uid) return;
-
-    const creatorRef = db.collection('users').doc(creatorId);
-    const coinConversionThreshold = 900; // 15 minutes
-
-    try {
-        await db.runTransaction(async (transaction) => {
-            const creatorDoc = await transaction.get(creatorRef);
-            if (!creatorDoc.exists) {
-                return;
-            }
-
-            const creatorData = creatorDoc.data();
-            const currentUnconvertedSeconds = creatorData.unconvertedCreatorSeconds || 0;
-            const totalSeconds = currentUnconvertedSeconds + watchedSeconds;
-            
-            const newCoins = Math.floor(totalSeconds / coinConversionThreshold);
-            const remainingSeconds = totalSeconds % coinConversionThreshold;
-
-            let updateData = {
-                unconvertedCreatorSeconds: remainingSeconds
-            };
-            
-            if (newCoins > 0) {
-                updateData.creatorCoins = firebase.firestore.FieldValue.increment(newCoins);
-            }
-            
-            transaction.update(creatorRef, updateData);
-        });
-        console.log(`[COIN] Updated watch time for creator ${creatorId} by ${watchedSeconds} seconds.`);
-    } catch (error) {
-        console.error("Could not update creator watch time and coins:", error);
-    }
-}
-
-
-function startWatchTimeTracker() {
-    if (appState.watchTimeInterval) clearInterval(appState.watchTimeInterval);
+async function updateWatchTimeStats(creatorId, videoId, isStarting) {
+    if (!videoId) return;
     
-    let secondsSinceLastUpdate = 0;
-    const videoData = fullVideoList.find(v => v.id === activePlayerId);
-    const creatorId = videoData ? videoData.uploaderUid : null;
-
-    appState.watchTimeInterval = setInterval(async () => {
-        // Only track time if watching someone else's video
-        if (creatorId && creatorId !== appState.currentUser.uid) {
-            secondsSinceLastUpdate += 1;
+    if (isStarting) {
+        if (appState.videoWatchTrackers[videoId]) return; // Timer already running
+        appState.videoWatchTrackers[videoId] = {
+            interval: setInterval(async () => {
+                const batch = db.batch();
+                const videoRef = db.collection('videos').doc(videoId);
+                batch.update(videoRef, { totalWatchTimeSeconds: firebase.firestore.FieldValue.increment(1) });
+                
+                if (creatorId && creatorId !== appState.currentUser.uid) {
+                    const creatorRef = db.collection('users').doc(creatorId);
+                    batch.update(creatorRef, { unconvertedCreatorSeconds: firebase.firestore.FieldValue.increment(1) });
+                }
+                
+                await batch.commit().catch(e => console.error("Error in watch time batch update: ", e));
+            }, 1000),
+            viewed: false
+        };
+    } else {
+        if (appState.videoWatchTrackers[videoId] && appState.videoWatchTrackers[videoId].interval) {
+            clearInterval(appState.videoWatchTrackers[videoId].interval);
+            delete appState.videoWatchTrackers[videoId];
         }
-
-        // Update creator's watch time in Firestore every 30 seconds
-        if (secondsSinceLastUpdate >= 30) {
-            await updateCreatorWatchTime(creatorId, secondsSinceLastUpdate);
-            secondsSinceLastUpdate = 0;
-        }
-    }, 1000);
-}
-
-async function stopWatchTimeTracker() {
-    if (appState.watchTimeInterval) {
-        clearInterval(appState.watchTimeInterval);
-        appState.watchTimeInterval = null;
     }
 }
 
@@ -2792,7 +2751,6 @@ async function resetTrackingData() {
         });
         appState.currentUser.creatorCoins = 0;
         appState.currentUser.unconvertedCreatorSeconds = 0;
-
     } catch (error) {
         console.error("Failed to reset tracking data:", error);
     }
@@ -2800,23 +2758,19 @@ async function resetTrackingData() {
 
 
 function formatSecondsToHMS(secs) {
-    if (isNaN(secs) || secs < 0) {
-        return "0s";
-    }
+    if (isNaN(secs) || secs < 0) return "0s";
+    secs = Math.round(secs);
     const d = Math.floor(secs / (3600*24));
     secs  -= d*3600*24;
     const h = Math.floor(secs / 3600);
     secs  -= h*3600;
     const m = Math.floor(secs / 60);
     secs  -= m*60;
-    secs = Math.round(secs);
-
     let parts = [];
     if (d > 0) parts.push(d + "d");
     if (h > 0) parts.push(h + "h");
     if (m > 0) parts.push(m + "m");
     if (secs > 0 || parts.length === 0) parts.push(secs + "s");
-    
     return parts.join(' ');
 }
 
@@ -2901,14 +2855,10 @@ const advertiserFunctions = {
 
 function initializeAdPerformanceTracker() {
     const container = document.querySelector('#advertisement-screen .container');
-    if (!container) return;
-
-    if (document.getElementById('adPerformanceSection')) return;
-
+    if (!container || document.getElementById('adPerformanceSection')) return;
     const performanceSection = document.createElement('div');
     performanceSection.id = 'adPerformanceSection';
     performanceSection.className = 'section';
-    
     performanceSection.innerHTML = `
         <div class="card">
             <h2>Track Ad Performance</h2>
@@ -2921,14 +2871,9 @@ function initializeAdPerformanceTracker() {
             <div id="ad-performance-results" style="margin-top: 20px;"></div>
         </div>
     `;
-
     const dashboardSection = document.getElementById('dashboardSection');
-    if (dashboardSection) {
-        dashboardSection.insertAdjacentElement('afterend', performanceSection);
-    } else {
-        container.appendChild(performanceSection);
-    }
-
+    if (dashboardSection) dashboardSection.insertAdjacentElement('afterend', performanceSection);
+    else container.appendChild(performanceSection);
     const dashboardCard = dashboardSection.querySelector('.card');
     if (dashboardCard && !document.getElementById('track-perf-btn')) {
         const trackButton = document.createElement('button');
@@ -2943,29 +2888,19 @@ function initializeAdPerformanceTracker() {
 async function fetchAdStats() {
     const adId = document.getElementById('ad-performance-id').value.trim();
     const resultsContainer = document.getElementById('ad-performance-results');
-    if (!adId) {
-        alert('Please enter an Ad ID.');
-        return;
-    }
-
+    if (!adId) { alert('Please enter an Ad ID.'); return; }
     resultsContainer.innerHTML = '<div class="loader-container"><div class="loader"></div></div>';
-
     try {
         const statDoc = await db.collection('advertisementStats').doc(adId).get();
-
         if (!statDoc.exists) {
             resultsContainer.innerHTML = '<p class="static-message">No performance data found for this Ad ID. Data will appear here after users start interacting with your ad.</p>';
             return;
         }
-
         const stats = statDoc.data();
         const closedCount = stats.closedCount || 0;
-        
         let resultsHtml = `<h4 style="margin-bottom: 10px;">Performance for Ad: ${adId}</h4>`;
         resultsHtml += `<p style="font-size: 1.2em;">Total Times Closed by User: <strong style="color: var(--primary-neon);">${closedCount}</strong></p>`;
-        
         resultsContainer.innerHTML = resultsHtml;
-
     } catch (error) {
         console.error("Error fetching ad stats:", error);
         resultsContainer.innerHTML = `<p class="static-message" style="color: var(--error-red);">Error fetching data. Reason: ${error.message}. Please check Firestore Rules.</p>`;
@@ -2976,14 +2911,9 @@ async function fetchAdStats() {
 function initializeAdvertisementPage() {
     advertiserFunctions.populatePlans();
     const userProfile = JSON.parse(localStorage.getItem('advertiserProfile'));
-    
     initializeAdPerformanceTracker(); 
-
-    if (userProfile && userProfile.name) {
-        advertiserFunctions.showDashboard(userProfile);
-    } else {
-        advertiserFunctions.showSection('registrationSection');
-    }
+    if (userProfile && userProfile.name) advertiserFunctions.showDashboard(userProfile);
+    else advertiserFunctions.showSection('registrationSection');
 }
 // =======================================================
 // ★★★ REPORT & VIEW COUNT LOGIC - START ★★★
@@ -3008,14 +2938,10 @@ function initializeReportScreen() {
 
 async function submitReport() {
     const reportText = document.getElementById('report-text').value.trim();
-    if (!reportText) {
-        alert("Please describe the issue before submitting.");
-        return;
-    }
+    if (!reportText) { alert("Please describe the issue before submitting."); return; }
     const button = document.querySelector('#report-content .continue-btn');
     button.disabled = true;
     button.textContent = "Submitting...";
-
     try {
         await db.collection('reports').add({
             reporterUid: appState.currentUser.uid, 
@@ -3035,52 +2961,55 @@ async function submitReport() {
     }
 }
 
-function startVideoViewTracker(videoId, type) {
-    if (appState.videoWatchTrackers[videoId] && appState.videoWatchTrackers[videoId].viewed) {
-        return;
-    }
-    stopVideoViewTracker(videoId);
-    appState.videoWatchTrackers[videoId] = { timer: null, watchedSeconds: 0, viewed: false };
+// =======================================================
+// ★★★ NEW HOME SCREEN LOGIC - START ★★★
+// =======================================================
+function initializeNewHomeScreen() {
+    const uploadScreen = document.getElementById('upload-screen');
+    const header = uploadScreen.querySelector('.upload-header');
+    const container = uploadScreen.querySelector('.upload-container-new');
 
-    const targetSeconds = type === 'long' ? 300 : 20;
-    
-    appState.videoWatchTrackers[videoId].timer = setInterval(() => {
-        const tracker = appState.videoWatchTrackers[videoId];
-        if (tracker) {
-            tracker.watchedSeconds++;
-            if (tracker.watchedSeconds >= targetSeconds && !tracker.viewed) {
-                tracker.viewed = true;
-                incrementCustomViewCount(videoId);
-                stopVideoViewTracker(videoId);
-            }
-        }
-    }, 1000);
-}
+    if (header) header.style.display = 'none';
+    if (!container) return;
 
-function stopVideoViewTracker(videoId) {
-    if (appState.videoWatchTrackers[videoId] && appState.videoWatchTrackers[videoId].timer) {
-        clearInterval(appState.videoWatchTrackers[videoId].timer);
-        appState.videoWatchTrackers[videoId].timer = null;
-    }
-}
-
-async function incrementCustomViewCount(videoId) {
-    try {
-        const videoRef = db.collection('videos').doc(videoId);
-        await videoRef.update({ customViewCount: firebase.firestore.FieldValue.increment(1) });
-        console.log(`Custom view counted for video: ${videoId}`);
-        
-        const videoCard = document.querySelector(`.long-video-card[data-video-id='${videoId}']`) || document.querySelector(`.video-slide[data-video-id='${videoId}']`);
-        if (videoCard) {
-            // This part is removed as per user request to hide view counts
-        }
-    } catch (error) {
-        console.error("Error incrementing custom view count:", error);
-    }
+    container.innerHTML = `
+        <div class="new-home-top-bar">
+            <span>Tools & Features</span>
+        </div>
+        <div class="new-home-actions-list">
+            <div class="new-home-list-item haptic-trigger" onclick="showSpecialVideoPlayer()">
+                <img class="action-image" src="https://i.ibb.co/KcbcsNk0/Leonardo-Phoenix-10-A-modern-eyecatching-UI-button-with-the-t-1.jpg" alt="How to Upload">
+                <div class="action-info">
+                    <h4>How to Upload</h4>
+                    <p>Learn the steps to share your videos.</p>
+                </div>
+                <button class="action-open-btn"><i class="fas fa-play-circle"></i> Open</button>
+            </div>
+             <div class="new-home-list-item haptic-trigger" onclick="window.open('https://shubhzone.onrender.com', '_blank')">
+                <img class="action-image" src="https://i.ibb.co/0RF4GmTZ/Flux-Dev-A-futuristic-social-media-interface-named-Shubhzone-g-1.jpg" alt="Premium Features">
+                <div class="action-info">
+                    <h4>Premium Features</h4>
+                    <p>Unlock exclusive benefits and tools.</p>
+                </div>
+                <button class="action-open-btn"><i class="fas fa-star"></i> Open</button>
+            </div>
+        </div>
+        <div class="new-home-actions-grid">
+            <div class="new-home-grid-item haptic-trigger" onclick="openUploadDetailsModal('short')">
+                <img src="https://i.ibb.co/qF7JDWwH/file-00000000749861fbb6fab9c96ed70ae3.png" alt="Upload Short Video">
+                <span>Upload Short</span>
+            </div>
+            <div class="new-home-grid-item haptic-trigger" onclick="openUploadDetailsModal('long')">
+                <img src="https://i.ibb.co/C3tBrDYs/Flux-Dev-A-futuristic-neonstyle-button-with-glowing-text-UPLOA-1.jpg" alt="Upload Long Video">
+                <span>Upload Long</span>
+            </div>
+        </div>
+    `;
 }
 // =======================================================
-// ★★★ REPORT & VIEW COUNT LOGIC - END ★★★
+// ★★★ NEW HOME SCREEN LOGIC - END ★★★
 // =======================================================
+
 
 // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 // ★★★ NEW CREDIT SCREEN LOGIC - START ★★★
@@ -3196,9 +3125,7 @@ function showEnlargedImage(imageUrl) {
             </div>
         `;
         document.body.appendChild(modal);
-        modal.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
+        modal.addEventListener('click', () => modal.classList.remove('active'));
     }
     
     const imgElement = document.getElementById('enlarged-image-src');
@@ -3231,16 +3158,12 @@ function showSpecialVideoPlayer() {
         modal.classList.add('active');
     }
 
-    if (isYouTubeApiReady) {
-        initializeSpecialPlayer();
-    }
+    if (isYouTubeApiReady) initializeSpecialPlayer();
 }
 
 function closeSpecialVideoPlayer() {
     const modal = document.getElementById('special-video-player-modal');
-    if (modal) {
-        modal.classList.remove('active');
-    }
+    if (modal) modal.classList.remove('active');
     if (appState.specialVideoPlayer && typeof appState.specialVideoPlayer.destroy === 'function') {
         appState.specialVideoPlayer.destroy();
         appState.specialVideoPlayer = null;
@@ -3248,41 +3171,53 @@ function closeSpecialVideoPlayer() {
 }
 
 function initializeSpecialPlayer() {
-    if (appState.specialVideoPlayer) {
-        appState.specialVideoPlayer.destroy();
-    }
+    if (appState.specialVideoPlayer) appState.specialVideoPlayer.destroy();
     appState.specialVideoPlayer = new YT.Player('special-video-player-container', {
-        height: '100%',
-        width: '100%',
-        videoId: 'UL5Q1rDsDtg',
+        height: '100%', width: '100%', videoId: 'UL5Q1rDsDtg',
         playerVars: {
-            'autoplay': 1,
-            'controls': 1,
-            'rel': 0,
-            'showinfo': 0,
-            'modestbranding': 1,
-            'origin': window.location.origin
+            'autoplay': 1, 'controls': 1, 'rel': 0, 'showinfo': 0,
+            'modestbranding': 1, 'origin': window.location.origin
         },
-        events: {
-            'onReady': (event) => {
-                event.target.playVideo();
-            }
-        }
+        events: { 'onReady': (event) => event.target.playVideo() }
     });
 }
 // ★★★ SPECIAL VIDEO PLAYER LOGIC - END ★★★
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    
+    setupBottomNav(); // ★★★ महत्वपूर्ण: आइकनों को बदलने के लिए इसे पहले चलाएं
+
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.classList.add('haptic-trigger');
+        item.addEventListener('click', () => {
+            const targetNav = item.getAttribute('data-nav');
+            
+            let targetScreen;
+            if (targetNav === 'new-home') {
+                targetScreen = 'upload-screen';
+            } else if (targetNav === 'shorts') {
+                targetScreen = 'home-screen';
+            } else {
+                targetScreen = `${targetNav}-screen`;
+            }
+            
+            if (appState.currentScreen !== targetScreen) {
+                navigateTo(targetScreen);
+                updateNavActiveState(targetNav);
+            }
+        });
+    });
+
+
     document.querySelectorAll('.header-icon-left').forEach(btn => {
         if (!btn.closest('#history-top-bar') && !btn.closest('#creator-page-screen .screen-header')) {
             btn.onclick = () => navigateBack();
         }
     });
     const creatorBackBtn = document.querySelector('#creator-page-screen .header-icon-left');
-    if (creatorBackBtn) {
-        creatorBackBtn.onclick = () => navigateBack();
-    }
+    if (creatorBackBtn) creatorBackBtn.onclick = () => navigateBack();
 
     document.getElementById('navigate-to-payment-btn')?.addEventListener('click', () => navigateTo('payment-screen'));
     document.getElementById('navigate-to-advertisement-btn')?.addEventListener('click', () => navigateTo('advertisement-screen'));
@@ -3303,6 +3238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     initializeApp();
+
     const getStartedBtn = document.getElementById('get-started-btn');
     if (getStartedBtn) {
         getStartedBtn.classList.add('haptic-trigger');
@@ -3315,10 +3251,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (appContainer) {
         appContainer.addEventListener('click', (event) => { 
             if (!userHasInteracted) userHasInteracted = true; 
-            
-            if (event.target.closest('.haptic-trigger')) {
-                provideHapticFeedback(); 
-            }
+            if (event.target.closest('.haptic-trigger')) provideHapticFeedback(); 
         });
     }
 
@@ -3327,7 +3260,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-friend-search-input')?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchUser();
     });
-
 
     document.getElementById('home-menu-icon')?.addEventListener('click', () => {
         document.getElementById('main-sidebar').classList.add('open');
@@ -3345,41 +3277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('main-sidebar').classList.remove('open');
         document.getElementById('sidebar-overlay').classList.remove('open');
     });
-
-    document.getElementById('upload-short-video-btn')?.addEventListener('click', () => openUploadDetailsModal('short'));
-    document.getElementById('upload-long-video-btn')?.addEventListener('click', () => openUploadDetailsModal('long'));
-
-    const uploadContainerNew = document.querySelector('#upload-screen .upload-container-new');
-    if (uploadContainerNew) {
-        
-        const specialVideoButton = document.createElement('button');
-        specialVideoButton.id = 'how-to-upload-btn';
-        specialVideoButton.className = 'upload-action-button haptic-trigger';
-        specialVideoButton.style.backgroundColor = 'var(--error-red)';
-        specialVideoButton.innerHTML = '<i class="fas fa-upload" style="margin-right: 10px;"></i> How to Upload';
-        specialVideoButton.onclick = showSpecialVideoPlayer;
-
-        const uploadLongBtn = document.getElementById('upload-long-video-btn');
-        if(uploadLongBtn && uploadLongBtn.nextSibling) {
-            uploadContainerNew.insertBefore(specialVideoButton, uploadLongBtn.nextSibling);
-        } else {
-             uploadContainerNew.appendChild(specialVideoButton);
-        }
-        
-        const earnsureBtn = document.getElementById('earnsure-btn');
-        if (earnsureBtn) {
-            earnsureBtn.className = 'upload-action-button haptic-trigger';
-            earnsureBtn.style.backgroundColor = '#4CAF50';
-            earnsureBtn.addEventListener('click', () => {
-                navigateTo('earnsure-screen');
-            });
-        }
-        const uploadScreenAdContainer = document.getElementById('upload-screen-ad-container');
-        if (uploadScreenAdContainer) {
-            injectBannerAd(uploadScreenAdContainer);
-        }
-    }
-
+    
     document.getElementById('category-selector-display')?.addEventListener('click', toggleCategoryOptions);
     document.getElementById('send-comment-btn')?.addEventListener('click', postComment);
     document.getElementById('comment-input')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') postComment(); });
@@ -3400,7 +3298,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('more-function-menu').classList.toggle('open');
     });
     document.getElementById('more-videos-btn')?.addEventListener('click', toggleCreatorVideoList);
-
 
     loadHapticPreference();
     renderCategories();
