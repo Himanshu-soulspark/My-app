@@ -953,7 +953,6 @@ function renderVideoSwiper(itemsToRender) {
                     <p style="color: var(--text-secondary); font-size: 0.9em; text-align: center; margin-bottom: 10px;">Advertisement</p>
                 </div>`;
             adSlide.querySelector('.ad-slide-wrapper').appendChild(adSlotContainer);
-            videoSwiper.appendChild(adSlide);
             
             setTimeout(() => injectBannerAd(adSlotContainer), 200);
         }
@@ -1008,17 +1007,21 @@ function initializePlayers() {
     setupVideoObserver();
 }
 
+// ★★★ AUTO PLAY FIX ★★★
 function onPlayerReady(event) {
     const iframe = event.target.getIframe();
     const slide = iframe.closest('.video-slide');
     if (!slide) return;
+
+    // Hide preloader once player is ready to be controlled
     const preloader = slide.querySelector('.video-preloader');
-    if(preloader) preloader.style.display = 'none';
-    
-    if (!activePlayerId && isElementVisible(slide, videoSwiper)) {
-        playActivePlayer(slide.dataset.videoId);
-    }
+    if (preloader) preloader.style.display = 'none';
+
+    // IMPORTANT: Do not trigger play here.
+    // The IntersectionObserver will handle the play logic exclusively
+    // to prevent race conditions and ensure the correct video plays.
 }
+
 
 function onPlayerStateChange(event) {
     const iframe = event.target.getIframe();
@@ -1077,15 +1080,28 @@ function togglePlayPause(videoId) {
     }
 }
 
+// ★★★ UNMUTE FIX ★★★
 function playActivePlayer(videoId) {
     if (!videoId) return;
     const player = players[videoId];
     if (!player || typeof player.playVideo !== 'function') return;
     if (!player.getIframe() || !document.body.contains(player.getIframe())) return;
-    if (activePlayerId && activePlayerId !== videoId) pauseActivePlayer();
+    
+    if (activePlayerId && activePlayerId !== videoId) {
+        pauseActivePlayer();
+    }
+    
     activePlayerId = videoId;
     addVideoToHistory(videoId);
-    player.unMute();
+    
+    // Only unmute if the user has interacted with the app.
+    // This is crucial for respecting browser autoplay policies.
+    if (userHasInteracted) {
+        player.unMute();
+    } else {
+        player.mute(); // Ensure it remains muted if no interaction yet
+    }
+    
     player.playVideo();
 }
 
@@ -1093,11 +1109,14 @@ function pauseActivePlayer() {
     if (!activePlayerId) return;
     const player = players[activePlayerId];
     if (!player || typeof player.pauseVideo !== 'function') return;
+    
     if (player.getPlayerState() === YT.PlayerState.PLAYING || player.getPlayerState() === YT.PlayerState.BUFFERING) {
          player.pauseVideo();
-         player.mute();
     }
+    // Mute the player when it's not the active one
+    player.mute();
 }
+
 
 function setupVideoObserver() {
     if (videoObserver) videoObserver.disconnect();
@@ -1108,16 +1127,22 @@ function setupVideoObserver() {
             if (entry.target.classList.contains('native-ad-slide')) return;
             const videoId = entry.target.dataset.videoId;
             if (!videoId || !players[videoId]) return;
-            if (entry.isIntersecting) playActivePlayer(videoId);
-            else if (videoId === activePlayerId) {
-                pauseActivePlayer();
-                activePlayerId = null;
+            if (entry.isIntersecting) {
+                playActivePlayer(videoId);
+            } else {
+                // Pause the video only if it's the currently active one
+                if (videoId === activePlayerId) {
+                    pauseActivePlayer();
+                    activePlayerId = null;
+                }
             }
         });
     }, options);
+
     const allSlides = document.querySelectorAll('.video-slide');
     if (allSlides.length > 0) {
         allSlides.forEach(slide => videoObserver.observe(slide));
+        // Check if the first video is visible on initial load
         setTimeout(() => {
             if (!activePlayerId) {
                 const firstVideoSlide = document.querySelector('.video-slide:not(.native-ad-slide)');
@@ -2013,6 +2038,7 @@ async function rejectFriendRequest(event, requestId) {
     }
 }
 
+// ★★★ UI FIX ★★★
 async function populateMembersList() {
     const membersContent = document.getElementById('members-content');
     if (!membersContent) return;
@@ -2031,20 +2057,17 @@ async function populateMembersList() {
 
         let finalHtml = '';
         
-        // ★★★ बदलाव 1: '.filter(friend => friend.name)' को हटा दिया गया है ★★★
-        // यह सुनिश्चित करता है कि बिना नाम वाले दोस्त भी लिस्ट में शामिल हों।
         const friends = friendDocs
             .map(doc => ({ id: doc.id, ...doc.data() }));
 
         friends.forEach((friend, index) => {
+            // This is the corrected HTML structure for each friend card
             finalHtml += `
                 <div class="holographic-card" onclick="startChat('${friend.id}', '${escapeHTML(friend.name)}', '${escapeHTML(friend.avatar)}')">
                     <div class="profile-pic" onclick="event.stopPropagation(); showEnlargedImage('${escapeHTML(friend.avatar) || 'https://via.placeholder.com/60'}')">
                         <img src="${escapeHTML(friend.avatar) || 'https://via.placeholder.com/60'}" alt="avatar">
                     </div>
                     <div class="info">
-                        // ★★★ बदलाव 2: डिफ़ॉल्ट नाम "Shubhzone User" जोड़ा गया है ★★★
-                        // अगर दोस्त का नाम सेट नहीं है, तो यह खाली दिखने की बजाय डिफ़ॉल्ट नाम दिखाएगा।
                         <div class="name">${escapeHTML(friend.name) || 'Shubhzone User'}</div>
                         <div class="subtext">Tap to chat</div>
                     </div>
