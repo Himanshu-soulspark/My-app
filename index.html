@@ -340,12 +340,10 @@
             text-decoration: none;
         }
         
-        /* --- NEW STYLES FOR POLICY LINKS --- */
         .footer-policies {
-            padding: 20px 0 40px 0;
-            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
             border-top: 1px solid var(--border-color);
-            margin-top: 60px;
         }
         .footer-policies nav a {
             color: var(--text-secondary);
@@ -353,17 +351,41 @@
             margin: 0 15px;
             font-size: 0.9rem;
             transition: color 0.3s;
+            cursor: pointer;
         }
         .footer-policies nav a:hover {
             color: var(--brand-cyan);
         }
-        /* --- END OF NEW STYLES --- */
         
         .page {
             display: none;
             padding-top: 40px;
             padding-bottom: 120px;
             min-height: 100vh;
+        }
+
+        /* Styles for Static Policy Pages */
+        .policy-page .container {
+            max-width: 800px;
+        }
+        .policy-page h1 {
+            color: var(--brand-cyan);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .policy-page h2 {
+            color: var(--brand-cyan);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        .policy-page p, .policy-page li {
+            color: #a1a9b2;
+        }
+        .policy-page ul {
+            padding-left: 20px;
+        }
+        .policy-page a {
+            color: var(--brand-cyan);
         }
 
         .store-header {
@@ -387,6 +409,7 @@
             font-size: 1.5rem;
             color: var(--text-primary);
             text-decoration: none;
+            cursor: pointer;
         }
         .store-title {
             font-size: 1.5rem;
@@ -685,7 +708,6 @@
             .form-page-container h1 {
                 font-size: 1.8rem;
             }
-            /* --- Responsive style for policies --- */
             .footer-policies nav {
                 display: flex;
                 flex-direction: column;
@@ -701,7 +723,7 @@
     <div class="spotlight"></div>
     <header class="header">
         <div class="container">
-            <a href="#" class="logo">Shubh<span>zone</span></a>
+            <a href="#" class="logo" id="home-logo">Shubh<span>zone</span></a>
             <div class="header-buttons">
                 <a href="./app.html" class="main-btn">
                     <span>Start</span>
@@ -802,23 +824,20 @@
 
         <footer class="footer">
             <div class="container">
-                <a href="#" class="logo">Shubh<span>zone</span></a>
+                <a href="#" class="logo footer-logo">Shubh<span>zone</span></a>
                 <p>A vision by Himanshu Kumar from India.</p>
                 <p>Contact: <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
                 <p>YouTube: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a></p>
                 <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">© 2025 Shubhzone.shop. All Rights Reserved.</p>
                 
-                <!-- /// --- START: ADDED POLICY SECTION --- /// -->
                 <div class="footer-policies">
                     <nav>
-                        <a href="/terms-and-conditions.html">Terms & Conditions</a>
-                        <a href="/privacy-policy.html">Privacy Policy</a>
-                        <a href="/shipping-policy.html">Shipping Policy</a>
-                        <a href="/contact-us.html">Contact Us</a>
+                        <a data-page="terms-page">Terms & Conditions</a>
+                        <a data-page="privacy-page">Privacy Policy</a>
+                        <a data-page="shipping-page">Shipping Policy</a>
+                        <a data-page="contact-page">Contact Us</a>
                     </nav>
                 </div>
-                <!-- /// --- END: ADDED POLICY SECTION --- /// -->
-
             </div>
         </footer>
     </div>
@@ -857,18 +876,17 @@
         </div>
     </div>
 
-    <!-- Other Apps Page (Shubhzone Store) -->
+    <!-- App Store Page -->
     <div id="other-apps-page" class="page">
         <header class="store-header">
             <div class="container">
-                <a href="#" id="store-back-btn" class="store-back-btn">←</a>
-                <h2 id="store-title-btn" class="store-title">Shubhzone Store <span>🏬</span></h2>
+                <a class="store-back-btn">←</a>
+                <h2 class="store-title" id="store-title-btn">Shubhzone Store <span>🏬</span></h2>
                 <div style="width: 24px;"></div> 
             </div>
         </header>
         <div class="container">
-            <div id="apps-grid-container" class="apps-grid">
-            </div>
+            <div id="apps-grid-container" class="apps-grid"></div>
         </div>
     </div>
 
@@ -876,7 +894,7 @@
     <div id="password-page" class="page">
         <header class="store-header">
             <div class="container">
-                <a href="#" id="password-back-btn" class="store-back-btn">←</a>
+                <a class="store-back-btn">←</a>
                 <h2 class="store-title">Admin Access</h2>
                  <div style="width: 24px;"></div> 
             </div>
@@ -897,7 +915,7 @@
     <div id="admin-page" class="page">
         <header class="store-header">
             <div class="container">
-                 <a href="#" id="admin-back-btn" class="store-back-btn">←</a>
+                 <a class="store-back-btn">←</a>
                 <h2 class="store-title">Add New App</h2>
                  <div style="width: 24px;"></div> 
             </div>
@@ -926,13 +944,114 @@
         </div>
     </div>
 
+    <!-- START: STATIC POLICY PAGES -->
+    <div id="contact-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>If you have any questions, concerns, or feedback about our services, please feel free to reach out to us. We are here to help!</p>
+            <ul>
+                <li><strong>Email Support:</strong> For any inquiries, you can email us directly at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>. We aim to respond within 24-48 hours.</li>
+                <li><strong>Community & Updates:</strong> Follow our journey and get the latest updates on our official YouTube channel: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a>.</li>
+            </ul>
+            <p>Your feedback is valuable to us as we continue to improve our platform.</p>
+        </div>
+    </div>
+
+    <div id="terms-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Terms and Conditions</h1>
+            <p>Last updated: August 05, 2025</p>
+            <p>Welcome to Shubhzone.shop! These terms and conditions outline the rules and regulations for the use of our website and services.</p>
+            <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use Shubhzone.shop if you do not agree to all of the terms and conditions stated on this page.</p>
+            <h2>1. Services</h2>
+            <p>Shubhzone.shop provides an online platform offering digital products, courses, skill-based competitions, and a toolkit for creators ("Services").</p>
+            <h2>2. Payments</h2>
+            <p>We use Razorpay for processing payments. We do not store your card data on our servers. By making a payment, you agree to Razorpay's terms and conditions. All transactions are secure and encrypted.</p>
+            <h2>3. Intellectual Property</h2>
+            <p>The content, logo, and visual design on this website are the exclusive property of Shubhzone.shop and are protected by copyright laws. You may not reproduce, distribute, or transmit any part of the website without our prior written permission.</p>
+            <h2>4. Limitation of Liability</h2>
+            <p>In no event shall Shubhzone.shop, nor its owners, be liable for any indirect, incidental, or consequential damages arising out of your use of our services.</p>
+            <h2>5. Governing Law</h2>
+            <p>These terms will be governed by and interpreted in accordance with the laws of India.</p>
+            <h2>6. Changes to Terms</h2>
+            <p>We reserve the right to revise these terms and conditions at any time.</p>
+            <h2>7. Contact Information</h2>
+            <p>If you have any questions about these Terms, please contact us at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <div id="privacy-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: August 05, 2025</p>
+            <p>Shubhzone.shop ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and share your personal information.</p>
+            <h2>1. Information We Collect</h2>
+            <ul>
+                <li><strong>Personal Information:</strong> Your name, email address, and contact details when you register or contact us.</li>
+                <li><strong>Payment Information:</strong> We do not collect or store your payment card details. That information is provided directly to our third-party payment processor, Razorpay.</li>
+            </ul>
+            <h2>2. How We Use Your Information</h2>
+            <ul>
+                <li>Provide, operate, and maintain our services.</li>
+                <li>Process your transactions and manage your orders.</li>
+                <li>Communicate with you, including for customer service.</li>
+            </ul>
+            <h2>3. Data Security</h2>
+            <p>We use administrative and technical measures to safeguard your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that no security measures are perfect or impenetrable.</p>
+            <h2>4. Contact Us</h2>
+            <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <div id="shipping-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Shipping & Delivery Policy</h1>
+            <p>Last updated: August 05, 2025</p>
+            <p>Shubhzone.shop is a platform for digital goods and services, including online courses, access to competitions, and downloadable software. As such, we do not ship any physical products.</p>
+            <h2>Delivery Process</h2>
+            <p>Upon successful payment confirmation via our payment gateway (Razorpay), you will receive immediate access to your purchased digital product or service. Access will be granted automatically to your user account or via a download link sent to your registered email address.</p>
+            <h2>No Shipping Costs</h2>
+            <p>Since all our products are digital, there are no shipping or handling fees.</p>
+            <h2>Contact Us</h2>
+            <p>If you have any questions or have not received access to your purchase after payment, please contact us immediately at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a> with your order details.</p>
+        </div>
+    </div>
+    <!-- END: STATIC POLICY PAGES -->
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- GLOBAL PAGE ELEMENTS ---
             const mainContent = document.getElementById('main-content');
             const otherAppsPage = document.getElementById('other-apps-page');
             const passwordPage = document.getElementById('password-page');
             const adminPage = document.getElementById('admin-page');
-            const allPages = [mainContent, otherAppsPage, passwordPage, adminPage];
+            // ADDED: Policy Page Elements
+            const contactPage = document.getElementById('contact-page');
+            const termsPage = document.getElementById('terms-page');
+            const privacyPage = document.getElementById('privacy-page');
+            const shippingPage = document.getElementById('shipping-page');
+
+            const allPages = [mainContent, otherAppsPage, passwordPage, adminPage, contactPage, termsPage, privacyPage, shippingPage];
             const header = document.querySelector('.header');
             const bodyEl = document.body;
 
@@ -943,12 +1062,14 @@
                 if (pageToShow) {
                     pageToShow.style.display = 'block';
                 }
+                // Show main header only for main content
                 if (header) {
                    header.style.display = (pageToShow === mainContent) ? 'flex' : 'none';
                 }
                 window.scrollTo(0, 0);
             }
 
+            // --- PARTICLE & REVEAL ANIMATIONS (No changes needed here) ---
             const spotlight = document.querySelector('.spotlight');
             if(spotlight) {
                 document.addEventListener('mousemove', (e) => {
@@ -1022,6 +1143,7 @@
                 window.addEventListener('resize', handleResize);
             }
 
+            // --- WARNING MODAL LOGIC (No changes needed here) ---
             const otherAppsBtn = document.getElementById('other-apps-btn');
             const warningModal = document.getElementById('warning-modal');
             const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -1095,6 +1217,7 @@
                 langHiBtn.classList.remove('active');
             });
             
+            // --- APP STORE LOGIC (No changes needed here) ---
             const appsGridContainer = document.getElementById('apps-grid-container');
             const initialApps = [
                 {
@@ -1156,22 +1279,50 @@
                 });
             }
 
-            const navButtons = [
-                { id: 'store-back-btn', page: mainContent },
-                { id: 'password-back-btn', page: otherAppsPage },
-                { id: 'admin-back-btn', page: passwordPage },
-                { id: 'store-title-btn', page: passwordPage }
-            ];
-            navButtons.forEach(item => {
-                const btn = document.getElementById(item.id);
-                if (btn) {
-                    btn.addEventListener('click', e => { 
-                        e.preventDefault(); 
-                        showPage(item.page); 
-                    });
-                }
+            // --- NAVIGATION LOGIC ---
+            // Main Home Logo
+            document.getElementById('home-logo').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(mainContent);
             });
-            
+            document.querySelector('.footer-logo').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(mainContent);
+            });
+
+            // Back buttons
+            document.querySelectorAll('.store-back-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const parentPage = btn.closest('.page');
+                    // Logic to determine where to go back to
+                    if (parentPage.id === 'password-page') {
+                        showPage(otherAppsPage);
+                    } else if (parentPage.id === 'admin-page') {
+                        showPage(passwordPage);
+                    } else {
+                        showPage(mainContent); // Default back action
+                    }
+                });
+            });
+
+            // Title button (to admin password)
+            document.getElementById('store-title-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(passwordPage);
+            });
+
+            // --- POLICY PAGE NAVIGATION ---
+            document.querySelectorAll('.footer-policies nav a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = e.target.getAttribute('data-page');
+                    const pageToShow = document.getElementById(pageId);
+                    showPage(pageToShow);
+                });
+            });
+
+            // --- PASSWORD PAGE LOGIC (No changes needed) ---
             const passwordForm = document.getElementById('password-form');
             const passwordErrorEl = document.getElementById('password-error');
             const correctPassword = "himanshu@123";
@@ -1193,6 +1344,7 @@
                 });
             }
 
+            // --- ADMIN PAGE LOGIC (No changes needed) ---
             const appSubmissionForm = document.getElementById('app-submission-form');
             if (appSubmissionForm) {
                 appSubmissionForm.addEventListener('submit', e => {
@@ -1219,6 +1371,7 @@
                 });
             }
 
+            // Initial setup
             showPage(mainContent);
 
         });
