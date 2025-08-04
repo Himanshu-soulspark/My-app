@@ -1,5 +1,5 @@
 /* ================================================= */
-/* === Shubhzone App Styles (Code 2) - FINAL v4.1 === */
+/* === Shubhzone App Styles (Code 2) - FINAL v5.11 === */
 /* ================================================= */
 
 /* Design Style Guide */
@@ -97,7 +97,6 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     padding: 0;
     box-sizing: border-box;
     opacity: 0;
@@ -105,7 +104,28 @@ body {
     overflow: hidden;
     transform-origin: center center;
     background-color: transparent;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
 }
+
+/* ★ नया: स्क्रीन ट्रांजीशन के लिए एनिमेशन */
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(50px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOutLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-50px); }
+}
+
+.screen.screen-enter-from-right {
+    animation: fadeInRight 0.4s forwards ease-out;
+}
+
+.screen.screen-exit-to-left {
+    animation: fadeOutLeft 0.4s forwards ease-in;
+}
+
 
 #splash-screen, #information-screen {
     padding: 20px;
@@ -551,26 +571,15 @@ body {
     margin-bottom: 5px;
 }
 
+/* ★ बदला हुआ: नए होम स्क्रीन के लिए स्टाइल */
 #upload-screen {
     justify-content: flex-start;
-    padding: 20px;
+    padding: 0; /* पूरी स्क्रीन का उपयोग करने के लिए पैडिंग हटा दी गई */
+    overflow-y: auto;
 }
 
 #upload-screen .upload-header {
-    width: 100%;
-    text-align: center;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-    padding-top: 50px;
-}
-#upload-screen .upload-header h2 {
-    margin: 0 0 5px 0;
-    font-size: 1.8em;
-}
-#upload-screen .upload-header p {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 1.1em;
+    display: none; /* पुराने हेडर को छिपा दिया गया */
 }
 
 #upload-screen .upload-container-new {
@@ -579,38 +588,157 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    gap: 20px;
-    padding: 20px;
+    gap: 0; /* गैप को 0 कर दिया गया */
+    padding: 0; /* पैडिंग हटा दी गई */
     flex-grow: 1;
     overflow-y: auto;
     padding-bottom: 80px;
 }
 
-.upload-action-button {
+.new-home-top-bar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    color: var(--background);
-    padding: 15px 30px;
-    border-radius: 10px;
-    font-size: 1.1em;
+    width: 100%;
+    padding: 15px 20px;
+    color: var(--text-primary);
     font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
-    width: 90%;
-    max-width: 320px;
-    text-align: center;
-    background-color: var(--primary-neon);
-}
-#upload-screen .upload-container-new button:nth-child(2) {
-    background-color: var(--primary-neon);
+    font-size: 1.2em;
+    background-color: rgba(var(--secondary-background-rgb), 0.5);
+    border-bottom: 1px solid rgba(var(--text-primary-rgb), 0.1);
 }
 
-.upload-action-button:hover {
-    opacity: 0.9;
-    transform: scale(1.02);
+.new-home-top-bar button {
+    background: none;
+    border: none;
+    color: var(--primary-neon);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9em;
 }
+
+.new-home-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    width: 100%;
+}
+
+.new-home-list-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-background);
+    border-radius: 12px;
+    padding: 12px;
+    gap: 15px;
+    border-left: 4px solid var(--primary-neon);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.new-home-list-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(var(--primary-neon-rgb), 0.1);
+}
+
+.action-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.action-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.action-info h4 {
+    margin: 0 0 5px 0;
+    color: var(--text-primary);
+    font-size: 1.1em;
+}
+
+.action-info p {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.action-open-btn {
+    background: none;
+    border: 1px solid var(--primary-neon);
+    color: var(--primary-neon);
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+.action-open-btn:hover {
+    background-color: rgba(var(--primary-neon-rgb), 0.1);
+}
+
+.new-home-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding: 0 20px 20px 20px;
+    width: 100%;
+}
+
+.new-home-grid-item {
+    aspect-ratio: 1/1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.new-home-grid-item:hover {
+    transform: scale(1.03);
+}
+
+.new-home-grid-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    z-index: 2;
+}
+
+.new-home-grid-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.new-home-grid-item span {
+    z-index: 3;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1em;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+}
+
 
 #profile-screen {
     padding: 0;
@@ -1125,7 +1253,6 @@ input:checked + .slider:before {
     border-bottom: 1px solid rgba(var(--text-primary-rgb), 0.1);
 }
 
-/* ★ नया: ट्रांसपेरेंट हेडर */
 .screen-header.transparent {
     background-color: transparent;
     backdrop-filter: none;
@@ -1977,12 +2104,9 @@ input:checked + .slider:before {
     scrollbar-width: none;
 }
 
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ आवश्यक बदलाव: हिस्ट्री के शॉर्ट वीडियो कार्ड की समस्या का समाधान ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 .history-short-card {
     width: 100px;
-    aspect-ratio: 9 / 16; /* ★ यह लाइन जोड़ी गई है ★ */
+    aspect-ratio: 9 / 16;
     border-radius: 8px;
     background-size: cover;
     background-position: center;
@@ -2172,14 +2296,13 @@ input:checked + .slider:before {
     opacity: 0.9;
 }
 
-/* ★★★ बदलाव: मेंबर्स लिस्ट के कार्ड को छोटा करने के लिए स्टाइल बदला गया ★★★ */
 .holographic-card {
     display: flex;
     align-items: center;
     background-color: rgba(var(--secondary-background-rgb), 0.5);
     border-radius: 12px;
-    padding: 12px; /* पहले 15px था */
-    margin-bottom: 12px; /* पहले 15px था */
+    padding: 12px; 
+    margin-bottom: 12px; 
     border: 1px solid rgba(var(--primary-neon-rgb), 0.2);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -2198,8 +2321,8 @@ input:checked + .slider:before {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 .holographic-card .profile-pic {
-    width: 50px; /* पहले 60px था */
-    height: 50px; /* पहले 60px था */
+    width: 50px; 
+    height: 50px; 
     border-radius: 50%;
     margin-right: 15px;
     background-color: var(--background);
@@ -2219,11 +2342,11 @@ input:checked + .slider:before {
 }
 .holographic-card .info .name {
     font-weight: 700;
-    font-size: 16px; /* पहले 18px था */
+    font-size: 16px; 
     color: var(--text-primary);
 }
 .holographic-card .info .subtext {
-    font-size: 13px; /* पहले 14px था */
+    font-size: 13px; 
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
@@ -2581,7 +2704,6 @@ input:checked + .slider:before {
     font-size: 0.9em;
 }
 
-/* ★★★ बदलाव: Earnsure कंटेंट के लिए नया स्टाइल */
 .earnsure-section {
     background-color: var(--secondary-background);
     border-left: 4px solid var(--primary-neon);
@@ -2833,6 +2955,63 @@ input:checked + .slider:before {
 }
 #creator-page-comment-btn {
     display: none;
+}
+
+/* ★ नया: लॉन्ग वीडियो प्लेयर के लिए कस्टम कंट्रोल्स */
+.custom-player-controls-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 21;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to top, rgba(0,0,0,0.4), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.main-video-card:hover .custom-player-controls-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.custom-player-controls-overlay .controls-center {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.control-btn {
+    font-size: 1.8em;
+    color: white;
+    cursor: pointer;
+    text-shadow: 0 0 5px black;
+}
+.control-btn-main {
+    font-size: 4em;
+    color: white;
+    cursor: pointer;
+    text-shadow: 0 0 8px black;
+}
+
+.custom-player-controls-overlay .controls-bottom {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+}
+.playback-speed-btn {
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 #payment-screen {
@@ -3330,10 +3509,6 @@ input:checked + .slider:before {
     transform: scale(1.1);
 }
 
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ NEW CREDIT SCREEN STYLES ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-
 #credit-screen .screen-header {
     justify-content: space-between;
 }
@@ -3415,11 +3590,6 @@ input:checked + .slider:before {
     line-height: 1.6;
 }
 
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ NEW UI STYLES FOR AD POPUP AND TRACK PAYMENT (v5.5) - START ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-
-/* --- Improved Ad Request Popup --- */
 .ad-request-content {
     border: 2px solid var(--primary-neon) !important;
     box-shadow: 0 0 25px rgba(var(--primary-neon-rgb), 0.4) !important;
@@ -3514,7 +3684,6 @@ input:checked + .slider:before {
     opacity: 0.5 !important;
 }
 
-/* --- Track Payment Screen Redesign --- */
 #track-payment-content {
     display: flex;
     flex-direction: column;
@@ -3595,14 +3764,6 @@ input:checked + .slider:before {
 .unconverted-time strong {
     color: var(--primary-neon);
 }
-/* ================================================= */
-/* ★★★ NEW UI STYLES (v5.5) - END ★★★ */
-/* ================================================= */
-
-
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ MEDIA QUERY FOR DESKTOP AND BROWSER COMPATIBILITY ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
 @media (min-width: 768px) {
     body {
@@ -3627,9 +3788,6 @@ input:checked + .slider:before {
     }
 }
 
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ वीडियो रोटेशन के लिए CSS स्टाइल ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 
 #creator-page-long-view .main-video-card-wrapper.rotated {
     position: absolute;
@@ -3652,9 +3810,6 @@ input:checked + .slider:before {
     border-radius: 0;
 }
 
-/* ================================================= */
-/* ★★★★★★★ NEW ADVERTISEMENT STYLES (v5.1) - START ★★★★★★★ */
-/* ================================================= */
 
 .long-video-grid-ad,
 .friend-list-ad,
@@ -3738,14 +3893,6 @@ input:checked + .slider:before {
     border: none;
 }
 
-
-/* ================================================= */
-/* ★★★★★★★ NEW ADVERTISEMENT STYLES (v5.1) - END ★★★★★★★ */
-/* ================================================= */
-
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
-/* ★★★ नया: प्रोफाइल फोटो को बड़ा करने के लिए स्टाइल ★★★ */
-/* ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★ */
 #image-enlarge-modal .enlarged-image-content {
     background-color: transparent;
     padding: 0;
