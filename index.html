@@ -422,6 +422,15 @@
             font-size: 1.2em;
             vertical-align: middle;
         }
+        .store-header-icon {
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 24px; /* Maintain alignment */
+            height: 24px;
+        }
+        .store-header-icon:hover {
+            color: var(--brand-cyan);
+        }
 
         .apps-grid {
             display: grid;
@@ -451,15 +460,25 @@
         .app-card-bottom-content {
             margin-top: 20px; 
         }
+
+        .app-card-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
         
         .app-card h3 {
             font-size: 1.5rem;
             margin-bottom: 10px;
         }
         
-        .app-card p {
+        .app-card .app-card-description {
             font-size: 1rem;
             margin-bottom: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         .app-card .app-image-container {
@@ -485,11 +504,27 @@
             text-decoration: none;
             font-weight: 600;
             display: inline-block;
+            flex-grow: 1;
         }
         
         .download-btn:hover {
             background: var(--brand-cyan);
             color: #000;
+        }
+
+        .description-btn {
+            background: transparent;
+            border: 1px solid var(--brand-blue);
+            color: var(--brand-blue);
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        .description-btn:hover {
+            background: var(--brand-blue);
+            color: #fff;
         }
 
         .modal-overlay {
@@ -553,7 +588,7 @@
             align-items: center;
             gap: 15px;
         }
-        #modal-close-btn {
+        .modal-close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
@@ -562,7 +597,7 @@
             color: var(--text-secondary);
             font-size: 2rem;
             cursor: pointer;
-            display: none;
+            display: block;
         }
         #countdown-timer {
             color: var(--brand-cyan);
@@ -609,6 +644,46 @@
             margin-top: 15px;
             height: 20px;
         }
+
+        .manage-apps-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .manage-app-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .manage-app-item p {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .manage-app-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .edit-btn, .delete-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .edit-btn {
+            background-color: var(--brand-blue);
+            color: #fff;
+        }
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
 
         @media (max-width: 992px) {
             .feature-layout {
@@ -715,6 +790,9 @@
             }
             .footer-policies nav a {
                 margin: 0;
+            }
+            .app-card-buttons {
+                flex-direction: column;
             }
         }
     </style>
@@ -845,7 +923,7 @@
     <!-- Warning Modal -->
     <div id="warning-modal" class="modal-overlay">
         <div class="modal-content">
-            <button id="modal-close-btn">×</button>
+            <button id="warning-modal-close-btn" class="modal-close-btn">×</button>
             <h2>🛡️ App Trust & Safety Message</h2>
             <div class="lang-toggle">
                 <button id="lang-hi" class="active">हिन्दी</button>
@@ -873,6 +951,15 @@
                 <p>You can proceed in <span id="countdown-timer">5</span> seconds...</p>
                 <button id="modal-proceed-btn" class="main-btn" disabled>Proceed to Store</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Description Modal -->
+    <div id="description-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="description-modal-close-btn" class="modal-close-btn">×</button>
+            <h2 id="description-modal-title">App Description</h2>
+            <div id="description-modal-content" class="modal-message"></div>
         </div>
     </div>
 
@@ -916,13 +1003,14 @@
         <header class="store-header">
             <div class="container">
                  <a class="store-back-btn">←</a>
-                <h2 class="store-title">Add New App</h2>
-                 <div style="width: 24px;"></div> 
+                <h2 class="store-title">Add / Edit App</h2>
+                <svg id="manage-apps-btn" xmlns="http://www.w3.org/2000/svg" class="store-header-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14,12.94a1.5,1.5,0,0,0-2.12,0l-6.52,6.52a.5.5,0,0,0,0,.71l2.12,2.12a.5.5,0,0,0,.71,0l6.52-6.52A1.5,1.5,0,0,0,19.14,12.94Zm-1.41-1.41,2.12-2.12a1.5,1.5,0,0,0,0-2.12l-2.12-2.12a1.5,1.5,0,0,0-2.12,0L4.1,15.58a1,1,0,0,0-.29.71V19.5a1,1,0,0,0,1,1H8.5a1,1,0,0,0,.71-.29Z"/></svg>
             </div>
         </header>
         <div class="form-page-container">
-            <h1>App Submission Form</h1>
+            <h1 id="admin-form-title">App Submission Form</h1>
             <form id="app-submission-form">
+                <input type="hidden" id="app-edit-index">
                 <div class="form-group">
                     <label for="app-name">App Name</label>
                     <input type="text" id="app-name" placeholder="e.g., SoulSpark Dating" required>
@@ -939,8 +1027,24 @@
                     <label for="app-download-link">Download Link (.apk)</label>
                     <input type="url" id="app-download-link" placeholder="https://github.com/.../app.apk" required>
                 </div>
-                <button type="submit" class="main-btn" style="width: 100%; justify-content: center; margin-top: 20px;">Add App to Store</button>
+                <button type="submit" id="app-submit-btn" class="main-btn" style="width: 100%; justify-content: center; margin-top: 20px;">Add App to Store</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Admin Manage Apps Page -->
+    <div id="manage-apps-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                 <a class="store-back-btn">←</a>
+                <h2 class="store-title">Manage Apps</h2>
+                 <div style="width: 24px;"></div> 
+            </div>
+        </header>
+        <div class="container">
+            <ul id="manage-apps-list" class="manage-apps-list">
+                <!-- App list will be rendered here -->
+            </ul>
         </div>
     </div>
 
@@ -1045,13 +1149,13 @@
             const otherAppsPage = document.getElementById('other-apps-page');
             const passwordPage = document.getElementById('password-page');
             const adminPage = document.getElementById('admin-page');
-            // ADDED: Policy Page Elements
+            const manageAppsPage = document.getElementById('manage-apps-page');
             const contactPage = document.getElementById('contact-page');
             const termsPage = document.getElementById('terms-page');
             const privacyPage = document.getElementById('privacy-page');
             const shippingPage = document.getElementById('shipping-page');
 
-            const allPages = [mainContent, otherAppsPage, passwordPage, adminPage, contactPage, termsPage, privacyPage, shippingPage];
+            const allPages = [mainContent, otherAppsPage, passwordPage, adminPage, manageAppsPage, contactPage, termsPage, privacyPage, shippingPage];
             const header = document.querySelector('.header');
             const bodyEl = document.body;
 
@@ -1062,14 +1166,13 @@
                 if (pageToShow) {
                     pageToShow.style.display = 'block';
                 }
-                // Show main header only for main content
                 if (header) {
                    header.style.display = (pageToShow === mainContent) ? 'flex' : 'none';
                 }
                 window.scrollTo(0, 0);
             }
 
-            // --- PARTICLE & REVEAL ANIMATIONS (No changes needed here) ---
+            // --- PARTICLE & REVEAL ANIMATIONS (No changes) ---
             const spotlight = document.querySelector('.spotlight');
             if(spotlight) {
                 document.addEventListener('mousemove', (e) => {
@@ -1143,10 +1246,10 @@
                 window.addEventListener('resize', handleResize);
             }
 
-            // --- WARNING MODAL LOGIC (No changes needed here) ---
+            // --- WARNING MODAL LOGIC (No changes) ---
             const otherAppsBtn = document.getElementById('other-apps-btn');
             const warningModal = document.getElementById('warning-modal');
-            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const warningModalCloseBtn = document.getElementById('warning-modal-close-btn');
             const modalProceedBtn = document.getElementById('modal-proceed-btn');
             const langHiBtn = document.getElementById('lang-hi');
             const langEnBtn = document.getElementById('lang-en');
@@ -1164,7 +1267,6 @@
                         countdownParagraph.innerHTML = 'You can proceed in <span id="countdown-timer">5</span> seconds...';
                     }
                     const countdownTimerEl = document.getElementById('countdown-timer');
-                    if (!countdownTimerEl) return; 
                     
                     warningModal.style.display = 'flex';
                     bodyEl.classList.add('modal-open');
@@ -1172,7 +1274,6 @@
                     let timeLeft = 5;
                     countdownTimerEl.textContent = timeLeft;
                     modalProceedBtn.disabled = true;
-                    modalCloseBtn.style.display = 'none';
                     
                     clearInterval(countdownInterval);
 
@@ -1183,22 +1284,21 @@
                             clearInterval(countdownInterval);
                             countdownTimerEl.parentElement.innerHTML = "You can now proceed.";
                             modalProceedBtn.disabled = false;
-                            modalCloseBtn.style.display = 'block';
                         }
                     }, 1000);
                 });
             }
 
-            function closeModal() {
+            function closeWarningModal() {
                 clearInterval(countdownInterval);
                 if(warningModal) warningModal.style.display = 'none';
                 bodyEl.classList.remove('modal-open');
             }
 
-            if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+            if(warningModalCloseBtn) warningModalCloseBtn.addEventListener('click', closeWarningModal);
             
             if(modalProceedBtn) modalProceedBtn.addEventListener('click', () => {
-                closeModal();
+                closeWarningModal();
                 renderApps();
                 showPage(otherAppsPage);
             });
@@ -1217,7 +1317,28 @@
                 langHiBtn.classList.remove('active');
             });
             
-            // --- APP STORE LOGIC (No changes needed here) ---
+            // --- DESCRIPTION MODAL LOGIC ---
+            const descriptionModal = document.getElementById('description-modal');
+            const descriptionModalCloseBtn = document.getElementById('description-modal-close-btn');
+            const descriptionModalTitle = document.getElementById('description-modal-title');
+            const descriptionModalContent = document.getElementById('description-modal-content');
+
+            function openDescriptionModal(name, description) {
+                descriptionModalTitle.textContent = name;
+                // Use innerHTML to correctly render multiline descriptions
+                descriptionModalContent.innerHTML = description.replace(/\n/g, '<br>');
+                descriptionModal.style.display = 'flex';
+                bodyEl.classList.add('modal-open');
+            }
+
+            function closeDescriptionModal() {
+                descriptionModal.style.display = 'none';
+                bodyEl.classList.remove('modal-open');
+            }
+            if(descriptionModalCloseBtn) descriptionModalCloseBtn.addEventListener('click', closeDescriptionModal);
+            
+
+            // --- APP STORE LOGIC ---
             const appsGridContainer = document.getElementById('apps-grid-container');
             const initialApps = [
                 {
@@ -1225,18 +1346,6 @@
                     description: "This is a dating app to connect with new people.",
                     imageHTML: '<a href="https://ibb.co/Z6GS7jzZ"><img src="https://i.ibb.co/1f7MjgGS/IMG-20250801-WA0001.jpg" alt="SoulSpark Dating App"></a>',
                     downloadLink: "https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk"
-                },
-                {
-                    name: "Future App 2",
-                    description: "Description for the second app will go here.",
-                    imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 2 Icon">',
-                    downloadLink: "#"
-                },
-                 {
-                    name: "Future App 3",
-                    description: "Description for the third app will go here.",
-                    imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App 3 Icon">',
-                    downloadLink: "#"
                 }
             ];
 
@@ -1255,23 +1364,35 @@
                 }
             }
             
+            function saveApps(apps) {
+                 try {
+                       localStorage.setItem('shubhzone_apps', JSON.stringify(apps));
+                    } catch (err) {
+                       alert('Could not save the app. Local storage might be full or disabled.');
+                    }
+            }
+
             function renderApps() {
                 if(!appsGridContainer) return;
                 const apps = getApps();
                 appsGridContainer.innerHTML = '';
-                apps.forEach(app => {
+                apps.forEach((app, index) => {
                     const isComingSoon = app.downloadLink === '#';
-                    const downloadButton = `<a href="${app.downloadLink}" class="download-btn" ${isComingSoon ? 'style="background-color: grey; cursor: not-allowed;"' : ''}>${isComingSoon ? 'Coming Soon' : 'Download'}</a>`;
-                    
+                    const downloadButtonHTML = `<a href="${app.downloadLink}" class="download-btn" ${isComingSoon ? 'style="background-color: grey; cursor: not-allowed;"' : ''}>${isComingSoon ? 'Coming Soon' : 'Download'}</a>`;
+                    const descriptionButtonHTML = `<button class="description-btn" data-index="${index}">Description</button>`;
+
                     const appCardHTML = `
                         <div class="app-card">
                             <div class="app-card-top-content">
                                 <h3>${app.name || ''}</h3>
-                                <p>${app.description || ''}</p>
+                                <p class="app-card-description">${app.description || ''}</p>
                                 <div class="app-image-container">${app.imageHTML || ''}</div>
                             </div>
                             <div class="app-card-bottom-content">
-                                ${downloadButton}
+                               <div class="app-card-buttons">
+                                    ${downloadButtonHTML}
+                                    ${descriptionButtonHTML}
+                               </div>
                             </div>
                         </div>
                     `;
@@ -1279,8 +1400,21 @@
                 });
             }
 
+            if(appsGridContainer) {
+                appsGridContainer.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('description-btn')) {
+                        const appIndex = e.target.getAttribute('data-index');
+                        const apps = getApps();
+                        const app = apps[appIndex];
+                        if (app) {
+                            openDescriptionModal(app.name, app.description);
+                        }
+                    }
+                });
+            }
+
+
             // --- NAVIGATION LOGIC ---
-            // Main Home Logo
             document.getElementById('home-logo').addEventListener('click', (e) => {
                 e.preventDefault();
                 showPage(mainContent);
@@ -1290,29 +1424,33 @@
                 showPage(mainContent);
             });
 
-            // Back buttons
             document.querySelectorAll('.store-back-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     const parentPage = btn.closest('.page');
-                    // Logic to determine where to go back to
                     if (parentPage.id === 'password-page') {
                         showPage(otherAppsPage);
                     } else if (parentPage.id === 'admin-page') {
                         showPage(passwordPage);
-                    } else {
-                        showPage(mainContent); // Default back action
+                    } else if (parentPage.id === 'manage-apps-page') {
+                        showPage(adminPage);
+                    }
+                    else {
+                        showPage(mainContent);
                     }
                 });
             });
 
-            // Title button (to admin password)
             document.getElementById('store-title-btn').addEventListener('click', (e) => {
                 e.preventDefault();
                 showPage(passwordPage);
             });
 
-            // --- POLICY PAGE NAVIGATION ---
+            document.getElementById('manage-apps-btn').addEventListener('click', () => {
+                renderManageableApps();
+                showPage(manageAppsPage);
+            });
+
             document.querySelectorAll('.footer-policies nav a').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -1322,7 +1460,7 @@
                 });
             });
 
-            // --- PASSWORD PAGE LOGIC (No changes needed) ---
+            // --- PASSWORD PAGE LOGIC (No changes) ---
             const passwordForm = document.getElementById('password-form');
             const passwordErrorEl = document.getElementById('password-error');
             const correctPassword = "himanshu@123";
@@ -1344,32 +1482,95 @@
                 });
             }
 
-            // --- ADMIN PAGE LOGIC (No changes needed) ---
+            // --- ADMIN & MANAGE APPS LOGIC ---
             const appSubmissionForm = document.getElementById('app-submission-form');
+            const adminFormTitle = document.getElementById('admin-form-title');
+            const appSubmitBtn = document.getElementById('app-submit-btn');
+            const appEditIndexInput = document.getElementById('app-edit-index');
+
+            function resetAdminForm() {
+                appSubmissionForm.reset();
+                appEditIndexInput.value = '';
+                adminFormTitle.textContent = 'App Submission Form';
+                appSubmitBtn.textContent = 'Add App to Store';
+            }
+
             if (appSubmissionForm) {
                 appSubmissionForm.addEventListener('submit', e => {
                     e.preventDefault();
-                    const newApp = {
+                    const appData = {
                         name: document.getElementById('app-name').value,
                         description: document.getElementById('app-desc').value,
                         imageHTML: document.getElementById('app-image-html').value,
                         downloadLink: document.getElementById('app-download-link').value
                     };
                     
-                    const apps = getApps();
-                    apps.push(newApp);
-                    try {
-                       localStorage.setItem('shubhzone_apps', JSON.stringify(apps));
-                       alert('App added successfully!');
-                    } catch (err) {
-                       alert('Could not save the app. Local storage might be full or disabled.');
-                    }
+                    let apps = getApps();
+                    const editIndex = appEditIndexInput.value;
 
-                    appSubmissionForm.reset();
+                    if (editIndex !== '') { // Edit mode
+                        apps[editIndex] = appData;
+                        alert('App updated successfully!');
+                    } else { // Add mode
+                        apps.push(appData);
+                        alert('App added successfully!');
+                    }
+                    
+                    saveApps(apps);
+                    resetAdminForm();
                     renderApps();
                     showPage(otherAppsPage);
                 });
             }
+
+            function renderManageableApps() {
+                const manageList = document.getElementById('manage-apps-list');
+                if (!manageList) return;
+                const apps = getApps();
+                manageList.innerHTML = '';
+                apps.forEach((app, index) => {
+                    const item = document.createElement('li');
+                    item.className = 'manage-app-item';
+                    item.innerHTML = `
+                        <p>${app.name}</p>
+                        <div class="manage-app-buttons">
+                            <button class="edit-btn" data-index="${index}">Edit</button>
+                            <button class="delete-btn" data-index="${index}">Delete</button>
+                        </div>
+                    `;
+                    manageList.appendChild(item);
+                });
+            }
+
+            const manageListContainer = document.getElementById('manage-apps-list');
+            if(manageListContainer) {
+                manageListContainer.addEventListener('click', e => {
+                    const index = e.target.getAttribute('data-index');
+                    if (index === null) return;
+                    
+                    let apps = getApps();
+
+                    if (e.target.classList.contains('delete-btn')) {
+                        if (confirm(`Are you sure you want to delete "${apps[index].name}"?`)) {
+                           apps.splice(index, 1);
+                           saveApps(apps);
+                           renderManageableApps(); // Re-render admin list
+                           renderApps(); // Re-render public store
+                        }
+                    } else if (e.target.classList.contains('edit-btn')) {
+                        const appToEdit = apps[index];
+                        document.getElementById('app-name').value = appToEdit.name;
+                        document.getElementById('app-desc').value = appToEdit.description;
+                        document.getElementById('app-image-html').value = appToEdit.imageHTML;
+                        document.getElementById('app-download-link').value = appToEdit.downloadLink;
+                        appEditIndexInput.value = index;
+                        adminFormTitle.textContent = 'Edit App';
+                        appSubmitBtn.textContent = 'Update App';
+                        showPage(adminPage);
+                    }
+                });
+            }
+
 
             // Initial setup
             showPage(mainContent);
