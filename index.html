@@ -1004,7 +1004,7 @@
             <div class="container">
                  <a class="store-back-btn">←</a>
                 <h2 class="store-title">Add / Edit App</h2>
-                <svg id="manage-apps-btn" xmlns="http://www.w3.org/2000/svg" class="store-header-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14,12.94a1.5,1.5,0,0,0-2.12,0l-6.52,6.52a.5.5,0,0,0,0,.71l2.12,2.12a.5.5,0,0,0,.71,0l6.52-6.52A1.5,1.5,0,0,0,19.14,12.94Zm-1.41-1.41,2.12-2.12a1.5,1.5,0,0,0,0-2.12l-2.12-2.12a1.5,1.5,0,0,0-2.12,0L4.1,15.58a1,1,0,0,0-.29.71V19.5a1,1,0,0,0,1,1H8.5a1,1,0,0,0,.71-.29Z"/></svg>
+                <svg id="manage-apps-btn" xmlns="http://www.w3.org/2000/svg" class="store-header-icon" fill="currentColor" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M13.85 22.25h-3.71c-1.39 0-2.5-1.12-2.5-2.5V18.5c0-.41.34-.75.75-.75s.75.34.75.75v1.25c0 .55.45 1 1 1h3.71c.55 0 1-.45 1-1V18.5c0-.41.34-.75.75-.75s.75.34.75.75v1.25c0 1.38-1.12 2.5-2.5 2.5ZM19.25 8.5c0-.41-.34-.75-.75-.75h-3.71c-.55 0-1 .45-1 1v1.25c0 .41-.34.75-.75.75s-.75-.34-.75-.75V8.75c0-1.38 1.12-2.5 2.5-2.5h3.71c1.39 0 2.5 1.12 2.5 2.5v1.25c0 .41-.34.75-.75.75s-.75-.34-.75-.75V8.5ZM12 16.25c-.41 0-.75-.34-.75-.75V8.75c0-.41-.34-.75-.75-.75s-.75.34-.75.75v6.75c0 .41-.34.75-.75.75s-.75-.34-.75-.75V8.75c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v6.75c0 .41.34.75.75.75s.75-.34.75-.75V8.75c0-.41.34-.75.75-.75s.75.34.75.75v6.75c0 1.38-1.12 2.5-2.5 2.5s-2.5-1.12-2.5-2.5ZM4.75 16.25c0 .41.34.75.75.75h3.71c.55 0 1-.45 1-1V14c0-.41.34-.75.75-.75s.75.34.75.75v1.25c0 1.38-1.12 2.5-2.5 2.5H5.5c-1.39 0-2.5-1.12-2.5-2.5V14c0-.41.34-.75.75-.75s.75.34.75.75v1.25ZM10.15 1.75H6.5c-1.39 0-2.5 1.12-2.5 2.5v1.25c0 .41.34.75.75.75s.75-.34.75-.75V4.25c0-.55.45-1 1-1h3.65c.55 0 1 .45 1 1v1.25c0 .41.34.75.75.75s.75-.34.75-.75V4.25c0-1.38-1.12-2.5-2.5-2.5Z"/></svg>
             </div>
         </header>
         <div class="form-page-container">
@@ -1325,7 +1325,6 @@
 
             function openDescriptionModal(name, description) {
                 descriptionModalTitle.textContent = name;
-                // Use innerHTML to correctly render multiline descriptions
                 descriptionModalContent.innerHTML = description.replace(/\n/g, '<br>');
                 descriptionModal.style.display = 'flex';
                 bodyEl.classList.add('modal-open');
@@ -1340,6 +1339,9 @@
 
             // --- APP STORE LOGIC ---
             const appsGridContainer = document.getElementById('apps-grid-container');
+            
+            // ########## YAHAN PAR BADLAV KIYA GAYA HAI ##########
+            // Ab apps ki list seedhe code me hai, isliye yeh har jagah dikhegi.
             const initialApps = [
                 {
                     name: "SoulSpark Dating",
@@ -1348,30 +1350,14 @@
                     downloadLink: "https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk"
                 },
                 {
-                    name: "Wing Rush",
-                    description: `विंग रश: एक रोमांचक उड़ान साहसिक!
-
-जंगल के ऊपर से उड़ान भरने, सिक्के इकट्ठा करने और तूफानों से बचने के लिए तैयार हो जाइए! विंग रश एक मज़ेदार और एक्शन से भरपूर गेम है जहाँ आप एक प्यारे छोटे पक्षी को एक खूबसूरत लेकिन खतरनाक दुनिया में गाइड करते हैं.
-
-क्या आप इस चुनौती के लिए तैयार हैं? देखें कि आप कितनी दूर तक उड़ सकते हैं!
-
-गेम की मुख्य विशेषताएं:
-
-सरल वन-टच कंट्रोल: स्क्रीन पर टैप करके आसानी से अपने पक्षी को उड़ाएँ. कोई भी इसे खेल सकता है, लेकिन इसमें महारत हासिल करना मुश्किल है!
-
-आकर्षक ग्राफ़िक्स: एक रंगीन और जीवंत जंगल की दुनिया में खो जाएँ. खूबसूरत नज़ारे और प्यारे एनिमेशन आपको घंटों तक मनोरंजन करते रहेंगे.
-
-चुनौतीपूर्ण गेमप्ले: अपनी सजगता का परीक्षण करें! तूफानी बादलों और अप्रत्याशित बाधाओं से बचें जो आपकी उड़ान को समाप्त कर सकते हैं.
-
-सिक्के एकत्र करें: ज़्यादा से ज़्यादा सिक्के इकट्ठा करके उच्चतम स्कोर प्राप्त करें. अपने दोस्तों को चुनौती दें और देखें कि कौन लीडरबोर्ड पर टॉप करता है!
-
-सभी उम्र के लिए मज़ा: विंग रश सभी के लिए एक आदर्श गेम है, चाहे आप एक कैज़ुअल गेमर हों या एक अनुभवी खिलाड़ी.
-
-आज ही विंग रश डाउनलोड करें और अपनी रोमांचक उड़ान शुरू करें! पंख फड़फड़ाने और जीत की ओर बढ़ने का समय आ गया है`,
-                    imageHTML: '<a href="https://ibb.co/qYGC9HNk"><img src="https://i.ibb.co/B2DGjhyq/eeiq-HXtg-Q8-Ogl-OCSEo-NPlw.jpg" alt="eeiq-HXtg-Q8-Ogl-OCSEo-NPlw" border="0"></a>',
-                    downloadLink: "https://github.com/Himanshu-soulspark/Story-App-Data/releases/download/V1.0/wing.rush.apk"
+                    name: "आपकी दूसरी ऐप का नाम",
+                    description: "यहाँ अपनी दूसरी ऐप के बारे में लिखें। आप इस जानकारी को एडमिन पैनल से बदल सकते हैं।",
+                    imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App Icon">',
+                    downloadLink: "#"
                 }
             ];
+            // ######################################################
+
 
             function getApps() {
                 try {
@@ -1379,6 +1365,7 @@
                     if (appsFromStorage) {
                         return JSON.parse(appsFromStorage);
                     } else {
+                        // Agar user pehli baar aa raha hai, to initialApps set karo
                         localStorage.setItem('shubhzone_apps', JSON.stringify(initialApps));
                         return initialApps;
                     }
@@ -1457,6 +1444,9 @@
                     } else if (parentPage.id === 'admin-page') {
                         showPage(passwordPage);
                     } else if (parentPage.id === 'manage-apps-page') {
+                        // If coming back from manage page, decide where to go
+                        // For simplicity, let's always go back to the admin form
+                        resetAdminForm();
                         showPage(adminPage);
                     }
                     else {
@@ -1498,6 +1488,7 @@
                     const enteredPassword = inputElement.value;
 
                     if (enteredPassword === correctPassword) {
+                        resetAdminForm(); // Reset form when entering admin panel
                         showPage(adminPage);
                         passwordForm.reset();
                     } else {
@@ -1532,7 +1523,7 @@
                     let apps = getApps();
                     const editIndex = appEditIndexInput.value;
 
-                    if (editIndex !== '') { // Edit mode
+                    if (editIndex !== '' && apps[editIndex]) { // Edit mode
                         apps[editIndex] = appData;
                         alert('App updated successfully!');
                     } else { // Add mode
@@ -1552,6 +1543,10 @@
                 if (!manageList) return;
                 const apps = getApps();
                 manageList.innerHTML = '';
+                if (apps.length === 0) {
+                    manageList.innerHTML = '<p style="text-align:center;">No apps to manage. Add one from the form.</p>';
+                    return;
+                }
                 apps.forEach((app, index) => {
                     const item = document.createElement('li');
                     item.className = 'manage-app-item';
