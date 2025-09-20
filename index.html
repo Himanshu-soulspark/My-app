@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - The Nexus of Skill and Opportunity</title>
+    <title>Shubhzone - Find Your Spark</title>
     <!-- Razorpay Checkout Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
 
         :root {
-            --brand-cyan: #00d9ff;
-            --brand-blue: #3c79ff;
+            --brand-cyan: #ff4d6a; /* Changed to a dating theme color */
+            --brand-blue: #e91e63; /* Changed to a dating theme color */
             --bg-dark: #05070a;
             --bg-card: #10141b;
             --text-primary: #f0f6fc;
@@ -49,7 +49,7 @@
             height: 100%;
             pointer-events: none;
             z-index: 1;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 217, 255, 0.1), transparent 30%);
+            background: radial-gradient(circle at 50% 50%, rgba(233, 30, 99, 0.1), transparent 30%);
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -129,7 +129,7 @@
 
         .main-btn {
             background: var(--brand-cyan);
-            color: #000;
+            color: #fff; /* Changed for better contrast */
             padding: 12px 28px;
             border-radius: 8px;
             text-decoration: none;
@@ -156,7 +156,7 @@
         
         .secondary-btn:hover {
             background: var(--brand-cyan);
-            color: #000;
+            color: #fff;
         }
 
         .main-btn svg {
@@ -287,7 +287,7 @@
 
         .feature-image:hover img {
             transform: scale(1.03);
-            box-shadow: 0 0 30px -5px rgba(0, 217, 255, 0.4);
+            box-shadow: 0 0 30px -5px rgba(233, 30, 99, 0.4);
         }
 
         .showcase-section {
@@ -473,7 +473,7 @@
         
         .app-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.1);
         }
         
         .app-card-top-content {}
@@ -824,16 +824,15 @@
         <div class="container">
             <a href="#" class="logo" id="home-logo">Shubh<span>zone</span></a>
             <div class="header-buttons">
-                <!-- === IMPORTANT CHANGE: The "Start" button now has a unique ID 'start-payment-btn' for easier targeting === -->
-                <a href="#" id="start-payment-btn" class="main-btn">
+                <!-- === IMPORTANT CHANGE: The "Start" button now acts as the primary action button === -->
+                <a href="#" id="start-payment-btn" class="main-btn start-btn">
                     <span>Start</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                 </a>
-                <!-- === IMPORTANT CHANGE: The original "Pay" button is now hidden by default using style="display: none;" === -->
+                 <!-- === IMPORTANT CHANGE: The "Pay" button is now hidden by default using style="display: none;" === -->
                 <button id="payment-btn" class="main-btn" style="display: none;">
                    <span>Pay ₹5 to Activate</span>
                 </button>
-                <!-- === IMPORTANT CHANGE: "Other Apps" button has been completely removed as requested === -->
             </div>
         </div>
     </header>
@@ -844,19 +843,21 @@
                 <canvas id="particle-canvas"></canvas>
                 <div class="container">
                     <div class="reveal">
-                        <h1>The Convergence of <span>Creativity & Skill</span></h1>
-                        <p>Shubhzone is a next-generation ecosystem built for India. Learn from the best, compete with the brightest, and monetize your passion.</p>
+                        <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                        <h1>Find Your <span>Perfect Match</span></h1>
+                        <p>Welcome to Shubhzone, India's new-age platform for meaningful connections. Discover genuine profiles, engage in real conversations, and find a relationship that truly matters.</p>
                         <div class="hero-skills">
-                            <span>Design</span><span>Coding</span><span>Music</span><span>Marketing</span><span>& More</span>
+                            <span>Meaningful Connections</span><span>Verified Profiles</span><span>Private Chats</span><span>AI Matchmaking</span>
                         </div>
-                        <!-- === IMPORTANT CHANGE: Added 'start-btn' class to this button as well for consistent behavior === -->
-                        <a href="https://shubhzone.shop/app" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
-                            <span>Start</span>
+                        <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow === -->
+                        <a href="#" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
+                            <span>Get Started</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                         </a>
                     </div>
                     <div class="hero-image-container reveal" style="transition-delay: 200ms;">
-                        <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Futuristic Dashboard Interface">
+                        <!-- === CONTENT CHANGE: Updated image alt text === -->
+                        <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Dating App Interface">
                     </div>
                 </div>
             </section>
@@ -865,16 +866,18 @@
                 <div class="container">
                     <div class="feature-layout">
                         <div class="feature-content reveal">
-                            <h2>Immersive Learning Environment</h2>
-                            <p>Dive into a distraction-free space designed for deep focus. Our platform helps you absorb skills faster and more effectively.</p>
+                            <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                            <h2>A Safe & Secure Environment</h2>
+                            <p>Your privacy and safety are our top priority. We provide robust tools to ensure you can connect with others confidently and securely.</p>
                             <ul class="feature-list">
-                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>AI-curated learning paths tailored to you.</li>
-                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Direct chat access with creators for mentorship.</li>
-                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Trackable milestones and progress analytics.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Profile verification to ensure genuine users.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Private and secure chat and call features.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Advanced reporting and blocking tools.</li>
                             </ul>
                         </div>
                         <div class="feature-image reveal" style="transition-delay: 200ms;">
-                            <img src="https://i.ibb.co/HTjy6Cjd/Leonardo-Phoenix-10-A-young-girl-sitting-in-a-cozy-dimly-lit-r-0.jpg" alt="A girl learning in a focused environment">
+                             <!-- === CONTENT CHANGE: Updated image alt text === -->
+                            <img src="https://i.ibb.co/HTjy6Cjd/Leonardo-Phoenix-10-A-young-girl-sitting-in-a-cozy-dimly-lit-r-0.jpg" alt="A person chatting securely on their phone">
                         </div>
                     </div>
                 </div>
@@ -884,16 +887,18 @@
                 <div class="container">
                     <div class="feature-layout reverse">
                         <div class="feature-content reveal">
-                            <h2>A Powerful Creator's Toolkit</h2>
-                            <p>We provide everything you need to build your brand and business. From content hosting to payment processing, it's all here.</p>
+                            <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                            <h2>Discover Meaningful Matches</h2>
+                            <p>Our intelligent algorithm helps you find people who share your interests, values, and life goals. Move beyond superficial swipes.</p>
                              <ul class="feature-list">
-                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Seamlessly upload and manage your video courses.</li>
-                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Launch promotional ads to reach a wider audience.</li>
-                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Secure and timely payouts for your hard work.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>AI-powered matchmaking for better compatibility.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Detailed profiles with interests, prompts, and photos.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Fun icebreakers to start engaging conversations.</li>
                             </ul>
                         </div>
                         <div class="feature-image reveal" style="transition-delay: 200ms;">
-                            <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Digital workspace for creators">
+                            <!-- === CONTENT CHANGE: Updated image alt text === -->
+                            <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Digital interface showing compatible user profiles">
                         </div>
                     </div>
                 </div>
@@ -902,10 +907,12 @@
             <section class="section showcase-section">
                 <div class="container">
                     <div class="reveal">
-                        <h2>Where Talent is Rewarded</h2>
-                        <p>Move beyond just learning. Our regular competitions provide a stage for you to showcase your skills, compete with the best, and win real prizes.</p>
+                        <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                        <h2>Where Real Connections Happen</h2>
+                        <p>Join thousands of users in India who have found genuine friendships, companionship, and love on our platform. Your success story could be next.</p>
                         <div class="showcase-image-wrapper">
-                             <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Futuristic billboard showing winners">
+                             <!-- === CONTENT CHANGE: Updated image alt text === -->
+                             <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Billboard showcasing happy couples">
                         </div>
                     </div>
                 </div>
@@ -914,11 +921,12 @@
             <section class="section">
                 <div class="container">
                     <div class="cta-section reveal">
-                        <h2>Step Into The Zone.</h2>
-                        <p>Join a community committed to growth, innovation, and success. Your future starts now.</p>
-                        <!-- === IMPORTANT CHANGE: Added 'start-btn' class to this button as well for consistent behavior === -->
-                        <a href="https://shubhzone.shop/app" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
-                            <span>Start</span>
+                         <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                        <h2>Ready To Find Your Someone?</h2>
+                        <p>Join a community committed to authenticity and real connections. Your journey to find love starts now.</p>
+                        <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow === -->
+                        <a href="#" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
+                            <span>Join Now</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                         </a>
                     </div>
@@ -1086,7 +1094,7 @@
             <ul>
                 <li><strong>Email Support:</strong> For any inquiries, you can email us directly at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>. We aim to respond within 24-48 hours.</li>
                 <li><strong>Community & Updates:</strong> Follow our journey and get the latest updates on our official YouTube channel: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a>.</li>
-                 <li><strong>Business Address:</strong> [यहाँ अपना पूरा पता डालें], [शहर], [राज्य], [पिन कोड], India.</li>
+                 <li><strong>Business Address:</strong> [Your Full Address Here], [City], [State], [PIN Code], India.</li>
             </ul>
             <p>Your feedback is valuable to us as we continue to improve our platform.</p>
         </div>
@@ -1104,9 +1112,9 @@
             <p>Welcome to Shubhzone.shop! These terms and conditions outline the rules and regulations for the use of our website and services.</p>
             <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use Shubhzone.shop if you do not agree to all of the terms and conditions stated on this page.</p>
             <h2>1. Services</h2>
-            <p>Shubhzone.shop provides an online platform offering digital products, courses, skill-based competitions, and a toolkit for creators ("Services").</p>
+            <p>Shubhzone.shop provides an online platform offering a digital dating application and related services ("Services").</p>
             <h2>2. Payments and Subscriptions</h2>
-            <p>We use Razorpay for processing payments, including recurring subscriptions (eMandate). We do not store your card or bank data on our servers. By making a payment, you agree to Razorpay's terms and conditions. All transactions are secure and encrypted.</p>
+            <p>We use Razorpay for processing payments, including recurring subscriptions (eMandate) for premium features. We do not store your card or bank data on our servers. By making a payment, you agree to Razorpay's terms and conditions. All transactions are secure and encrypted.</p>
             <h2>3. Intellectual Property</h2>
             <p>The content, logo, and visual design on this website are the exclusive property of Shubhzone.shop and are protected by copyright laws. You may not reproduce, distribute, or transmit any part of the website without our prior written permission.</p>
             <h2>4. User Accounts</h2>
@@ -1134,7 +1142,7 @@
             <p>Shubhzone.shop ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and share your personal information when you use our services.</p>
             <h2>1. Information We Collect</h2>
             <ul>
-                <li><strong>Personal Information:</strong> We collect your name, email address, and contact details when you register or contact us.</li>
+                <li><strong>Personal Information:</strong> We collect your name, email address, and contact details when you register or contact us. For the dating service, we may also collect profile information such as photos, interests, and bio.</li>
                 <li><strong>Payment Information:</strong> We do not collect or store your payment card or bank account details. This information is provided directly to our third-party payment processor, Razorpay, whose use of your personal information is governed by their Privacy Policy.</li>
                 <li><strong>Usage Data:</strong> We may collect information on how the Service is accessed and used.</li>
             </ul>
@@ -1163,9 +1171,9 @@
         <div class="container">
             <h1>Shipping & Delivery Policy</h1>
             <p>Last updated: September 10, 2025</p>
-            <p>Shubhzone.shop is a platform for digital goods and services, including online courses, access to competitions, and downloadable software. As such, we do not ship any physical products.</p>
+            <p>Shubhzone.shop is a platform for digital goods and services, primarily a dating application. As such, we do not ship any physical products.</p>
             <h2>Delivery Process</h2>
-            <p>Upon successful payment confirmation via our payment gateway (Razorpay), you will receive immediate access to your purchased digital product or service. Access will be granted automatically to your user account on our platform or via a download link sent to your registered email address.</p>
+            <p>Upon successful payment confirmation via our payment gateway (Razorpay), you will receive immediate access to your purchased digital service or premium features. Access will be granted automatically to your user account on our platform.</p>
             <p>There is no "shipping" time as all deliveries are instantaneous and digital.</p>
             <h2>No Shipping Costs</h2>
             <p>Since all our products are digital, there are absolutely no shipping or handling fees involved.</p>
@@ -1209,7 +1217,7 @@
             const spotlight = document.querySelector('.spotlight');
             if(spotlight) {
                 document.addEventListener('mousemove', (e) => {
-                    spotlight.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(0, 217, 255, 0.1), transparent 30%)`;
+                    spotlight.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(233, 30, 99, 0.1), transparent 30%)`;
                 });
             }
 
@@ -1280,7 +1288,6 @@
             }
 
             // --- WARNING MODAL LOGIC (No changes) ---
-            // --- This part is now unused since the "Other Apps" button is removed, but kept for structural integrity ---
             const warningModal = document.getElementById('warning-modal');
             const warningModalCloseBtn = document.getElementById('warning-modal-close-btn');
             const modalProceedBtn = document.getElementById('modal-proceed-btn');
@@ -1349,8 +1356,8 @@
                     downloadLink: "https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk"
                 },
                 {
-                    name: "आपकी दूसरी ऐप का नाम",
-                    description: "यहाँ अपनी दूसरी ऐप के बारे में लिखें। आप इस जानकारी को एडमिन पैनल से बदल सकते हैं।",
+                    name: "Another App Name",
+                    description: "Write about your second app here. You can change this from the admin panel.",
                     imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App Icon">',
                     downloadLink: "#"
                 }
@@ -1436,7 +1443,6 @@
                     e.preventDefault();
                     const parentPage = btn.closest('.page');
                     if (parentPage.id === 'password-page') {
-                        // If "Other Apps" is removed, this should probably go back to main content.
                         showPage(mainContent);
                     } else if (parentPage.id === 'admin-page') {
                         showPage(passwordPage);
@@ -1595,8 +1601,7 @@
     <!-- === THIS SCRIPT HAS BEEN MODIFIED AS PER YOUR REQUEST === -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // === IMPORTANT CHANGE: Select the new start button and all generic start buttons ===
-            const startPaymentButton = document.getElementById('start-payment-btn');
+            // === IMPORTANT CHANGE: Select all generic start buttons ===
             const allStartButtons = document.querySelectorAll('.start-btn');
             
             // This is the function that will perform the payment
@@ -1627,8 +1632,8 @@
                         handler: function (response) {
                             alert("Payment Successful! UPI AutoPay is now active.");
                             localStorage.setItem('shubhzonePaymentDone', 'true');
-                            // After payment, redirect to the app link
-                            window.location.href = "https://shubhzone.shop/app";
+                            // === IMPORTANT CHANGE: After payment, redirect to the new app link ===
+                            window.location.href = "https://datin.onrender.com";
                         },
                         prefill: {
                             name: "Shubhzone User",
@@ -1639,7 +1644,7 @@
                             "purpose": "Setting up UPI AutoPay for Shubhzone"
                         },
                         theme: {
-                            color: "#00d9ff"
+                            color: "#e91e63" // Match new theme
                         }
                     };
                     
@@ -1664,8 +1669,8 @@
                 
                 // Check if payment has already been done
                 if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
-                    // If paid, go directly to the app URL
-                    window.location.href = "https://shubhzone.shop/app";
+                    // === IMPORTANT CHANGE: If paid, go directly to the new app URL ===
+                    window.location.href = "https://datin.onrender.com";
                 } else {
                     // If not paid, start the payment process
                     initiatePayment();
@@ -1676,11 +1681,7 @@
             allStartButtons.forEach(btn => {
                 btn.addEventListener('click', handleStartClick);
             });
-
-            // Initial check on page load:
-            // If payment is already done, the click handler will redirect.
-            // If not, it will trigger payment. No visual change is needed here anymore.
-            // The old disabled/enabled logic is now implicitly handled by the click function.
+            
         });
     </script>
 </body>
