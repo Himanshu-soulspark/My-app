@@ -36,7 +36,7 @@
             color: var(--text-secondary);
             overflow-x: hidden;
         }
-        
+
         body.modal-open {
             overflow: hidden;
         }
@@ -79,7 +79,7 @@
         p {
             line-height: 1.7;
         }
-        
+
         .reveal {
             opacity: 0;
             transform: translateY(40px);
@@ -119,11 +119,11 @@
         .logo span {
             color: var(--brand-cyan);
         }
-        
+
         .header-buttons {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;
             justify-content: flex-end;
         }
 
@@ -141,7 +141,7 @@
             border: none;
             cursor: pointer;
         }
-        
+
         .secondary-btn {
              background: transparent;
              color: var(--brand-cyan);
@@ -153,7 +153,7 @@
             color: #000;
             transform: scale(1.05);
         }
-        
+
         .secondary-btn:hover {
             background: var(--brand-cyan);
             color: #fff;
@@ -166,7 +166,7 @@
         .main-btn:hover svg {
             transform: translateX(4px);
         }
-        
+
         /* Style for disabled buttons */
         .start-btn.disabled {
             background-color: #555;
@@ -316,7 +316,7 @@
             height: auto;
             border-radius: 10px;
         }
-        
+
         .cta-section {
             background: linear-gradient(45deg, var(--bg-card), #181e28);
             padding: 80px;
@@ -350,7 +350,7 @@
             color: var(--brand-cyan);
             text-decoration: none;
         }
-        
+
         .footer-policies {
             padding-top: 20px;
             margin-top: 20px;
@@ -367,14 +367,14 @@
         .footer-policies nav a:hover {
             color: var(--brand-cyan);
         }
-        
+
         .page {
             display: none;
             padding-top: 40px;
             padding-bottom: 120px;
             min-height: 100vh;
         }
-        
+
         .policy-page .container {
             max-width: 800px;
         }
@@ -458,7 +458,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 40px;
         }
-        
+
         .app-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -470,16 +470,16 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        
+
         .app-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 10px 30px rgba(233, 30, 99, 0.1);
         }
-        
+
         .app-card-top-content {}
 
         .app-card-bottom-content {
-            margin-top: 20px; 
+            margin-top: 20px;
         }
 
         .app-card-buttons {
@@ -488,12 +488,12 @@
             gap: 15px;
             margin-top: 20px;
         }
-        
+
         .app-card h3 {
             font-size: 1.5rem;
             margin-bottom: 10px;
         }
-        
+
         .app-card .app-card-description {
             font-size: 1rem;
             margin-bottom: 20px;
@@ -501,7 +501,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .app-card .app-image-container {
             width: 100%;
             max-width: 250px;
@@ -516,7 +516,7 @@
             height: auto;
             display: block;
         }
-        
+
         .download-btn {
             background: var(--brand-blue);
             color: #fff;
@@ -527,7 +527,7 @@
             display: inline-block;
             flex-grow: 1;
         }
-        
+
         .download-btn:hover {
             background: var(--brand-cyan);
             color: #000;
@@ -659,7 +659,7 @@
             min-height: 150px;
             resize: vertical;
         }
-        #password-error {
+        #password-error, #movie-password-error {
             color: var(--danger-color);
             text-align: center;
             margin-top: 15px;
@@ -762,7 +762,7 @@
                 gap: 15px;
             }
             .hero {
-                padding-top: 180px; 
+                padding-top: 180px;
                 padding-bottom: 80px;
             }
             .hero h1 {
@@ -829,6 +829,10 @@
                     <span>Start</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                 </a>
+                <!-- === NEW CHANGE: Added Movie button === -->
+                <button id="movie-btn" class="main-btn secondary-btn">
+                   <span>Movie</span>
+                </button>
                  <!-- === IMPORTANT CHANGE: The "Pay" button is now hidden by default using style="display: none;" === -->
                 <button id="payment-btn" class="main-btn" style="display: none;">
                    <span>Pay ₹5 to Activate</span>
@@ -903,7 +907,7 @@
                     </div>
                 </div>
             </section>
-            
+
             <section class="section showcase-section">
                 <div class="container">
                     <div class="reveal">
@@ -941,7 +945,7 @@
                 <p>Contact: <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
                 <p>YouTube: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a></p>
                 <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">© 2025 Shubhzone.shop. All Rights Reserved.</p>
-                
+
                 <div class="footer-policies">
                     <nav>
                         <a data-page="terms-page">Terms & Conditions</a>
@@ -953,7 +957,7 @@
             </div>
         </footer>
     </div>
-    
+
     <!-- Warning Modal -->
     <div id="warning-modal" class="modal-overlay">
         <div class="modal-content">
@@ -997,13 +1001,28 @@
         </div>
     </div>
 
+    <!-- === NEW CHANGE: Movie Password Modal === -->
+    <div id="movie-password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="movie-password-close-btn" class="modal-close-btn">×</button>
+            <h2>Enter Password</h2>
+            <form id="movie-password-form" style="margin-top: 20px;">
+                <div class="form-group">
+                    <input type="password" id="movie-password-input" placeholder="Password" required style="text-align: center;">
+                </div>
+                <div id="movie-password-error"></div>
+                <button type="submit" class="main-btn" style="width: 100%; justify-content: center; margin-top: 10px;">Submit</button>
+            </form>
+        </div>
+    </div>
+
     <!-- App Store Page -->
     <div id="other-apps-page" class="page">
         <header class="store-header">
             <div class="container">
                 <a class="store-back-btn">←</a>
                 <h2 class="store-title" id="store-title-btn">Shubhzone Store <span>🏬</span></h2>
-                <div style="width: 24px;"></div> 
+                <div style="width: 24px;"></div>
             </div>
         </header>
         <div class="container">
@@ -1017,7 +1036,7 @@
             <div class="container">
                 <a class="store-back-btn">←</a>
                 <h2 class="store-title">Admin Access</h2>
-                 <div style="width: 24px;"></div> 
+                 <div style="width: 24px;"></div>
             </div>
         </header>
         <div class="form-page-container">
@@ -1031,7 +1050,7 @@
             </form>
         </div>
     </div>
-    
+
     <!-- Admin App Submission Page -->
     <div id="admin-page" class="page">
         <header class="store-header">
@@ -1072,7 +1091,7 @@
             <div class="container">
                  <a class="store-back-btn">←</a>
                 <h2 class="store-title">Manage Apps</h2>
-                 <div style="width: 24px;"></div> 
+                 <div style="width: 24px;"></div>
             </div>
         </header>
         <div class="container">
@@ -1181,7 +1200,7 @@
             <p>If you have any questions or have not received access to your purchase after a successful payment, please contact us immediately at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a> with your transaction details, and we will resolve the issue promptly.</p>
         </div>
     </div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- GLOBAL PAGE ELEMENTS ---
@@ -1190,12 +1209,12 @@
             const passwordPage = document.getElementById('password-page');
             const adminPage = document.getElementById('admin-page');
             const manageAppsPage = document.getElementById('manage-apps-page');
-            
+
             const contactPage = document.getElementById('contact-page');
             const termsPage = document.getElementById('terms-page');
             const privacyPage = document.getElementById('privacy-page');
             const shippingPage = document.getElementById('shipping-page');
-            
+
             const allPages = [mainContent, otherAppsPage, passwordPage, adminPage, manageAppsPage, contactPage, termsPage, privacyPage, shippingPage];
             const header = document.querySelector('.header');
             const bodyEl = document.body;
@@ -1232,7 +1251,7 @@
                 }, { threshold: 0.1 });
                 reveals.forEach(reveal => observer.observe(reveal));
             }
-            
+
             const canvas = document.getElementById('particle-canvas');
             if (canvas) {
                 const heroSection = document.querySelector('.hero');
@@ -1275,7 +1294,7 @@
                     particles.forEach(p => { p.update(); p.draw(); });
                     requestAnimationFrame(animateParticles);
                 }
-                
+
                 function handleResize() {
                     canvas.width = window.innerWidth;
                     canvas.height = heroSection.offsetHeight;
@@ -1304,13 +1323,13 @@
             }
 
             if(warningModalCloseBtn) warningModalCloseBtn.addEventListener('click', closeWarningModal);
-            
+
             if(modalProceedBtn) modalProceedBtn.addEventListener('click', () => {
                 closeWarningModal();
                 renderApps();
                 showPage(otherAppsPage);
             });
-            
+
             if(langHiBtn) langHiBtn.addEventListener('click', () => {
                 messageHi.style.display = 'block';
                 messageEn.style.display = 'none';
@@ -1324,7 +1343,7 @@
                 langEnBtn.classList.add('active');
                 hiBtn.classList.remove('active');
             });
-            
+
             // --- DESCRIPTION MODAL LOGIC ---
             const descriptionModal = document.getElementById('description-modal');
             const descriptionModalCloseBtn = document.getElementById('description-modal-close-btn');
@@ -1343,11 +1362,11 @@
                 bodyEl.classList.remove('modal-open');
             }
             if(descriptionModalCloseBtn) descriptionModalCloseBtn.addEventListener('click', closeDescriptionModal);
-            
+
 
             // --- APP STORE LOGIC (No changes) ---
             const appsGridContainer = document.getElementById('apps-grid-container');
-            
+
             const initialApps = [
                 {
                     name: "SoulSpark Dating",
@@ -1377,7 +1396,7 @@
                     return initialApps;
                 }
             }
-            
+
             function saveApps(apps) {
                  try {
                        localStorage.setItem('shubhzone_apps', JSON.stringify(apps));
@@ -1478,19 +1497,19 @@
             // --- PASSWORD PAGE LOGIC (No changes) ---
             const passwordForm = document.getElementById('password-form');
             const passwordErrorEl = document.getElementById('password-error');
-            
+
             const correctPassword = "himanshu@123";
-            
+
             if (passwordForm) {
                 passwordForm.addEventListener('submit', e => {
                     e.preventDefault();
                     if (passwordErrorEl) passwordErrorEl.textContent = '';
-                    
+
                     const inputElement = document.getElementById('admin-password');
                     const enteredPassword = inputElement.value;
 
                     if (enteredPassword === correctPassword) {
-                        resetAdminForm(); 
+                        resetAdminForm();
                         showPage(adminPage);
                         passwordForm.reset();
                     } else {
@@ -1521,18 +1540,18 @@
                         imageHTML: document.getElementById('app-image-html').value,
                         downloadLink: document.getElementById('app-download-link').value
                     };
-                    
+
                     let apps = getApps();
                     const editIndex = appEditIndexInput.value;
 
-                    if (editIndex !== '' && apps[editIndex]) { 
+                    if (editIndex !== '' && apps[editIndex]) {
                         apps[editIndex] = appData;
                         alert('App updated successfully!');
-                    } else { 
+                    } else {
                         apps.push(appData);
                         alert('App added successfully!');
                     }
-                    
+
                     saveApps(apps);
                     resetAdminForm();
                     renderApps(); // Render apps for the store page
@@ -1568,15 +1587,15 @@
                 manageListContainer.addEventListener('click', e => {
                     const index = e.target.getAttribute('data-index');
                     if (index === null) return;
-                    
+
                     let apps = getApps();
 
                     if (e.target.classList.contains('delete-btn')) {
                         if (confirm(`Are you sure you want to delete "${apps[index].name}"?`)) {
                            apps.splice(index, 1);
                            saveApps(apps);
-                           renderManageableApps(); 
-                           renderApps(); 
+                           renderManageableApps();
+                           renderApps();
                         }
                     } else if (e.target.classList.contains('edit-btn')) {
                         const appToEdit = apps[index];
@@ -1591,19 +1610,69 @@
                     }
                 });
             }
+             // --- NEW CHANGE: MOVIE PASSWORD MODAL LOGIC ---
+            const moviePasswordModal = document.getElementById('movie-password-modal');
+            const moviePasswordCloseBtn = document.getElementById('movie-password-close-btn');
+            const moviePasswordForm = document.getElementById('movie-password-form');
+            const moviePasswordErrorEl = document.getElementById('movie-password-error');
+            const movieBtn = document.getElementById('movie-btn');
+
+            const correctMoviePassword = "Himanshu@123";
+            const movieLink = "https://movie-bmvr.onrender.com";
+
+            function openMoviePasswordModal() {
+                moviePasswordErrorEl.textContent = '';
+                moviePasswordForm.reset();
+                moviePasswordModal.style.display = 'flex';
+                bodyEl.classList.add('modal-open');
+            }
+
+            function closeMoviePasswordModal() {
+                moviePasswordModal.style.display = 'none';
+                bodyEl.classList.remove('modal-open');
+            }
+
+            if(moviePasswordCloseBtn) moviePasswordCloseBtn.addEventListener('click', closeMoviePasswordModal);
+
+            if(movieBtn) {
+                movieBtn.addEventListener('click', () => {
+                    // Check if payment is done
+                    if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
+                        // If paid, go directly to the movie link
+                        window.location.href = movieLink;
+                    } else {
+                        // If not paid, ask for the password
+                        openMoviePasswordModal();
+                    }
+                });
+            }
+
+            if(moviePasswordForm) {
+                moviePasswordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const enteredPassword = document.getElementById('movie-password-input').value;
+                    if (enteredPassword === correctMoviePassword) {
+                        closeMoviePasswordModal();
+                        window.location.href = movieLink;
+                    } else {
+                        moviePasswordErrorEl.textContent = 'Incorrect password.';
+                    }
+                });
+            }
+
 
             // Initial setup
             showPage(mainContent);
 
         });
     </script>
-    
+
     <!-- === THIS SCRIPT HAS BEEN MODIFIED AS PER YOUR REQUEST === -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // === IMPORTANT CHANGE: Select all generic start buttons ===
             const allStartButtons = document.querySelectorAll('.start-btn');
-            
+
             // This is the function that will perform the payment
             async function initiatePayment() {
                 try {
@@ -1613,12 +1682,12 @@
                             'Content-Type': 'application/json',
                         },
                     });
-                    
+
                     if (!response.ok) {
                         const errorData = await response.json();
                         throw new Error(errorData.error || 'Network response was not ok');
                     }
-                    
+
                     const data = await response.json();
                     const subscription_id = data.subscription_id;
                     const razorpayKeyId = data.key_id;
@@ -1628,7 +1697,7 @@
                         name: "Shubhzone Activation",
                         description: "UPI AutoPay Setup (₹5)",
                         subscription_id: subscription_id,
-                        
+
                         handler: function (response) {
                             alert("Payment Successful! UPI AutoPay is now active.");
                             localStorage.setItem('shubhzonePaymentDone', 'true');
@@ -1647,13 +1716,13 @@
                             color: "#e91e63" // Match new theme
                         }
                     };
-                    
+
                     const rzp1 = new Razorpay(options);
 
                     rzp1.on('payment.failed', function (response){
                         alert("Payment Failed: " + response.error.description);
                     });
-                    
+
                     rzp1.open();
 
                 } catch (error) {
@@ -1661,12 +1730,12 @@
                     alert('Could not initiate payment. Please try again later. Error: ' + error.message);
                 }
             }
-            
+
             // === IMPORTANT CHANGE: This function handles what happens when a start button is clicked ===
             function handleStartClick(event) {
                 // Prevent the default link behavior
-                event.preventDefault(); 
-                
+                event.preventDefault();
+
                 // Check if payment has already been done
                 if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
                     // === IMPORTANT CHANGE: If paid, go directly to the new app URL ===
@@ -1681,7 +1750,7 @@
             allStartButtons.forEach(btn => {
                 btn.addEventListener('click', handleStartClick);
             });
-            
+
         });
     </script>
 </body>
