@@ -1001,7 +1001,23 @@
         </div>
     </div>
 
-    <!-- === NEW CHANGE: Movie Password Modal === -->
+    <!-- === ज़रूरी बदलाव: यह नया Modal जोड़ा गया है === -->
+    <div id="ad-free-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="ad-free-modal-close-btn" class="modal-close-btn">×</button>
+            <h2>Ad-Free Experience Recommended</h2>
+            <div class="modal-message" style="text-align: center;">
+                <p>For the best ad-free movie experience, we recommend using Brave Browser.</p>
+                <p>Brave automatically blocks ads and trackers.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="https://brave.com/download/" target="_blank" class="main-btn">Download Brave Browser</a>
+                <button id="ad-free-proceed-btn" class="main-btn secondary-btn" style="margin-top: 15px;">OK, Proceed Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Password Modal -->
     <div id="movie-password-modal" class="modal-overlay">
         <div class="modal-content">
             <button id="movie-password-close-btn" class="modal-close-btn">×</button>
@@ -1610,80 +1626,94 @@
                 }
             });
         }
-
-        // === ज़रूरी बदलाव: MOVIE PASSWORD MODAL LOGIC ===
+         
+        // =================================================================================
+        // ==================== सिर्फ इस हिस्से में ज़रूरी बदलाव किया गया है ==================
+        // =================================================================================
         const moviePasswordModal = document.getElementById('movie-password-modal');
         const moviePasswordCloseBtn = document.getElementById('movie-password-close-btn');
         const moviePasswordForm = document.getElementById('movie-password-form');
         const moviePasswordErrorEl = document.getElementById('movie-password-error');
         const movieBtn = document.getElementById('movie-btn');
 
+        // नया Ad-Free Modal
+        const adFreeModal = document.getElementById('ad-free-modal');
+        const adFreeModalCloseBtn = document.getElementById('ad-free-modal-close-btn');
+        const adFreeProceedBtn = document.getElementById('ad-free-proceed-btn');
+
         const correctMoviePassword = "Himanshu@123";
-        // अब हम लिंक को सीधे यहाँ नहीं लिखेंगे।
+        const movieLink = "https://filmzio.netlify.app/"; // आपका मूवी लिंक यहाँ डाला गया है
 
-        // यह फंक्शन सर्वर से मूवी लिंक को fetch करेगा और उस पर redirect करेगा
-        async function redirectToMovie() {
-            try {
-                // सर्वर पर बनाए गए नए API एंडपॉइंट से लिंक मांगें
-                const response = await fetch('/api/get-movie-link');
+        // --- नए Ad-Free Modal के लिए Functions ---
+        function openAdFreeModal() {
+            if (adFreeModal) adFreeModal.style.display = 'flex';
+            bodyEl.classList.add('modal-open');
+        }
 
-                if (!response.ok) {
-                    throw new Error('सर्वर से मूवी लिंक प्राप्त नहीं किया जा सका।');
-                }
-                const data = await response.json();
-
-                // अगर डेटा में movieLink है, तो उस पर redirect करें
-                if (data && data.movieLink) {
-                    window.location.href = data.movieLink;
-                } else {
-                    // अगर सर्वर से लिंक नहीं मिला तो एरर दिखाएं
-                    alert('त्रुटि: मूवी लिंक सर्वर पर ठीक से सेट नहीं है।');
-                }
-            } catch (error) {
-                console.error('मूवी लिंक fetch करते समय त्रुटि:', error);
-                alert('एक त्रुटि हुई। मूवी लोड नहीं हो सकी।');
+        function closeAdFreeModal() {
+            if (adFreeModal) adFreeModal.style.display = 'none';
+            // बॉडी से modal-open तभी हटाएँ जब कोई और modal खुला न हो
+            if (!moviePasswordModal || moviePasswordModal.style.display === 'none') {
+                bodyEl.classList.remove('modal-open');
             }
         }
 
+        // --- पुराने Password Modal के लिए Functions ---
         function openMoviePasswordModal() {
-            moviePasswordErrorEl.textContent = '';
-            moviePasswordForm.reset();
-            moviePasswordModal.style.display = 'flex';
+            if (moviePasswordErrorEl) moviePasswordErrorEl.textContent = '';
+            if (moviePasswordForm) moviePasswordForm.reset();
+            if (moviePasswordModal) moviePasswordModal.style.display = 'flex';
             bodyEl.classList.add('modal-open');
         }
 
         function closeMoviePasswordModal() {
-            moviePasswordModal.style.display = 'none';
+            if (moviePasswordModal) moviePasswordModal.style.display = 'none';
             bodyEl.classList.remove('modal-open');
         }
+        
+        // --- Event Listeners ---
+        if (moviePasswordCloseBtn) moviePasswordCloseBtn.addEventListener('click', closeMoviePasswordModal);
+        if (adFreeModalCloseBtn) adFreeModalCloseBtn.addEventListener('click', closeAdFreeModal);
 
-        if(moviePasswordCloseBtn) moviePasswordCloseBtn.addEventListener('click', closeMoviePasswordModal);
-
+        // "Movie" बटन पर क्लिक करने पर अब हमेशा Ad-Free Modal खुलेगा
         if(movieBtn) {
             movieBtn.addEventListener('click', () => {
-                // जांचें कि भुगतान हो गया है या नहीं
+                openAdFreeModal();
+            });
+        }
+        
+        // Ad-Free Modal के "OK" बटन का लॉजिक
+        if(adFreeProceedBtn) {
+            adFreeProceedBtn.addEventListener('click', () => {
+                closeAdFreeModal(); // पहले इस modal को बंद करें
+                
+                // अब पेमेंट की स्थिति जांचें
                 if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
-                    // यदि भुगतान हो गया है, तो सीधे मूवी लिंक पर जाएं
-                    redirectToMovie(); // async फंक्शन को कॉल करें
+                    // अगर पेमेंट हो गया है, तो सीधे मूवी लिंक पर भेजें
+                    window.location.href = movieLink;
                 } else {
-                    // यदि भुगतान नहीं हुआ है, तो पासवर्ड मांगें
+                    // अगर पेमेंट नहीं हुआ है, तो पासवर्ड वाला modal दिखाएँ
                     openMoviePasswordModal();
                 }
             });
         }
-
+        
+        // Password फॉर्म जमा करने का लॉजिक
         if(moviePasswordForm) {
             moviePasswordForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const enteredPassword = document.getElementById('movie-password-input').value;
                 if (enteredPassword === correctMoviePassword) {
                     closeMoviePasswordModal();
-                    redirectToMovie(); // async फंक्शन को कॉल करें
+                    window.location.href = movieLink; // सही पासवर्ड पर मूवी लिंक पर भेजें
                 } else {
-                    moviePasswordErrorEl.textContent = 'गलत पासवर्ड।';
+                    moviePasswordErrorEl.textContent = 'Incorrect password.';
                 }
             });
         }
+        // =================================================================================
+        // ============================= बदलाव यहाँ खत्म होता है ============================
+        // =================================================================================
 
 
         // Initial setup
