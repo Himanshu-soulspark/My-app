@@ -105,6 +105,29 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok', message: 'Server is running perfectly!' });
 });
 
+// ============================================================================
+// ==================== यहाँ नया कोड जोड़ा गया है ==============================
+// ============================================================================
+// === मूवी लिंक पाने के लिए नया API एंडपॉइंट ===
+app.get('/api/get-movie-link', (req, res) => {
+    // Render के Environment Variables से 'MOVIE_LINK' को पढ़ना
+    const movieLinkFromEnv = process.env.MOVIE_LINK;
+
+    if (movieLinkFromEnv) {
+        // अगर लिंक मौजूद है, तो उसे JSON फॉर्मेट में वापस भेजना
+        res.json({ movieLink: movieLinkFromEnv });
+    } else {
+        // अगर MOVIE_LINK सेट नहीं है, तो सर्वर पर एक एरर लॉग करना
+        console.error('❌ CONFIGURATION ERROR: The MOVIE_LINK environment variable is not set.');
+        // और क्लाइंट को एक साफ एरर भेजना
+        res.status(404).json({ error: 'Movie link is not configured on the server.' });
+    }
+});
+// ============================================================================
+// ======================= नया कोड यहाँ खत्म होता है ==========================
+// ============================================================================
+
+
 // === सब्सक्रिप्शन बनाने का सबसे सही और फाइनल तरीका ===
 app.post('/create-subscription', async (req, res) => {
     try {
