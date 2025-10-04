@@ -34,6 +34,7 @@ try {
 const app = express();
 
 // =====================================================================================
+// ==================== सिर्फ यही एक ज़रूरी बदलाव किया गया है ===========================
 // =====================================================================================
 // CORS को सबसे खुली सेटिंग पर सेट करना ताकि ब्राउज़र जवाब को ब्लॉक न करे
 app.use(cors());
@@ -44,8 +45,7 @@ app.use(cors());
 // ===================================================================
 // ==================== सिर्फ एक LIVE PLAN ID की ज़रूरत है ==================
 // ===================================================================
-// यहाँ पर आपकी नई ₹1 वाली Live Plan ID डाल दी गई है
-const MAIN_PLAN_ID = 'plan_RPORZJZ4hF6uu2';
+const MAIN_PLAN_ID = 'plan_RFqNX97VOfwJwl'; // सिर्फ आपकी ₹500 वाली Live Plan ID
 // ===================================================================
 
 
@@ -117,8 +117,7 @@ app.post('/create-subscription', async (req, res) => {
 
         const startTimeInFuture = Math.floor(Date.now() / 1000) + 3600;
 
-        // यहाँ पर ₹1 की एक्टिवेशन फीस सेट कर दी गई है
-        console.log(`LIVE: Creating a subscription for customer ${customer.id} with a ₹1 activation fee...`);
+        console.log(`LIVE: Creating a ₹500 subscription for customer ${customer.id} with a ₹5 activation fee...`);
         
         const subscription = await razorpay.subscriptions.create({
             plan_id: MAIN_PLAN_ID,
@@ -129,7 +128,7 @@ app.post('/create-subscription', async (req, res) => {
                 {
                     item: {
                         name: "Activation Fee",
-                        amount: 100, // 100 पैसे = ₹1
+                        amount: 500, // 500 पैसे = ₹5
                         currency: "INR"
                     }
                 }
