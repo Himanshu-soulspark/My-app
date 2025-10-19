@@ -1,9 +1,9 @@
 # ===================================================================
 # Netlify Proxy Redirect Rule
-# यह नियम /api/ से शुरू होने वाली किसी भी रिक्वेस्ट को पकड़ता है
-# और उसे आपके Render सर्वर पर भेजता है।
+# Yeh rule /api/ se shuru hone wali sabhi requests ko
+# aapke naye Render server par bhej dega.
 # ===================================================================
 [[redirects]]
   from = "/api/*"
-  to = "https://my-app-18kg.onrender.com/:splat"
-  status = 200 # यह इसे एक प्रॉक्सी बनाता है, रीडायरेक्ट नहीं।
+  to = "https://my-app-1-euw0.onrender.com/:splat"
+  status = 200 # Yeh zaroori hai taaki yeh ek proxy ki tarah kaam kare, redirect ki tarah nahi.
