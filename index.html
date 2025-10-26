@@ -941,8 +941,7 @@
         <footer class="footer">
             <div class="container">
                 <a href="#" class="logo footer-logo">Shubh<span>zone</span></a>
-                <p>A vision by Himanshu Kumar from India.</p>
-                <p>Contact: <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+                <p>Contact: <a href="mailto:contact@shubhzone.shop">contact@shubhzone.shop</a></p>
                 <p>YouTube: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a></p>
                 <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">© 2025 Shubhzone.shop. All Rights Reserved.</p>
 
@@ -1127,7 +1126,7 @@
             <h1>Contact Us</h1>
             <p>If you have any questions, concerns, or feedback about our services, please feel free to reach out to us. We are here to help!</p>
             <ul>
-                <li><strong>Email Support:</strong> For any inquiries, you can email us directly at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>. We aim to respond within 24-48 hours.</li>
+                <li><strong>Email Support:</strong> For any inquiries, you can email us directly at <a href="mailto:contact@shubhzone.shop">contact@shubhzone.shop</a>. We aim to respond within 24-48 hours.</li>
                 <li><strong>Community & Updates:</strong> Follow our journey and get the latest updates on our official YouTube channel: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a>.</li>
                  <li><strong>Business Address:</strong> [Your Full Address Here], [City], [State], [PIN Code], India.</li>
             </ul>
@@ -1161,7 +1160,7 @@
             <h2>7. Governing Law</h2>
             <p>These terms will be governed by and interpreted in accordance with the laws of India, and you submit to the non-exclusive jurisdiction of the state and federal courts located in India for the resolution of any disputes.</p>
             <h2>8. Contact Information</h2>
-            <p>If you have any questions about these Terms, please contact us at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>.</p>
+            <p>If you have any questions about these Terms, please contact us at <a href="mailto:contact@shubhzone.shop">contact@shubhzone.shop</a>.</p>
         </div>
     </div>
 
@@ -1193,7 +1192,7 @@
             <h2>4. Your Data Rights</h2>
             <p>You have the right to access, update, or delete the information we have on you. You can do this at any time by accessing your account settings or by contacting us directly.</p>
             <h2>5. Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>.</p>
+            <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:contact@shubhzone.shop">contact@shubhzone.shop</a>.</p>
         </div>
     </div>
 
@@ -1213,7 +1212,7 @@
             <h2>No Shipping Costs</h2>
             <p>Since all our products are digital, there are absolutely no shipping or handling fees involved.</p>
             <h2>Contact Us</h2>
-            <p>If you have any questions or have not received access to your purchase after a successful payment, please contact us immediately at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a> with your transaction details, and we will resolve the issue promptly.</p>
+            <p>If you have any questions or have not received access to your purchase after a successful payment, please contact us immediately at <a href="mailto:contact@shubhzone.shop">contact@shubhzone.shop</a> with your transaction details, and we will resolve the issue promptly.</p>
         </div>
     </div>
 
@@ -1628,7 +1627,7 @@
         }
          
         // =================================================================================
-        // ==================== सिर्फ इस हिस्से में ज़रूरी बदलाव किया गया है ==================
+        // ==================== HIER WURDEN DIE GEWÜNSCHTEN ÄNDERUNGEN VORGENOMMEN ==========
         // =================================================================================
         const moviePasswordModal = document.getElementById('movie-password-modal');
         const moviePasswordCloseBtn = document.getElementById('movie-password-close-btn');
@@ -1636,15 +1635,16 @@
         const moviePasswordErrorEl = document.getElementById('movie-password-error');
         const movieBtn = document.getElementById('movie-btn');
 
-        // नया Ad-Free Modal
+        // Ad-Free Modal
         const adFreeModal = document.getElementById('ad-free-modal');
         const adFreeModalCloseBtn = document.getElementById('ad-free-modal-close-btn');
         const adFreeProceedBtn = document.getElementById('ad-free-proceed-btn');
 
-        const correctMoviePassword = "Himanshu@123";
-        const movieLink = "https://filmzio.netlify.app/"; // आपका मूवी लिंक यहाँ डाला गया है
+        // === PASSWORT-ÄNDERUNG ===
+        const correctMoviePassword = "shubhzone89"; 
+        const movieLink = "https://filmzio.netlify.app/";
 
-        // --- नए Ad-Free Modal के लिए Functions ---
+        // --- Functions for Ad-Free Modal ---
         function openAdFreeModal() {
             if (adFreeModal) adFreeModal.style.display = 'flex';
             bodyEl.classList.add('modal-open');
@@ -1652,13 +1652,12 @@
 
         function closeAdFreeModal() {
             if (adFreeModal) adFreeModal.style.display = 'none';
-            // बॉडी से modal-open तभी हटाएँ जब कोई और modal खुला न हो
             if (!moviePasswordModal || moviePasswordModal.style.display === 'none') {
                 bodyEl.classList.remove('modal-open');
             }
         }
 
-        // --- पुराने Password Modal के लिए Functions ---
+        // --- Functions for Password Modal ---
         function openMoviePasswordModal() {
             if (moviePasswordErrorEl) moviePasswordErrorEl.textContent = '';
             if (moviePasswordForm) moviePasswordForm.reset();
@@ -1675,44 +1674,38 @@
         if (moviePasswordCloseBtn) moviePasswordCloseBtn.addEventListener('click', closeMoviePasswordModal);
         if (adFreeModalCloseBtn) adFreeModalCloseBtn.addEventListener('click', closeAdFreeModal);
 
-        // "Movie" बटन पर क्लिक करने पर अब हमेशा Ad-Free Modal खुलेगा
         if(movieBtn) {
             movieBtn.addEventListener('click', () => {
                 openAdFreeModal();
             });
         }
         
-        // Ad-Free Modal के "OK" बटन का लॉजिक
         if(adFreeProceedBtn) {
             adFreeProceedBtn.addEventListener('click', () => {
-                closeAdFreeModal(); // पहले इस modal को बंद करें
+                closeAdFreeModal(); 
                 
-                // अब पेमेंट की स्थिति जांचें
                 if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
-                    // अगर पेमेंट हो गया है, तो सीधे मूवी लिंक पर भेजें
                     window.location.href = movieLink;
                 } else {
-                    // अगर पेमेंट नहीं हुआ है, तो पासवर्ड वाला modal दिखाएँ
                     openMoviePasswordModal();
                 }
             });
         }
         
-        // Password फॉर्म जमा करने का लॉजिक
         if(moviePasswordForm) {
             moviePasswordForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const enteredPassword = document.getElementById('movie-password-input').value;
                 if (enteredPassword === correctMoviePassword) {
                     closeMoviePasswordModal();
-                    window.location.href = movieLink; // सही पासवर्ड पर मूवी लिंक पर भेजें
+                    window.location.href = movieLink;
                 } else {
                     moviePasswordErrorEl.textContent = 'Incorrect password.';
                 }
             });
         }
         // =================================================================================
-        // ============================= बदलाव यहाँ खत्म होता है ============================
+        // ============================= ENDE DER ÄNDERUNGEN ===============================
         // =================================================================================
 
 
@@ -1809,5 +1802,4 @@
     });
     </script>
 </body>
-</html>
-
+</html>```
