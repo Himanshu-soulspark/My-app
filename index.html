@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubhzone - Find Your Spark</title>
+    <title>Shubhzone - Entertainment & Dating Hub</title>
     <!-- Razorpay Checkout Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
 
         :root {
-            --brand-cyan: #ff4d6a; /* Changed to a dating theme color */
-            --brand-blue: #e91e63; /* Changed to a dating theme color */
+            --brand-cyan: #ff4d6a; /* Dating theme color */
+            --brand-blue: #e91e63; /* Dating theme color */
             --bg-dark: #05070a;
             --bg-card: #10141b;
             --text-primary: #f0f6fc;
@@ -68,6 +68,12 @@
 
         .section {
             padding: 120px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 50px;
         }
 
         h1, h2, h3 {
@@ -129,7 +135,7 @@
 
         .main-btn {
             background: var(--brand-cyan);
-            color: #fff; /* Changed for better contrast */
+            color: #fff;
             padding: 12px 28px;
             border-radius: 8px;
             text-decoration: none;
@@ -196,7 +202,7 @@
         .hero h1 {
             font-size: 4.5rem;
             line-height: 1.1;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
@@ -208,7 +214,7 @@
 
         .hero p {
             font-size: 1.2rem;
-            max-width: 600px;
+            max-width: 700px;
             margin: 30px auto 40px auto;
         }
 
@@ -240,6 +246,70 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 40px 80px rgba(0,0,0,0.5);
         }
+        
+        /* New Styles for Entertainment Section */
+        .entertainment-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.1);
+        }
+        
+        .feature-item svg {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 15px auto;
+            color: var(--brand-cyan);
+        }
+
+        .feature-item p {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        /* New Styles for Content Carousel */
+        .content-carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: none; /* For Firefox */
+        }
+
+        .content-carousel::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+        }
+
+        .carousel-item {
+            flex: 0 0 180px; /* Adjust width here */
+            width: 180px;
+            aspect-ratio: 2 / 3;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-item:hover {
+            transform: scale(1.05);
+        }
+
 
         .feature-layout {
             display: grid;
@@ -327,7 +397,7 @@
 
         .cta-section h2 {
             font-size: 2.5rem;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto 20px auto;
         }
 
@@ -733,7 +803,7 @@
             .hero p {
                 font-size: 1.1rem;
             }
-            h2 {
+            h2, .section-title {
                 font-size: 2.2rem;
             }
             .feature-content h2, .showcase-section h2 {
@@ -750,6 +820,10 @@
             }
             .store-header {
                 margin-bottom: 40px;
+            }
+            .carousel-item {
+                flex: 0 0 140px;
+                width: 140px;
             }
         }
 
@@ -775,7 +849,7 @@
                 padding: 6px 12px;
                 font-size: 0.8rem;
             }
-            h2 {
+            h2, .section-title {
                 font-size: 2rem;
             }
             .feature-content h2, .showcase-section h2 {
@@ -824,12 +898,12 @@
         <div class="container">
             <a href="#" class="logo" id="home-logo">Shubh<span>zone</span></a>
             <div class="header-buttons">
-                <!-- === IMPORTANT CHANGE: The "Start" button now acts as the primary action button === -->
+                <!-- === IMPORTANT CHANGE: The "Start" button text is updated === -->
                 <a href="#" id="start-payment-btn" class="main-btn start-btn">
                     <span>Get Started - Pay ₹5</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                 </a>
-                <!-- === NEW CHANGE: Added Movie button === -->
+                <!-- === Movie button remains the same === -->
                 <button id="movie-btn" class="main-btn secondary-btn">
                    <span>Movie</span>
                 </button>
@@ -847,23 +921,74 @@
                 <canvas id="particle-canvas"></canvas>
                 <div class="container">
                     <div class="reveal">
-                        <!-- === CONTENT CHANGE: Updated for dating app theme === -->
-                        <h1>Find Your <span>Perfect Match</span></h1>
-                        <p>Welcome to Shubhzone, India's new-age platform for meaningful connections. Discover genuine profiles, engage in real conversations, and find a relationship that truly matters.</p>
+                        <!-- === CONTENT CHANGE: Merged Hero section for both Entertainment and Dating === -->
+                        <h1>All-in-one Entertainment Hub & <span>Dating</span></h1>
+                        <p>Welcome to Shubhzone, your single destination for the latest Movies, Webseries, Cartoons, and Live TV. Plus, discover meaningful connections on India's new-age platform for finding a relationship that truly matters.</p>
                         <div class="hero-skills">
-                            <span>Meaningful Connections</span><span>Verified Profiles</span><span>Private Chats</span><span>AI Matchmaking</span>
+                            <span>HD Streaming</span><span>Meaningful Connections</span><span>Verified Profiles</span><span>24/7 Entertainment</span><span>Private Chats</span><span>AI Matchmaking</span>
                         </div>
-                        <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow === -->
+                        <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow with updated text === -->
                         <a href="#" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
                             <span>Get Started - Pay ₹5</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                         </a>
                     </div>
-                    <div class="hero-image-container reveal" style="transition-delay: 200ms;">
-                        <!-- === CONTENT CHANGE: Updated image alt text === -->
-                        <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="Dating App Interface">
+                </div>
+            </section>
+            
+            <!-- === NEW SECTION: Added from movie page theme === -->
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title reveal">Everything You're Looking For</h2>
+                    <div class="entertainment-features reveal">
+                        <div class="feature-item">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                            </svg>
+                            <p>Movies</p>
+                        </div>
+                        <div class="feature-item">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            <p>Webseries</p>
+                        </div>
+                        <div class="feature-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                            <p>Dating App</p>
+                        </div>
+                        <div class="feature-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3.75v3.75m-3.75-3.75v3.75m-3.75-3.75v3.75m9.75-15.75A2.25 2.25 0 0 1 12 6.75v3.75m0 0a2.25 2.25 0 0 1 2.25 2.25M12 10.5a2.25 2.25 0 0 0-2.25 2.25m0 0a2.25 2.25 0 0 0 2.25 2.25m0 0A2.25 2.25 0 0 1 12 15m0 0A2.25 2.25 0 0 1 9.75 12.75M12 3.75A2.25 2.25 0 0 0 9.75 6.75v3.75m0 0a2.25 2.25 0 0 0 2.25 2.25" />
+                            </svg>
+                            <p>Live TV</p>
+                        </div>
+                        <div class="feature-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 8.682A4.5 4.5 0 0 1 12.002 15h-.004a4.5 4.5 0 0 1-3.178-6.318m3.182 6.318A4.5 4.5 0 0 0 15.182 8.682M12 12a2.25 2.25 0 0 1-2.25-2.25a2.25 2.25 0 0 1 2.25-2.25M12 12a2.25 2.25 0 0 0 2.25-2.25a2.25 2.25 0 0 0-2.25-2.25m-2.25 4.5A2.25 2.25 0 0 1 7.5 9.75a2.25 2.25 0 0 1 2.25-2.25" />
+                            </svg>
+                            <p>Cartoons</p>
+                        </div>
                     </div>
                 </div>
+            </section>
+            
+            <!-- === NEW SECTION: Added from movie page theme === -->
+            <section class="section" style="padding-top: 0;">
+                 <div class="container">
+                    <h2 class="section-title reveal">Hot Right Now</h2>
+                    <div class="content-carousel reveal">
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCrPlJ_wsCIiFWsSLwA5L13ILqjjvaC1ePhU4vyeUWgbqaVyI45cYRm-0OYk_CjUwK3H8k_Ogm87POYPd7vCZubQN_7cNVwYkYx7y9D9WYHYIQHMTsRfCbY2phWqZwg1xMfwMKznLhUP6dYcO33UoqtYhmIpdqqijxT5kKTNrGKwYTHQtOlYTQWmIq77ORIkT-PTowNMIbzknrtlO4g-15O_YT_8Uc3bkyZbnxNn7cg3yr0A1iCr41vZ-7Xndem25XauLVxmtfv2yA");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_HBnW3JO4XEbAKuPIV92Hgz_Aa01QaOCQshVpa2oZdVEDeC8t6nilny9y9-QZf50vXAvjI2BwELLuyEcmD36bvaeLT6VfliBZ5sLQxq2uzaBph_HeXn_NxdD9m2U_UpVqCLqSMSIeC7A1zPGIIZAhyQ3uNAmpYqlPxQaTgf875q8XxgoDRqjYvXjALxpRi4MsV7WeHXAhKpZH3fH8Xqot3qX4Qc4LzTMRp37UOqLj85qX6BHs2LNVnDOb7cTqe7XkKMz06sVFVkU");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAySbHNOyWGbaFUrnZCTtuu3PzAF30f6bdC7yPUwPZ6bGsCRRwD8VBMPAKqeu0rqAhMsWoBHpmf2uYpHCp3O14BJf2xgwtp7_cdyXn6BLoSVtq4VyK_86xq4kH3r0Mf0nAhxDcGXKm936rpDnU3dn8OCldDjpPEuv81BHsrBeLByCa2_v9QNrPXU6_-RgWP_zczDojb_eXNeF5NdT4y-keciMP4zQ3FXXOQWJtYMEBIHYZWXAeOtPcKDP72sUqDml1JWXYvR37FYIM");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0eylGLOsEiJySumdLd40DIQj1pX87MrPpUUWuByJF_aJF6TKTxFYmZOC3hmGjdM9XLWykarHCfDm8v6KwrcOHNuPraPNwJADKdUo8LW2m8gCrpRHEXulAh9ICTl_KH9IuXNPFLAE7Qg1CaR8vcRT0Yp3e1QDECs4d5U0f0vz45rt1KWhLvrny-hWP4naMLow_F3v4ZA3VuqGTRsjyV2CbmYTpOngWqohg0i0_WBoHX5V5-vZG3waGsH46POkpfyDpPrXX1A1re3g");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgL2rY73rJau1WWsys1jxCsQe4H1taepjezZ7CqkyUZZElKUG7kugN4LodaAJdjdXaR2QQCx3OOu3ZSpiPXd_lg11Xpme3n4-yMTawXwckT0o-NOrgLhn6iNZENdlwiGHmoz20tumLEd5eIXCnBqRb4e400HQqnMAScb1yV4lOGY52WLeoPfvaJb77eIUyBztTltebo3h566pl4u27m8OA_wb0NhEHMuhc7XxwVn0E8WgII1eQHZnBvCS3j7c95DGDzPuMyrEph5k");'></div>
+                         <div class="carousel-item" style='background-image: url("https://i.ibb.co/HTjy6Cjd/Leonardo-Phoenix-10-A-young-girl-sitting-in-a-cozy-dimly-lit-r-0.jpg");'></div>
+                    </div>
+                 </div>
             </section>
 
             <section class="section">
@@ -871,7 +996,7 @@
                     <div class="feature-layout">
                         <div class="feature-content reveal">
                             <!-- === CONTENT CHANGE: Updated for dating app theme === -->
-                            <h2>A Safe & Secure Environment</h2>
+                            <h2>A Safe & Secure Dating Environment</h2>
                             <p>Your privacy and safety are our top priority. We provide robust tools to ensure you can connect with others confidently and securely.</p>
                             <ul class="feature-list">
                                 <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Profile verification to ensure genuine users.</li>
@@ -881,7 +1006,7 @@
                         </div>
                         <div class="feature-image reveal" style="transition-delay: 200ms;">
                              <!-- === CONTENT CHANGE: Updated image alt text === -->
-                            <img src="https://i.ibb.co/HTjy6Cjd/Leonardo-Phoenix-10-A-young-girl-sitting-in-a-cozy-dimly-lit-r-0.jpg" alt="A person chatting securely on their phone">
+                            <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="A person chatting securely on their phone">
                         </div>
                     </div>
                 </div>
@@ -925,12 +1050,12 @@
             <section class="section">
                 <div class="container">
                     <div class="cta-section reveal">
-                         <!-- === CONTENT CHANGE: Updated for dating app theme === -->
-                        <h2>Ready To Find Your Someone?</h2>
-                        <p>Join a community committed to authenticity and real connections. Your journey to find love starts now.</p>
+                         <!-- === CONTENT CHANGE: Merged CTA === -->
+                        <h2>Ready to Start Your Journey?</h2>
+                        <p>Join a community committed to top-tier entertainment and authentic connections. Your story starts now.</p>
                         <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow === -->
                         <a href="#" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
-                            <span>Get Started - Pay ₹5</span>
+                            <span>Join Now for ₹5</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
                         </a>
                     </div>
