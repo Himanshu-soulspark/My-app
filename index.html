@@ -1,3 +1,20 @@
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '4358427104412065');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=4358427104412065&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1894,6 +1911,47 @@
                     },
                     theme: {
                         color: "#e91e63" // Match new theme
+                    }
+                };
+
+                const rzp1 = new Razorpay(options);
+
+                rzp1.on('payment.failed', function (response){
+                    alert("Payment Failed: " + response.error.description);
+                });
+
+                rzp1.open();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Could not initiate payment. Please try again later. Error: ' + error.message);
+            }
+        }
+
+        // === IMPORTANT CHANGE: This function handles what happens when a start button is clicked ===
+        function handleStartClick(event) {
+            // Prevent the default link behavior
+            event.preventDefault();
+
+            // Check if payment has already been done
+            if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
+                // === IMPORTANT CHANGE: If paid, go directly to the new app URL ===
+                window.location.href = "https://datin.onrender.com";
+            } else {
+                // If not paid, start the payment process
+                initiatePayment();
+            }
+        }
+
+        // === IMPORTANT CHANGE: Add the click event listener to ALL start buttons ===
+        allStartButtons.forEach(btn => {
+            btn.addEventListener('click', handleStartClick);
+        });
+
+    });
+    </script>
+</body>
+</html>                        color: "#e91e63" // Match new theme
                     }
                 };
 
