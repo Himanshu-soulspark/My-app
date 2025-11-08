@@ -1,1 +1,2268 @@
 
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs Portal Pro</title>
+    <!-- Cloudinary Widget Script -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<style>
+    /* Google Fonts for better typography */
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+    :root {
+        --primary-color: #0d6efd;
+        --secondary-color: #6c757d;
+        --success-color: #198754;
+        --danger-color: #dc3545;
+        --warning-color: #ffc107;
+        --dark-color: #212529;
+        --light-color: #f8f9fa;
+        --white-color: #ffffff;
+        --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+    }
+    
+    /* Universal Box Sizing and Overflow Fix */
+    * {
+        box-sizing: border-box;
+    }
+
+    html, body {
+        overflow-x: hidden;
+    }
+
+
+    /* General Body Styles */
+    body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        background-color: var(--light-color);
+        color: var(--dark-color);
+        line-height: 1.6;
+        -webkit-tap-highlight-color: transparent; /* Disable tap highlight on mobile */
+    }
+
+    /* Page Transitions */
+    .page {
+        display: none;
+        flex-direction: column;
+        min-height: 100vh;
+        width: 100%;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    .page.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Header Styles */
+    .header {
+        background: linear-gradient(90deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
+        color: var(--white-color);
+        padding: 15px 20px;
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .header h1 { margin: 0; font-size: 1.5em; }
+    .back-button, .add-button, .logout-button { background: none; border: none; color: white; font-size: 1.8em; cursor: pointer; padding: 0 10px; }
+    .add-button, .logout-button { font-size: 1.2em; font-weight: bold; }
+
+    /* Main Content Styles */
+    .content {
+        padding: 80px 15px 80px 15px; /* Added bottom padding for nav bar */
+        width: 100%;
+        flex-grow: 1;
+        overflow-y: auto; /* Ensures content is scrollable if it overflows */
+    }
+
+    /* 3D Button Style */
+    .btn-3d {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        color: white;
+        position: relative;
+        box-shadow: 0 6px #999;
+    }
+    .btn-3d:active {
+        box-shadow: 0 2px #666;
+        transform: translateY(4px);
+    }
+    .form-button:disabled {
+        background-color: #aaa;
+        box-shadow: 0 5px #888;
+        cursor: not-allowed;
+    }
+
+
+    /* Action Button (Home Page) */
+    .action-button {
+        background-color: var(--primary-color);
+        box-shadow: 0 6px #0a58ca;
+    }
+    .action-button:hover {
+         background-color: #0b5ed7;
+    }
+     .action-button:active {
+        box-shadow: 0 2px #0a58ca;
+    }
+
+    /* Home Page */
+    #home .content { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .main-image { max-width: 100%; height: auto; border-radius: var(--border-radius); margin-bottom: 30px; box-shadow: var(--shadow); }
+    #home .action-button { width: 100%; max-width: 320px; }
+
+
+    /* Sales Department Page Specific Styles */
+    .role-card-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .role-card {
+        background-color: var(--white-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .role-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    
+    .single-role-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+    }
+     .single-role-card img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin-right: 15px;
+        object-fit: cover;
+    }
+    .single-role-card h3 {
+        margin: 0;
+        font-size: 1.1em;
+    }
+
+    .full-width-card {
+        background-color: var(--white-color); border-radius: var(--border-radius);
+        box-shadow: var(--shadow); overflow: hidden; display: flex;
+        flex-direction: column; transition: transform 0.3s ease;
+    }
+    .full-width-card:hover { transform: translateY(-5px); }
+    .full-width-card .card-image-container { aspect-ratio: 16 / 9; }
+    .full-width-card img { width: 100%; height: 100%; object-fit: cover; }
+    .card-button-container { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+    .card-button {
+        background-color: var(--dark-color);
+        box-shadow: 0 6px #000;
+    }
+     .card-button:active { box-shadow: 0 2px #000; }
+
+    /* Form & Login Styles */
+    .form-container { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 500px; margin: auto; padding: 25px; background: var(--white-color); border-radius: var(--border-radius); box-shadow: var(--shadow); }
+    .form-container h2 { text-align: center; margin-top: 0; color: var(--primary-color); font-weight: 700;}
+    
+    /* IMPROVED LABEL STYLES */
+    .form-container label {
+        font-weight: 500;
+        font-size: 0.9em;
+        color: var(--secondary-color);
+        display: block;
+        margin-top: 15px; /* Increased space from element above */
+        margin-bottom: 5px; /* Added small space before input */
+    }
+    
+    .form-container input, .form-container select, .form-container textarea {
+        padding: 15px; font-size: 1em; border: none;
+        border-bottom: 2px solid #ddd; background-color: #f1f5f9;
+        border-radius: 8px; /* Slightly rounded corners for all inputs */
+        width: 100%;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .form-container input:focus, .form-container select:focus, .form-container textarea:focus {
+        outline: none; border-bottom-color: var(--primary-color);
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+    }
+    .form-container textarea { resize: vertical; min-height: 100px; }
+    
+    /* Multi-Step Form */
+    .form-step { display: none; }
+    .form-step.active { display: block; animation: fadeIn 0.5s; }
+    .form-navigation { display: flex; justify-content: space-between; margin-top: 20px; }
+    .form-button {
+        padding: 12px 25px; border: none; border-radius: 50px; cursor: pointer;
+        transition: all 0.2s; color: white;
+    }
+    .form-button.prev { background-color: var(--secondary-color); box-shadow: 0 5px #5a6268; }
+    .form-button.prev:active { transform: translateY(3px); box-shadow: 0 2px #5a6268; }
+    .form-button.next { background-color: var(--primary-color); box-shadow: 0 5px #0a58ca; }
+    .form-button.next:active { transform: translateY(3px); box-shadow: 0 2px #0a58ca; }
+    .form-button.submit { background-color: var(--success-color); box-shadow: 0 5px #157347; }
+    .form-button.submit:active { transform: translateY(3px); box-shadow: 0 2px #157347; }
+
+    .progress-bar { display: flex; justify-content: space-between; margin-bottom: 25px; padding: 0; }
+    .progress-step { width: 100%; text-align: center; padding-bottom: 10px; border-bottom: 3px solid #ccc; color: #ccc; font-weight: bold; list-style-type: none; transition: all 0.3s; }
+    .progress-step.active { border-bottom-color: var(--primary-color); color: var(--primary-color); }
+    
+    /* Admin Panel & Lists */
+    .admin-nav { display: flex; justify-content: space-around; background: var(--white-color); color: var(--secondary-color); padding: 5px 0; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); z-index: 1000; }
+    .nav-item { cursor: pointer; text-align: center; flex-grow: 1; padding: 12px 5px; border-radius: 8px; transition: all 0.3s; font-size: 0.9em; }
+    .nav-item.active { color: var(--primary-color); background-color: rgba(13, 110, 253, 0.1); }
+    
+    .list-container { list-style: none; padding: 0; margin: 0; }
+    .list-item { background-color: white; padding: 15px; margin-bottom: 15px; border-radius: var(--border-radius); box-shadow: 0 4px 15px rgba(0,0,0,0.07); transition: all 0.3s; display: flex; flex-direction: column;}
+    .list-item:hover { transform: scale(1.02); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+    .list-item h3, .list-item p { margin: 0; word-break: break-word; }
+    .list-item p { font-size: 0.9em; color: #555; margin-top: 5px; }
+    .list-item-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .list-action-button { flex-grow: 1; padding: 10px; font-size: 0.9em; box-shadow: none !important; border-radius: 8px;} /* Simpler buttons for lists */
+
+    .approve-btn { background-color: var(--success-color); }
+    .reject-btn { background-color: var(--danger-color); }
+    .view-btn { background-color: var(--primary-color); }
+    .data-btn { background-color: var(--warning-color); color: var(--dark-color); }
+
+
+    /* Modal Styles */
+    .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); align-items: center; justify-content: center; animation: fadeIn 0.3s; }
+    .modal.active { display: flex; }
+    .modal-content { background-color: #fefefe; margin: auto; padding: 25px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: var(--border-radius); animation: slideIn 0.4s; position: relative; max-height: 80vh; overflow-y: auto;}
+    @keyframes slideIn { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { margin: 0; }
+    .close-button { color: #aaa; font-size: 32px; font-weight: bold; cursor: pointer; position: absolute; top: 10px; right: 20px; }
+    .modal-profile-img { max-width: 150px; border-radius: 50%; display: block; margin: 0 auto 20px; box-shadow: var(--shadow); }
+    
+    /* IMPROVED INFO GRID STYLES */
+    .info-grid {
+        display: grid;
+        grid-template-columns: auto 1fr; /* Flexible columns */
+        gap: 12px 10px; /* Row and column gap */
+        align-items: start; /* Align items to the start for multiline text */
+    }
+    .info-grid strong {
+        text-align: right;
+        color: var(--secondary-color);
+        font-weight: 500;
+    }
+    .info-grid span {
+        word-break: break-word; /* Prevents long text from overflowing */
+        text-align: left;
+    }
+    .info-grid .grid-divider {
+        grid-column: 1 / -1; /* Span full width */
+        height: 1px;
+        background-color: #e0e0e0;
+        margin: 10px 0;
+    }
+
+
+    #edit-profile-form label { margin-top: 15px; }
+
+    /* ===== NEW DASHBOARD STYLES (BOSS, LEADER & EXECUTIVE) ===== */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: var(--white-color);
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 1001;
+    }
+    .bottom-nav-item {
+        flex: 1;
+        text-align: center;
+        padding: 12px 0;
+        cursor: pointer;
+        color: var(--secondary-color);
+        transition: color 0.3s, background-color 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    .bottom-nav-item i { font-size: 1.4em; }
+    .bottom-nav-item span { font-size: 0.75em; font-weight: 500;}
+    .bottom-nav-item.active {
+        color: var(--primary-color);
+    }
+    .boss-view, .leader-view, .executive-view { display: none; }
+    .boss-view.active, .leader-view.active, .executive-view.active { display: block; animation: fadeIn 0.4s; }
+    
+    .team-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Mobile first */
+        gap: 15px;
+    }
+
+    .team-member-card {
+        background: var(--white-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .team-member-card .card-image-container {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background-color: #eee;
+    }
+    .team-member-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .team-member-card .card-info {
+        padding: 15px;
+        text-align: center;
+    }
+    .team-member-card .card-info h3 {
+        margin: 0 0 10px 0;
+    }
+    .team-member-card .card-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 0 15px 15px 15px;
+    }
+    .team-member-card .card-actions .form-button { width: 100%; padding: 10px; box-shadow: none; border-radius: 8px;}
+    .fire-btn { background-color: var(--danger-color); grid-column: 1 / -1; } /* Spans full width */
+    
+    /* New Boss Team Card */
+    .boss-team-card {
+        display: flex;
+        background: var(--white-color);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    .boss-team-card .card-image-container {
+        flex-shrink: 0;
+        width: 120px;
+        aspect-ratio: 16 / 9;
+        background-color: #eee;
+    }
+    .boss-team-card img { width: 100%; height: 100%; object-fit: cover; }
+    .boss-team-card .card-info { padding: 15px; flex-grow: 1; }
+    .boss-team-card .card-info h3 { margin: 0 0 5px 0; font-size: 1.1em; }
+    .boss-team-card .card-info p { margin: 0; font-size: 0.9em; color: var(--secondary-color); }
+    .boss-team-card .card-actions { padding: 15px; }
+    /* ============================================= */
+
+    /* ===== NEW VIDEO CARD STYLES ===== */
+    .video-card .video-container {
+        width: 100%;
+        background-color: #000;
+        overflow: hidden;
+        position: relative;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+    .video-card .video-container-long {
+        aspect-ratio: 16 / 9;
+    }
+    .video-card .video-container-short {
+        aspect-ratio: 9 / 16;
+        max-width: 280px; /* Prevent it from being too wide on larger screens */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .video-card .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    /* ============================================= */
+
+
+    /* Mobile Friendliness Adjustments */
+    @media (max-width: 600px) {
+        .content {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        .btn-3d {
+            padding: 12px 24px; /* Slightly smaller padding for buttons */
+            font-size: 1em;
+        }
+        .form-container {
+            padding: 20px;
+        }
+        .header h1 {
+            font-size: 1.3em;
+        }
+    }
+    
+    @media (min-width: 600px) {
+        .team-grid {
+             grid-template-columns: repeat(2, 1fr); /* Two columns for tablets */
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- ======================= HOME PAGE ======================== -->
+<div id="home" class="page active">
+    <header class="header"><h1>Jobs Portal</h1></header>
+    <main class="content">
+        <img src="https://i.ibb.co/NdFp3nyY/qrf-JYex-TQ-G2-Nt-Wl-W0sg-BA.webp" alt="Jobs Banner" class="main-image">
+        <button class="btn-3d action-button" onclick="showPage('sales')">Sales Department</button>
+    </main>
+</div>
+
+<!-- ======================= SALES DEPARTMENT PAGE ======================== -->
+<div id="sales" class="page">
+    <header class="header">
+        <button class="back-button" onclick="showPage('home')">&#8592;</button>
+        <h1>Sales Department</h1>
+    </header>
+    <main class="content">
+        <div class="role-card-container">
+            <div class="role-card single-role-card" onclick="showPage('boss-login')">
+                <img src="https://i.ibb.co/Gv9H2mLT/85-XZ1-SRBQk6-Fu-CZjbq-Er-Q.webp" alt="Boss">
+                <h3>Boss Login</h3>
+            </div>
+            <div class="role-card single-role-card" onclick="checkTeamLeaderStatus()">
+                <img src="https://i.ibb.co/5WpD9NDL/2-ZN4g-S1d-T9-GB3-NNs9-X8-s-A.webp" alt="Team Leader">
+                <h3>Team Leader Login / Apply</h3>
+            </div>
+            <div class="role-card single-role-card" onclick="showPage('executive-login')">
+                <img src="https://i.ibb.co/V086YtLD/ur-Vmgd-PASm2r-RLwcj9pt-A.webp" alt="Sales Executive">
+                <h3>Sales Executive Login</h3>
+            </div>
+        </div>
+        
+        <div class="full-width-card">
+             <div class="card-image-container"><img src="https://i.ibb.co/V086YtLD/ur-Vmgd-PASm2r-RLwcj9pt-A.webp" alt="Sales Executive Application"></div>
+             <div class="card-button-container">
+                <button class="btn-3d card-button" onclick="showPage('executive-application')">Apply for Sales Executive</button>
+                <button class="btn-3d" style="background-color: var(--secondary-color); box-shadow: 0 6px #5a6268;" onclick="showModal('job-desc')">Job Description</button>
+                <button class="btn-3d" style="background-color: var(--light-color); color: var(--dark-color); box-shadow: 0 6px #c5c5c5;" onclick="showModal('terms')">Terms & Conditions</button>
+             </div>
+        </div>
+    </main>
+</div>
+
+<!-- ======================= BOSS LOGIN PAGE ======================== -->
+<div id="boss-login" class="page">
+    <header class="header"><button class="back-button" onclick="showPage('sales')">&#8592;</button><h1>Admin Login</h1></header>
+    <main class="content"><div class="form-container">
+        <h2>Enter Password</h2>
+        <input type="password" id="boss-password-input" placeholder="Password">
+        <button class="btn-3d action-button" onclick="login('boss')">Login</button>
+    </div></main>
+</div>
+
+<!-- ======================= BOSS ADMIN PAGE (NEW) ======================== -->
+<div id="boss-admin" class="page">
+    <header class="header"><h1>Boss Panel</h1><button class="logout-button" onclick="logout()">Logout</button></header>
+    <main class="content">
+        <!-- View 1: Applications -->
+        <div id="boss-view-applications" class="boss-view active">
+             <h2>Team Leader Applications</h2>
+             <div id="application-list-container"><p>Loading applications...</p></div>
+        </div>
+
+        <!-- View 2: Teams -->
+        <div id="boss-view-teams" class="boss-view">
+            <div id="boss-teams-main-view">
+                <h2>All Teams</h2>
+                <div id="boss-team-list-container"><p>Loading teams...</p></div>
+            </div>
+            <div id="boss-teams-single-view" style="display:none;">
+                <button class="btn-3d" style="margin-bottom: 20px; background-color: var(--secondary-color); box-shadow: 0 6px #5a6268;" onclick="showBossTeamList()">&#8592; Back to All Teams</button>
+                <h2 id="boss-single-team-name"></h2>
+                <div id="boss-single-team-members"></div>
+            </div>
+        </div>
+
+        <!-- View 3: Instructions -->
+        <div id="boss-view-instructions" class="boss-view">
+            <h2>Instructions</h2>
+            <div class="form-container">
+                <h3>Send New Instruction</h3>
+                <textarea id="instruction-text" placeholder="Type your instruction here..." required></textarea>
+                <select id="instruction-target-type" onchange="updateInstructionTargetList()">
+                    <option value="all_leaders">All Team Leaders</option>
+                    <option value="all_executives">All Sales Executives</option>
+                    <option value="specific_leader">A Specific Team Leader</option>
+                    <option value="specific_team">A Specific Team</option>
+                    <option value="specific_executive">A Specific Sales Executive</option>
+                </select>
+                <select id="instruction-target-id" style="display:none;"></select>
+                <button class="btn-3d action-button" onclick="sendInstruction()">Send Instruction</button>
+            </div>
+            <h3 style="margin-top: 30px;">Sent Instructions</h3>
+            <div id="sent-instructions-list"></div>
+        </div>
+
+        <!-- View 4: Videos -->
+        <div id="boss-view-videos" class="boss-view">
+             <h2>Training Videos</h2>
+            <div class="form-container">
+                <h3>Add New Video</h3>
+                <input type="text" id="video-title" placeholder="Video Title (e.g., Sales Pitch Masterclass)" required>
+                <input type="url" id="video-url" placeholder="YouTube Video URL (Long or Short)" required>
+                <label for="video-type" style="margin-top: 15px;">Video Format</label>
+                <select id="video-type">
+                    <option value="long">Long Video (16:9)</option>
+                    <option value="short">Short Video (9:16)</option>
+                </select>
+                <label for="video-target-type" style="margin-top: 15px;">Assign To</label>
+                <select id="video-target-type" onchange="updateVideoTargetList()">
+                    <option value="all_leaders">All Team Leaders</option>
+                    <option value="all_executives">All Sales Executives</option>
+                    <option value="specific_leader">A Specific Team Leader</option>
+                    <option value="specific_team">A Specific Team</option>
+                    <option value="specific_executive">A Specific Sales Executive</option>
+                </select>
+                <select id="video-target-id" style="display:none; margin-top: 15px;"></select>
+                <button class="btn-3d action-button" style="margin-top: 20px;" onclick="sendVideo()">Add Video</button>
+            </div>
+            <h3 style="margin-top: 30px;">Added Videos</h3>
+            <div id="sent-videos-list"></div>
+        </div>
+
+        <!-- View 5: Reports -->
+        <div id="boss-view-reports" class="boss-view">
+            <h2>Fire Requests from Team Leaders</h2>
+            <div id="fire-requests-list"><p>Loading reports...</p></div>
+        </div>
+    </main>
+    <nav class="bottom-nav">
+        <div id="nav-boss-applications" class="bottom-nav-item active" onclick="switchBossView('applications')"><i class="fa-solid fa-file-import"></i><span>Applications</span></div>
+        <div id="nav-boss-teams" class="bottom-nav-item" onclick="switchBossView('teams')"><i class="fa-solid fa-users-gear"></i><span>Teams</span></div>
+        <div id="nav-boss-instructions" class="bottom-nav-item" onclick="switchBossView('instructions')"><i class="fa-solid fa-bullhorn"></i><span>Instructions</span></div>
+        <div id="nav-boss-videos" class="bottom-nav-item" onclick="switchBossView('videos')"><i class="fa-solid fa-video"></i><span>Videos</span></div>
+        <div id="nav-boss-reports" class="bottom-nav-item" onclick="switchBossView('reports')"><i class="fa-solid fa-flag"></i><span>Reports</span></div>
+    </nav>
+</div>
+
+<!-- ======================= TEAM LEADER LOGIN PAGE ======================== -->
+<div id="leader-login" class="page">
+    <header class="header"><button class="back-button" onclick="showPage('sales')">&#8592;</button><h1>Team Leader Login</h1></header>
+    <main class="content"><div class="form-container">
+        <h2>Login to your Team</h2>
+        <input type="text" id="leader-teamname-input" placeholder="Team Name">
+        <input type="password" id="leader-password-input" placeholder="Password">
+        <button class="btn-3d action-button" onclick="login('leader')">Login</button>
+    </div></main>
+</div>
+
+<!-- ======================= TEAM LEADER ADMIN PAGE (NEW DESIGN) ======================== -->
+<div id="leader-admin" class="page">
+    <header class="header"><h1 id="leader-panel-title">Team Leader Panel</h1></header>
+    
+    <main class="content">
+        <!-- View 1: Applications -->
+        <div id="leader-view-apply" class="leader-view active">
+            <h2>New Applications</h2>
+            <div id="executive-application-list">
+                <p>Loading applications...</p>
+            </div>
+        </div>
+
+        <!-- View 2: Team -->
+        <div id="leader-view-team" class="leader-view">
+            <h2>My Team Members</h2>
+            <div id="my-team-list" class="team-grid">
+                <p>Loading team members...</p>
+            </div>
+        </div>
+        
+        <!-- View 3: Instructions -->
+        <div id="leader-view-instructions" class="leader-view">
+             <h2>Instructions & Reports</h2>
+             <div id="leader-instructions-list">
+                <p>Loading instructions...</p>
+             </div>
+        </div>
+
+        <!-- View 4: Videos -->
+        <div id="leader-view-videos" class="leader-view">
+             <h2>Training Videos</h2>
+             <div id="leader-videos-list">
+                <p>Loading videos...</p>
+             </div>
+        </div>
+
+        <!-- View 5: Profile -->
+        <div id="leader-view-profile" class="leader-view">
+             <h2>My Profile</h2>
+             <div id="leader-profile-info" class="list-item" style="position: relative;">
+                <p>Loading profile...</p>
+             </div>
+             <button class="btn-3d" style="background-color: var(--danger-color); box-shadow: 0 6px #b02a37; width: 100%; margin-top: 20px;" onclick="logout()">Logout</button>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <div id="nav-leader-apply" class="bottom-nav-item active" onclick="switchLeaderView('apply')">
+            <i class="fa-solid fa-file-import"></i>
+            <span>Apply</span>
+        </div>
+        <div id="nav-leader-team" class="bottom-nav-item" onclick="switchLeaderView('team')">
+            <i class="fa-solid fa-users"></i>
+            <span>Team</span>
+        </div>
+        <div id="nav-leader-instructions" class="bottom-nav-item" onclick="switchLeaderView('instructions')">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Instructions</span>
+        </div>
+        <div id="nav-leader-videos" class="bottom-nav-item" onclick="switchLeaderView('videos')">
+            <i class="fa-solid fa-video"></i>
+            <span>Videos</span>
+        </div>
+        <div id="nav-leader-profile" class="bottom-nav-item" onclick="switchLeaderView('profile')">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>Profile</span>
+        </div>
+    </nav>
+</div>
+
+<!-- ======================= SALES EXECUTIVE LOGIN PAGE ======================== -->
+<div id="executive-login" class="page">
+    <header class="header"><button class="back-button" onclick="showPage('sales')">&#8592;</button><h1>Sales Executive Login</h1></header>
+    <main class="content"><div class="form-container">
+        <h2>Login to your Dashboard</h2>
+        <input type="text" id="executive-username-input" placeholder="Username (your email)">
+        <input type="password" id="executive-password-input" placeholder="Password">
+        <button class="btn-3d action-button" onclick="login('executive')">Login</button>
+    </div></main>
+</div>
+
+<!-- ======================= SALES EXECUTIVE PANEL PAGE (NEW DESIGN) ======================== -->
+<div id="executive-panel" class="page">
+    <header class="header"><h1 id="executive-panel-title">Executive Dashboard</h1></header>
+    <main class="content">
+        <!-- View 1: Data Entry -->
+        <div id="executive-view-dataentry" class="executive-view active">
+            <div class="form-container">
+                <h2>Log a New Call</h2>
+                <input type="text" id="activity-name" placeholder="Customer Name" required>
+                <input type="tel" id="activity-phone" placeholder="Customer Phone" required>
+                <input type="text" id="activity-address" placeholder="Customer Address" required>
+                <textarea id="activity-desc" placeholder="Call Action Description" required></textarea>
+                <button class="btn-3d action-button" onclick="submitActivity()">Submit Activity</button>
+            </div>
+        </div>
+
+        <!-- View 2: Data -->
+        <div id="executive-view-data" class="executive-view">
+            <h2>My Recent Activities</h2>
+            <div class="list-container" id="executive-activity-list">
+                <!-- Activities will be listed here -->
+            </div>
+        </div>
+        
+        <!-- View 3: Instructions -->
+        <div id="executive-view-instructions" class="executive-view">
+             <h2>Instructions</h2>
+             <div id="executive-instructions-list">
+                <p>Loading instructions...</p>
+             </div>
+        </div>
+
+        <!-- View 4: Videos -->
+        <div id="executive-view-videos" class="executive-view">
+             <h2>Training Videos</h2>
+             <div id="executive-videos-list">
+                <p>Loading videos...</p>
+             </div>
+        </div>
+
+        <!-- View 5: Profile -->
+        <div id="executive-view-profile" class="executive-view">
+             <h2>My Profile</h2>
+             <div id="executive-profile-info" class="list-item" style="position: relative;">
+                <p>Loading profile...</p>
+             </div>
+             <button class="btn-3d" style="background-color: var(--danger-color); box-shadow: 0 6px #b02a37; width: 100%; margin-top: 20px;" onclick="logout()">Logout</button>
+        </div>
+    </main>
+    <nav class="bottom-nav"> <!-- Reusing leader nav style -->
+        <div id="nav-exec-dataentry" class="bottom-nav-item active" onclick="switchExecutiveView('dataentry')">
+            <i class="fa-solid fa-file-pen"></i>
+            <span>Data Entry</span>
+        </div>
+        <div id="nav-exec-data" class="bottom-nav-item" onclick="switchExecutiveView('data')">
+            <i class="fa-solid fa-list-check"></i>
+            <span>My Data</span>
+        </div>
+        <div id="nav-exec-instructions" class="bottom-nav-item" onclick="switchExecutiveView('instructions')">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Instructions</span>
+        </div>
+        <div id="nav-exec-videos" class="bottom-nav-item" onclick="switchExecutiveView('videos')">
+            <i class="fa-solid fa-video"></i>
+            <span>Videos</span>
+        </div>
+        <div id="nav-exec-profile" class="bottom-nav-item" onclick="switchExecutiveView('profile')">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>Profile</span>
+        </div>
+    </nav>
+</div>
+
+
+<!-- ======================= TEAM LEADER APPLICATION FORM ======================== -->
+<div id="leader-application" class="page application-form">
+    <header class="header"><button class="back-button" onclick="showPage('sales')">&#8592;</button><h1>Team Leader Application</h1></header>
+    <main class="content">
+        <div class="form-container">
+            <ul class="progress-bar">
+                <li class="progress-step active" data-step="1">1</li>
+                <li class="progress-step" data-step="2">2</li>
+                <li class="progress-step" data-step="3">3</li>
+                <li class="progress-step" data-step="4">4</li>
+            </ul>
+
+            <form class="multiStepForm" data-type="leader">
+                <div class="form-step active" data-step="1">
+                    <h2>1. Basic Information</h2>
+                    <label for="leader-fullname">Full name</label>
+                    <input type="text" placeholder="Full name" id="leader-fullname" required>
+                     <label for="leader-contact">Contact details (mobile)</label>
+                    <input type="tel" placeholder="Contact details (mobile)" id="leader-contact" required>
+                     <label for="leader-email">Contact details (email)</label>
+                    <input type="email" placeholder="Contact details (email)" id="leader-email" required>
+                </div>
+                <div class="form-step" data-step="2">
+                     <h2>2. Work Experience</h2>
+                     <label for="leader-experience-years">Total sales experience (in years)</label>
+                    <input type="number" id="leader-experience-years" placeholder="Total sales experience (in years)" required>
+                    <label for="leader-prev-company">Previous company and main responsibilities</label>
+                    <textarea id="leader-prev-company" placeholder="Previous company and main responsibilities" required></textarea>
+                     <label for="leader-team-size">Team size managed previously</label>
+                    <input type="text" id="leader-team-size" placeholder="Team size managed previously">
+                </div>
+                <div class="form-step" data-step="3">
+                    <h2>3. Skills & Strategy</h2>
+                    <label for="leader-motivation">How do you motivate your team?</label>
+                    <textarea id="leader-motivation" placeholder="How do you motivate your team?" required></textarea>
+                    <label for="leader-strategy">What is your approach if a product is selling slow?</label>
+                     <textarea id="leader-strategy" placeholder="What is your approach if a product is selling slow?"></textarea>
+                     <label for="leader-tracking">How would you track the performance of a remote (WFH) team?</label>
+                     <textarea id="leader-tracking" placeholder="How would you track the performance of a remote (WFH) team?" required></textarea>
+                </div>
+                <div class="form-step" data-step="4">
+                    <h2>4. Final Submission</h2>
+                    <input type="hidden" class="image_url_input">
+                    <button type="button" class="btn-3d action-button" style="margin: 15px auto;" onclick="uploadImage(this)">Upload Your Image</button>
+                    <img class="uploaded_image_preview" src="" style="max-width: 100px; margin: 10px auto 0; display: none; border-radius: 8px;">
+                </div>
+            </form>
+            
+            <div class="form-navigation">
+                <button class="form-button prev" onclick="navigateForm(-1, this)" style="display: none;">← Previous</button>
+                <button class="form-button next" onclick="navigateForm(1, this)">Next →</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ======================= SALES EXECUTIVE APPLICATION FORM ======================== -->
+<div id="executive-application" class="page application-form">
+    <header class="header"><button class="back-button" onclick="showPage('sales')">&#8592;</button><h1>Sales Executive Application</h1></header>
+    <main class="content">
+        <div class="form-container">
+            <ul class="progress-bar">
+                <li class="progress-step active" data-step="1">1</li>
+                <li class="progress-step" data-step="2">2</li>
+                <li class="progress-step" data-step="3">3</li>
+                <li class="progress-step" data-step="4">4</li>
+                <li class="progress-step" data-step="5">5</li>
+            </ul>
+
+            <form class="multiStepForm" data-type="executive">
+                <!-- Step 1: Basic Details -->
+                <div class="form-step active" data-step="1">
+                    <h2>1. Basic Details</h2>
+                    <label for="exec-fullname">Full name</label>
+                    <input type="text" id="exec-fullname" placeholder="e.g., Rohan Kumar" required>
+                    <label for="exec-email">Email ID</label>
+                    <input type="email" id="exec-email" placeholder="e.g., rohan.kumar@email.com" required>
+                    <label for="exec-contact">Contact Number</label>
+                    <input type="tel" id="exec-contact" placeholder="e.g., 9876543210" required>
+                    <label for="exec-dob">Date of Birth</label>
+                    <input type="date" id="exec-dob" required>
+                    <label for="exec-location">City / Location</label>
+                    <input type="text" id="exec-location" placeholder="e.g., Mumbai" required>
+                    <label for="exec-languages">Languages Known</label>
+                    <input type="text" id="exec-languages" placeholder="e.g., Hindi, English" required>
+                    <label for="exec-education">Educational Qualification</label>
+                    <input type="text" id="exec-education" placeholder="e.g., B.Com" required>
+                </div>
+                
+                <!-- Step 2: Work Experience -->
+                <div class="form-step" data-step="2">
+                     <h2>2. Work Experience</h2>
+                     <label for="exec-has-experience">Do you have prior sales experience?</label>
+                     <select id="exec-has-experience" required>
+                         <option value="">-- Select --</option>
+                         <option value="Yes">Yes</option>
+                         <option value="No">No (I'm a Fresher)</option>
+                     </select>
+                     <label for="exec-prev-role">Previous Company & Role (if any)</label>
+                     <textarea id="exec-prev-role" placeholder="Describe your previous role, product/service sold, platform used (Call, Field etc.)."></textarea>
+                     <label for="exec-training-ready">Are you ready for training? (for freshers)</label>
+                     <select id="exec-training-ready">
+                         <option value="">-- Select --</option>
+                         <option value="Yes">Yes</option>
+                         <option value="No">No</option>
+                     </select>
+                </div>
+
+                <!-- Step 3: Skills & Technical Knowledge -->
+                <div class="form-step" data-step="3">
+                    <h2>3. Skills & Technical Knowledge</h2>
+                    <label for="exec-confidence">Your confidence level in talking to clients?</label>
+                    <select id="exec-confidence" required>
+                        <option value="">-- Select --</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                    <label for="exec-objection-handling">How do you handle objections like "product is expensive"?</label>
+                    <textarea id="exec-objection-handling" placeholder="Briefly describe your approach."></textarea>
+                    <label for="exec-has-smartphone">Do you have a smartphone and good internet?</label>
+                     <select id="exec-has-smartphone" required>
+                         <option value="">-- Select --</option>
+                         <option value="Yes">Yes</option>
+                         <option value="No">No</option>
+                     </select>
+                     <label for="exec-knows-tools">Are you familiar with WhatsApp Business, Google Sheets?</label>
+                     <select id="exec-knows-tools" required>
+                         <option value="">-- Select --</option>
+                         <option value="Yes">Yes</option>
+                         <option value="No">No</option>
+                     </select>
+                </div>
+                
+                <!-- Step 4: Work Behavior & Motivation -->
+                <div class="form-step" data-step="4">
+                    <h2>4. Work Behavior & Motivation</h2>
+                    <label for="exec-wfh-env">Do you have a suitable environment for Work From Home?</label>
+                    <select id="exec-wfh-env" required>
+                         <option value="">-- Select --</option>
+                         <option value="Yes">Yes</option>
+                         <option value="No">No</option>
+                    </select>
+                    <label for="exec-motivation">What motivates you in a sales role?</label>
+                    <textarea id="exec-motivation" placeholder="e.g., Money, Targets, Praise, etc."></textarea>
+                    <label for="exec-career-goals">What are your career goals for the next 2 years?</label>
+                    <textarea id="exec-career-goals" placeholder="Describe where you see yourself."></textarea>
+                </div>
+                
+                <!-- Step 5: Final Submission -->
+                <div class="form-step" data-step="5">
+                    <h2>5. Final Submission</h2>
+                    <label>Please select a team you want to join</label>
+                    <select id="team-selection-dropdown" required>
+                        <option value="">Loading teams...</option>
+                    </select>
+                    <p style="font-size: 0.8em; color: var(--secondary-color); margin-top: 15px;">You will be interviewed by the leader of the team you select.</p>
+                    
+                    <input type="hidden" class="image_url_input">
+                    <button type="button" class="btn-3d action-button" style="margin: 15px auto;" onclick="uploadImage(this)">Upload Your Photo</button>
+                    <img class="uploaded_image_preview" src="" style="max-width: 100px; margin: 10px auto 0; display: none; border-radius: 8px;">
+                </div>
+            </form>
+            
+            <div class="form-navigation">
+                <button class="form-button prev" onclick="navigateForm(-1, this)" style="display: none;">← Previous</button>
+                <button class="form-button next" onclick="navigateForm(1, this)">Next →</button>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<!-- ======================= UNDER REVIEW PAGE ======================== -->
+<div id="under-review" class="page">
+    <header class="header"><h1>Application Status</h1></header>
+    <main class="content">
+        <div class="form-container" style="text-align: center;">
+            <h2>Thank You!</h2>
+            <p>Your application has been submitted successfully.</p>
+            <h3 style="color: var(--primary-color);">Your Application is Under Review</h3>
+            <p>We will get back to you soon.</p>
+             <button class="btn-3d action-button" style="margin-top:20px;" onclick="showPage('home')">Back to Home</button>
+        </div>
+    </main>
+</div>
+
+<!-- ======================= MODAL CONTAINER ======================== -->
+<div id="app-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" onclick="closeModal()">&times;</span>
+        <div class="modal-header">
+            <h2 id="modal-title"></h2>
+        </div>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<!-- Firebase SDK and App Logic -->
+<script type="module">
+    // Firebase SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, where, getDocs, serverTimestamp, orderBy, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = { apiKey: "AIzaSyB2PG5JvDko2UmQDlY9gN5lBgga2vQy-Ws", authDomain: "conceptra-c1000.firebaseapp.com", databaseURL: "https://conceptra-c1000-default-rtdb.firebaseio.com", projectId: "conceptra-c1000", storageBucket: "conceptra-c1000.appspot.com", messagingSenderId: "298402987968", appId: "1:298402987968:web:c0d0d7d6c08cdfa6bc5225", measurementId: "G-QRQYEVSJJ6" };
+    
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Collection references
+    const leaderApplicationsCol = collection(db, "jobPortalLeaderApplications");
+    const executiveApplicationsCol = collection(db, "jobPortalExecutiveApplications");
+    const salesActivitiesCol = collection(db, "jobPortalSalesActivities");
+    const instructionsCol = collection(db, "jobPortalInstructions");
+    const videosCol = collection(db, "jobPortalVideos");
+    const fireRequestsCol = collection(db, "jobPortalFireRequests");
+
+    // --- Local cache for Firestore data ---
+    let teamLeaderApplications = [];
+    let executiveApplications = [];
+    let salesActivities = [];
+    
+    // --- Global State ---
+    let currentPage = 'home';
+    let currentLoggedInUser = null; // Can be { type: 'leader', data: {...} } or { type: 'executive', data: {...} }
+    let formStates = {};
+
+
+    // --- Page Navigation ---
+    async function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        currentPage = pageId;
+        window.scrollTo(0, 0);
+
+        if(pageId === 'executive-application') {
+            await populateTeamList();
+        }
+    }
+
+    // --- Login & Logout Logic ---
+    async function login(role) {
+        if (role === 'boss') {
+            if (document.getElementById('boss-password-input').value === 'Himanshu@123') {
+                currentLoggedInUser = { type: 'boss' };
+                showPage('boss-admin');
+                switchBossView('applications');
+            } else {
+                alert('Incorrect password!');
+            }
+            document.getElementById('boss-password-input').value = '';
+        } else if (role === 'leader') {
+            const teamName = document.getElementById('leader-teamname-input').value;
+            const password = document.getElementById('leader-password-input').value;
+            if (!teamName || !password) { alert("Please enter Team Name and Password."); return; }
+            
+            const q = query(leaderApplicationsCol, where("status", "==", "approved"), where("credentials.teamName", "==", teamName), where("credentials.password", "==", password));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const leaderData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+                currentLoggedInUser = { type: 'leader', data: leaderData };
+                document.getElementById('leader-panel-title').innerText = `Team: ${leaderData.credentials.teamName}`;
+                showPage('leader-admin');
+                switchLeaderView('apply'); // Default to the 'apply' view
+            } else {
+                alert('Invalid Team Name or Password!');
+            }
+            document.getElementById('leader-teamname-input').value = '';
+            document.getElementById('leader-password-input').value = '';
+        } else if (role === 'executive') {
+            const username = document.getElementById('executive-username-input').value;
+            const password = document.getElementById('executive-password-input').value;
+            if (!username || !password) { alert("Please enter Username and Password."); return; }
+
+            const q = query(executiveApplicationsCol, where("status", "==", "approved"), where("credentials.username", "==", username), where("credentials.password", "==", password));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const execData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
+                currentLoggedInUser = { type: 'executive', data: execData };
+                document.getElementById('executive-panel-title').innerText = `Welcome, ${execData.basicInfo.fullName}`;
+                showPage('executive-panel');
+                switchExecutiveView('dataentry'); // Set default view
+                listenForActivities();
+            } else {
+                alert('Invalid Username or Password!');
+            }
+            document.getElementById('executive-username-input').value = '';
+            document.getElementById('executive-password-input').value = '';
+        }
+    }
+
+    function logout() {
+        currentLoggedInUser = null;
+        showPage('home');
+    }
+
+    // --- Admin Panel Logic (Boss) ---
+    function switchBossView(viewName) {
+        document.querySelectorAll('#boss-admin .bottom-nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(`nav-boss-${viewName}`).classList.add('active');
+        
+        document.querySelectorAll('.boss-view').forEach(view => view.classList.remove('active'));
+        document.getElementById(`boss-view-${viewName}`).classList.add('active');
+        
+        if (viewName === 'applications') {
+            displayLeaderApplications();
+        } else if (viewName === 'teams') {
+            showBossTeamList(); // Reset to main team list view
+            displayBossTeams();
+        } else if (viewName === 'instructions') {
+            displaySentInstructions();
+        } else if (viewName === 'videos') {
+            displaySentVideos();
+        } else if (viewName === 'reports') {
+            displayFireRequests();
+        }
+    }
+
+    // --- Team Leader Panel Logic ---
+    function switchLeaderView(viewName) {
+        document.querySelectorAll('#leader-admin .bottom-nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(`nav-leader-${viewName}`).classList.add('active');
+        
+        document.querySelectorAll('.leader-view').forEach(view => view.classList.remove('active'));
+        document.getElementById(`leader-view-${viewName}`).classList.add('active');
+        
+        if (viewName === 'team') {
+            displayMyTeamMembers();
+        } else if (viewName === 'apply') {
+            listenForExecutiveApplications();
+        } else if (viewName === 'profile') {
+            displayLeaderProfile();
+        } else if(viewName === 'instructions'){
+            displayLeaderInstructions();
+        } else if (viewName === 'videos'){
+            displayLeaderVideos();
+        }
+    }
+    
+    // --- Sales Executive Panel Logic ---
+    function switchExecutiveView(viewName) {
+        document.querySelectorAll('#executive-panel .bottom-nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById(`nav-exec-${viewName}`).classList.add('active');
+        
+        document.querySelectorAll('.executive-view').forEach(view => view.classList.remove('active'));
+        document.getElementById(`executive-view-${viewName}`).classList.add('active');
+        
+        if (viewName === 'profile') {
+            displayExecutiveProfile();
+        } else if (viewName === 'data') {
+            displayActivities();
+        } else if (viewName === 'instructions'){
+            displayExecutiveInstructions();
+        } else if (viewName === 'videos'){
+            displayExecutiveVideos();
+        }
+    }
+
+    // --- Display Logic (Boss) ---
+    function displayLeaderApplications() {
+        const container = document.getElementById('application-list-container');
+        if (!container) return;
+        const pendingApps = teamLeaderApplications.filter(app => app.status === 'pending');
+        if (pendingApps.length === 0) { container.innerHTML = '<p>No new applications.</p>'; return; }
+        container.innerHTML = pendingApps.map(app => `
+            <div class="list-item">
+                <h3>${app.basicInfo.fullName} <span style="font-size:0.8em; color: #777;">(${app.basicInfo.email})</span></h3>
+                <p>Status: <span style="font-weight:bold; color: var(--secondary-color);">${app.status}</span></p>
+                <div class="list-item-actions">
+                    <button class="form-button approve-btn" onclick="approveApplication('${app.id}', 'leader', '${app.basicInfo.email}')">Approve</button>
+                    <button class="form-button reject-btn" onclick="rejectApplication('${app.id}', 'leader')">Reject</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function displayBossTeams() {
+        const container = document.getElementById('boss-team-list-container');
+        if (!container) return;
+        const approvedTeams = teamLeaderApplications.filter(app => app.status === 'approved');
+        if (approvedTeams.length === 0) { container.innerHTML = '<p>No approved teams yet.</p>'; return; }
+        container.innerHTML = approvedTeams.map(leader => `
+             <div class="boss-team-card">
+                <div class="card-image-container"><img src="${leader.imageUrl}" alt="${leader.basicInfo.fullName}"></div>
+                <div class="card-info">
+                    <h3>${leader.basicInfo.fullName}</h3>
+                    <p>Team: ${leader.credentials.teamName}</p>
+                </div>
+                <div class="card-actions">
+                    <button class="form-button view-btn" onclick="viewTeamAsBoss('${leader.credentials.teamName}', '${leader.id}')">View Team</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    async function viewTeamAsBoss(teamName, leaderId){
+        document.getElementById('boss-teams-main-view').style.display = 'none';
+        document.getElementById('boss-teams-single-view').style.display = 'block';
+        document.getElementById('boss-single-team-name').innerText = `Viewing Team: ${teamName}`;
+        const container = document.getElementById('boss-single-team-members');
+        container.innerHTML = `<p>Loading team details...</p>`;
+
+        // Fetch pending fire requests for this team
+        const requestsQuery = query(fireRequestsCol, where("teamName", "==", teamName), where("status", "==", "pending"));
+        const requestsSnapshot = await getDocs(requestsQuery);
+        const pendingRequests = requestsSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+
+        // --- Logic for APPROVED members ---
+        const myMembers = executiveApplications.filter(app => app.status === 'approved' && app.requestedTeam === teamName);
+        
+        let finalHTML = '';
+
+        if (myMembers.length > 0) {
+            finalHTML += `<h2>Approved Members</h2><div class="team-grid">` + myMembers.map(app => {
+                const fireRequest = pendingRequests.find(req => req.executiveId === app.id);
+                let fireButtonHTML = `<button class="form-button fire-btn" disabled style="background-color: var(--secondary-color);">No Report</button>`;
+                if (fireRequest) {
+                     fireButtonHTML = `<div class="list-item-actions" style="grid-column: 1 / -1;">
+                        <p style="width:100%; text-align:center; color: var(--danger-color); font-weight:bold;">FIRE REQUESTED!</p>
+                        <button class="form-button approve-btn" onclick='handleFireRequest("${fireRequest.id}", "${app.id}", true)'>Approve Fire</button>
+                        <button class="form-button reject-btn" onclick='handleFireRequest("${fireRequest.id}", "${app.id}", false)'>Deny Request</button>
+                     </div>`;
+                }
+                return `
+                <div class="team-member-card">
+                    <div class="card-image-container"><img src="${app.imageUrl || 'https://via.placeholder.com/320x180'}" alt="${app.basicInfo.fullName}"></div>
+                    <div class="card-info"><h3>${app.basicInfo.fullName}</h3></div>
+                    <div class="card-actions">
+                        <button class="form-button view-btn" onclick='viewMemberInfo(${JSON.stringify(app)})'>View</button>
+                        <button class="form-button data-btn" onclick='viewMemberData("${app.id}", "${app.basicInfo.fullName}")'>Data</button>
+                        ${fireButtonHTML}
+                    </div>
+                </div>`;
+            }).join('') + `</div>`;
+        } else {
+            finalHTML += `<h2>Approved Members</h2><p>This team has no members yet.</p>`;
+        }
+
+        // --- NEW logic for PENDING applications ---
+        const pendingAppsForTeam = executiveApplications.filter(app => app.status === 'pending' && app.requestedTeam === teamName);
+
+        if (pendingAppsForTeam.length > 0) {
+            finalHTML += `<h2 style="margin-top: 30px;">Pending Applications for this Team</h2>` + pendingAppsForTeam.map(app => `
+                 <div class="list-item">
+                    <h3>${app.basicInfo.fullName}</h3>
+                    <p>Status: <span style="font-weight:bold; color: var(--secondary-color);">${app.status}</span></p>
+                    <div class="list-item-actions">
+                        <button class="form-button view-btn list-action-button" onclick='viewMemberInfo(${JSON.stringify(app)})'>View Details</button>
+                        <button class="form-button data-btn list-action-button" onclick='sendOfferLetter(${JSON.stringify(app)})'>Send Offer Letter</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+             finalHTML += `<h2 style="margin-top: 30px;">Pending Applications for this Team</h2><p>No pending applications for this team.</p>`;
+        }
+
+        container.innerHTML = finalHTML;
+    }
+    
+    function showBossTeamList() {
+        document.getElementById('boss-teams-main-view').style.display = 'block';
+        document.getElementById('boss-teams-single-view').style.display = 'none';
+    }
+
+    // --- Display Logic (Team Leader) ---
+    function displayMyTeamMembers() {
+        const container = document.getElementById('my-team-list');
+        if (!container || !currentLoggedInUser || currentLoggedInUser.type !== 'leader') return;
+        
+        const teamName = currentLoggedInUser.data.credentials.teamName;
+        const myMembers = executiveApplications.filter(app => (app.status === 'approved' || app.status === 'fire_requested') && app.requestedTeam === teamName);
+
+        if (myMembers.length === 0) { container.innerHTML = '<p>You have no team members yet.</p>'; return; }
+        container.innerHTML = myMembers.map(app => `
+            <div class="team-member-card">
+                <div class="card-image-container">
+                    <img src="${app.imageUrl || 'https://via.placeholder.com/320x180'}" alt="${app.basicInfo.fullName}">
+                </div>
+                <div class="card-info">
+                     <h3>${app.basicInfo.fullName}</h3>
+                     ${app.status === 'fire_requested' ? '<p style="color:var(--danger-color); font-weight:bold;">FIRE REQUESTED</p>' : ''}
+                </div>
+                <div class="card-actions">
+                    <button class="form-button view-btn" onclick='viewMemberInfo(${JSON.stringify(app)})'>View</button>
+                    <button class="form-button data-btn" onclick='viewMemberData("${app.id}", "${app.basicInfo.fullName}")'>Data</button>
+                    <button class="form-button fire-btn" onclick='requestFireMember("${app.id}", "${app.basicInfo.fullName}")' ${app.status === 'fire_requested' ? 'disabled' : ''}>Request Fire</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function displayLeaderProfile() {
+        const container = document.getElementById('leader-profile-info');
+        if (!container || !currentLoggedInUser || currentLoggedInUser.type !== 'leader') return;
+        const leader = currentLoggedInUser.data;
+        container.innerHTML = `
+            <button onclick="openEditProfileModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--secondary-color);"><i class="fa-solid fa-edit"></i></button>
+            <img src="${leader.imageUrl}" alt="Profile Pic" style="max-width: 120px; border-radius: 50%; display: block; margin: 0 auto 15px;">
+            <h3>${leader.basicInfo.fullName}</h3>
+            <p><strong>Team Name:</strong> ${leader.credentials.teamName}</p>
+            <p><strong>Email:</strong> ${leader.basicInfo.email}</p>
+            <p><strong>Contact:</strong> ${leader.formData?.contact || 'N/A'}</p>
+        `;
+    }
+    
+    function displayExecutiveProfile() {
+        const container = document.getElementById('executive-profile-info');
+        if (!container || !currentLoggedInUser || currentLoggedInUser.type !== 'executive') return;
+        const executive = currentLoggedInUser.data;
+        container.innerHTML = `
+            <button onclick="openEditProfileModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--secondary-color);"><i class="fa-solid fa-edit"></i></button>
+            <img src="${executive.imageUrl}" alt="Profile Pic" style="max-width: 120px; border-radius: 50%; display: block; margin: 0 auto 15px;">
+            <h3>${executive.basicInfo.fullName}</h3>
+            <p><strong>Username:</strong> ${executive.credentials.username}</p>
+            <p><strong>Email:</strong> ${executive.basicInfo.email}</p>
+            <p><strong>Team:</strong> ${executive.requestedTeam}</p>
+            <p><strong>Contact:</strong> ${executive.formData?.contact || 'N/A'}</p>
+        `;
+    }
+
+    // --- Application Approval/Rejection ---
+    async function approveApplication(appId, type, email = '') {
+        if (type === 'leader') {
+            const teamName = prompt("Enter a UNIQUE Team Name for this new leader:");
+            if (!teamName) { alert("Team Name is required."); return; }
+            const password = prompt(`Enter a password for Team '${teamName}':`);
+            if (!password) { alert("Password is required."); return; }
+
+            const docRef = doc(db, "jobPortalLeaderApplications", appId);
+            await updateDoc(docRef, { status: 'approved', credentials: { teamName, password } });
+            alert(`Application approved! Team '${teamName}' created.`);
+        } else if (type === 'executive') {
+            const username = prompt("Set a username for this executive:", email);
+            if (!username) { alert("Username is required."); return; }
+            const password = prompt(`Set a password for '${username}':`);
+            if (!password) { alert("Password is required."); return; }
+
+            const docRef = doc(db, "jobPortalExecutiveApplications", appId);
+            await updateDoc(docRef, { status: 'approved', credentials: { username, password } });
+            alert(`Executive approved and added to your team!`);
+        }
+    }
+
+    async function rejectApplication(appId, type) {
+        if (confirm('Are you sure you want to reject this application?')) {
+            const collectionName = type === 'leader' ? 'jobPortalLeaderApplications' : 'jobPortalExecutiveApplications';
+            const docRef = doc(db, collectionName, appId);
+            await updateDoc(docRef, { status: 'rejected' });
+        }
+    }
+
+    // --- Team Leader Application Logic ---
+    async function checkTeamLeaderStatus() {
+        showPage('leader-login');
+    }
+
+    // --- Form Navigation & Submission ---
+    function navigateForm(direction, button) {
+        const formContainer = button.closest('.form-container');
+        const form = formContainer.querySelector('.multiStepForm');
+        const formType = form.dataset.type;
+        
+        if (!formStates[formType]) formStates[formType] = { currentStep: 1 };
+        let state = formStates[formType];
+
+        const steps = form.querySelectorAll('.form-step');
+        
+        if (direction === 1) { // Moving to next step
+            const currentInputs = steps[state.currentStep - 1].querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+            currentInputs.forEach(input => {
+                if (!input.value.trim()) { isValid = false; input.style.borderBottomColor = 'red'; } 
+                else { input.style.borderBottomColor = '#ddd'; }
+            });
+            if (!isValid) { alert('Please fill all required fields in this step.'); return; }
+        }
+
+        form.querySelector(`.form-step[data-step="${state.currentStep}"]`).classList.remove('active');
+        formContainer.querySelector(`.progress-step[data-step="${state.currentStep}"]`).classList.remove('active');
+        state.currentStep += direction;
+        form.querySelector(`.form-step[data-step="${state.currentStep}"]`).classList.add('active');
+        formContainer.querySelector(`.progress-step[data-step="${state.currentStep}"]`).classList.add('active');
+
+        const prevBtn = formContainer.querySelector('.prev');
+        const nextBtn = formContainer.querySelector('.next');
+        prevBtn.style.display = state.currentStep > 1 ? 'inline-block' : 'none';
+        
+        if (state.currentStep === steps.length) {
+            nextBtn.innerHTML = 'Submit Application';
+            nextBtn.classList.add('submit');
+            nextBtn.onclick = () => submitApplication(form, nextBtn);
+        } else {
+            nextBtn.innerHTML = 'Next →';
+            nextBtn.classList.remove('submit');
+            nextBtn.onclick = () => navigateForm(1, button);
+        }
+    }
+
+    function uploadImage(button) {
+        const formStep = button.closest('.form-step');
+        const myWidget = cloudinary.createUploadWidget({
+            cloudName: 'dzq7qb6ew', uploadPreset: 'bookswamp_unsigned', folder: 'job_portal_profiles'
+        }, (error, result) => { 
+            if (!error && result && result.event === "success") { 
+                formStep.querySelector('.image_url_input').value = result.info.secure_url;
+                const preview = formStep.querySelector('.uploaded_image_preview');
+                preview.src = result.info.secure_url;
+                preview.style.display = 'block';
+                alert('Image uploaded successfully!');
+            }
+        });
+        myWidget.open();
+    }
+    
+    async function populateTeamList() {
+        const dropdown = document.getElementById('team-selection-dropdown');
+        dropdown.innerHTML = '<option value="">Loading teams...</option>';
+        const q = query(leaderApplicationsCol, where("status", "==", "approved"));
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) { dropdown.innerHTML = '<option value="">No teams available</option>'; return; }
+        let optionsHTML = '<option value="">-- Select a Team --</option>';
+        querySnapshot.forEach(doc => {
+            const team = doc.data();
+            optionsHTML += `<option value="${team.credentials.teamName}">${team.credentials.teamName}</option>`;
+        });
+        dropdown.innerHTML = optionsHTML;
+    }
+
+    async function submitApplication(form, submitButton) {
+        if (submitButton.disabled) return;
+        submitButton.disabled = true; submitButton.innerHTML = 'Submitting...';
+        const type = form.dataset.type;
+        const fullName = form.querySelector(`#${type}-fullname`).value;
+        const email = form.querySelector(`#${type}-email`).value;
+        const contact = form.querySelector(`#${type}-contact`).value;
+
+        const finalApplicationData = {
+            basicInfo: { fullName, email },
+            imageUrl: form.querySelector('.image_url_input').value,
+            status: 'pending', createdAt: serverTimestamp(),
+            formData: {}
+        };
+
+        if (type === 'executive') {
+            finalApplicationData.requestedTeam = form.querySelector('#team-selection-dropdown').value;
+            finalApplicationData.formData = {
+                contact: form.querySelector('#exec-contact').value,
+                dob: form.querySelector('#exec-dob').value,
+                location: form.querySelector('#exec-location').value,
+                languages: form.querySelector('#exec-languages').value,
+                education: form.querySelector('#exec-education').value,
+                hasExperience: form.querySelector('#exec-has-experience').value,
+                prevRole: form.querySelector('#exec-prev-role').value,
+                trainingReady: form.querySelector('#exec-training-ready').value,
+                confidence: form.querySelector('#exec-confidence').value,
+                objectionHandling: form.querySelector('#exec-objection-handling').value,
+                hasSmartphone: form.querySelector('#exec-has-smartphone').value,
+                knowsTools: form.querySelector('#exec-knows-tools').value,
+                wfhEnv: form.querySelector('#exec-wfh-env').value,
+                motivation: form.querySelector('#exec-motivation').value,
+                careerGoals: form.querySelector('#exec-career-goals').value,
+            };
+            if (!finalApplicationData.requestedTeam) {
+                alert('Please select a team to join.');
+                submitButton.disabled = false; submitButton.innerHTML = 'Submit Application'; return;
+             }
+        } else if (type === 'leader') {
+             finalApplicationData.formData = {
+                contact: form.querySelector('#leader-contact').value,
+                experienceYears: form.querySelector('#leader-experience-years').value,
+                prevCompany: form.querySelector('#leader-prev-company').value,
+                teamSize: form.querySelector('#leader-team-size').value,
+                motivation: form.querySelector('#leader-motivation').value,
+                strategy: form.querySelector('#leader-strategy').value,
+                tracking: form.querySelector('#leader-tracking').value,
+            };
+        }
+        
+        if (!finalApplicationData.imageUrl) {
+            alert('Please upload your photo before submitting.');
+            submitButton.disabled = false; submitButton.innerHTML = 'Submit Application'; return;
+        }
+        
+        try {
+            const colRef = type === 'leader' ? leaderApplicationsCol : executiveApplicationsCol;
+            await addDoc(colRef, finalApplicationData);
+            showPage('under-review');
+        } catch(error) {
+            console.error("Error writing document to Firebase: ", error);
+            alert("There was an error submitting your application. Please try again.");
+            submitButton.disabled = false; submitButton.innerHTML = 'Submit Application';
+        }
+    }
+
+    // --- Sales Executive Panel ---
+    async function submitActivity() {
+        const name = document.getElementById('activity-name').value;
+        const phone = document.getElementById('activity-phone').value;
+        const address = document.getElementById('activity-address').value;
+        const desc = document.getElementById('activity-desc').value;
+
+        if (!name || !phone || !address || !desc) { alert("Please fill all fields to log the activity."); return; }
+        if (!currentLoggedInUser || currentLoggedInUser.type !== 'executive') { alert("Error: You are not logged in as an executive."); return; }
+
+        const activityData = {
+            customerName: name, customerPhone: phone, customerAddress: address, description: desc,
+            executiveId: currentLoggedInUser.data.id, executiveName: currentLoggedInUser.data.basicInfo.fullName,
+            teamName: currentLoggedInUser.data.requestedTeam, createdAt: serverTimestamp()
+        };
+
+        try {
+            await addDoc(salesActivitiesCol, activityData);
+            alert("Activity logged successfully!");
+            document.getElementById('activity-name').value = '';
+            document.getElementById('activity-phone').value = '';
+            document.getElementById('activity-address').value = '';
+            document.getElementById('activity-desc').value = '';
+        } catch (error) {
+            console.error("Error adding activity: ", error);
+            alert("Failed to log activity. Please try again.");
+        }
+    }
+
+    function displayActivities() {
+        const container = document.getElementById('executive-activity-list');
+        if (!container) return;
+        if (salesActivities.length === 0) {
+            container.innerHTML = '<p>You have not logged any activities yet.</p>'; return;
+        }
+        container.innerHTML = salesActivities.map(act => `
+            <div class="list-item">
+                <h3>Customer: ${act.customerName}</h3>
+                <p><strong>Phone:</strong> ${act.customerPhone}</p>
+                <p><strong>Description:</strong> ${act.description}</p>
+                <p style="font-size:0.8em; text-align:right; color:#888;">Logged on: ${new Date(act.createdAt?.toDate()).toLocaleString()}</p>
+            </div>
+        `).join('');
+    }
+
+
+    // --- Firestore Listeners ---
+    function listenForLeaderApplications() {
+        onSnapshot(query(leaderApplicationsCol, orderBy("createdAt", "desc")), (snapshot) => {
+            teamLeaderApplications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (currentPage === 'boss-admin') {
+                displayLeaderApplications();
+                displayBossTeams();
+            }
+        });
+    }
+
+    function listenForExecutiveApplications() {
+        if (!currentLoggedInUser || currentLoggedInUser.type !== 'leader') return;
+        const teamName = currentLoggedInUser.data.credentials.teamName;
+        const q = query(executiveApplicationsCol, where("requestedTeam", "==", teamName), orderBy("createdAt", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            const applicationsForMyTeam = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const container = document.getElementById('executive-application-list');
+            if (!container) return;
+            
+            const pendingApps = applicationsForMyTeam.filter(app => app.status === 'pending');
+            if(pendingApps.length === 0) { container.innerHTML = '<p>No new applications for your team.</p>'; return; }
+
+            container.innerHTML = pendingApps.map(app => `
+                <div class="list-item">
+                    <h3>${app.basicInfo.fullName} <span style="font-size:0.8em; color: #777;">(${app.basicInfo.email})</span></h3>
+                    <p>Status: <span style="font-weight:bold; color: var(--secondary-color);">${app.status}</span></p>
+                    <div class="list-item-actions">
+                         <button class="form-button view-btn list-action-button" onclick='viewMemberInfo(${JSON.stringify(app)})'>View</button>
+                         <button class="form-button data-btn list-action-button" onclick='sendOfferLetter(${JSON.stringify(app)})'>Offer Letter</button>
+                        <button class="form-button approve-btn list-action-button" onclick="approveApplication('${app.id}', 'executive', '${app.basicInfo.email}')">Accept</button>
+                        <button class="form-button reject-btn list-action-button" onclick="rejectApplication('${app.id}', 'executive')">Reject</button>
+                    </div>
+                </div>
+            `).join('');
+        });
+    }
+    
+    function listenForActivities() {
+         if (!currentLoggedInUser || currentLoggedInUser.type !== 'executive') return;
+         const q = query(salesActivitiesCol, where("executiveId", "==", currentLoggedInUser.data.id), orderBy("createdAt", "desc"));
+         onSnapshot(q, (snapshot) => {
+            salesActivities = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (currentPage === 'executive-panel') {
+                displayActivities();
+            }
+         });
+    }
+
+    // --- Modal, Profile & Team Member Actions ---
+    function viewMemberInfo(memberData) { showModal('member-info', memberData); }
+    
+    async function viewMemberData(memberId, memberName) {
+        const q = query(salesActivitiesCol, where("executiveId", "==", memberId), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        const activities = querySnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+        showModal('member-data', { activities: activities, name: memberName });
+    }
+
+    async function requestFireMember(executiveId, executiveName) {
+        if(!confirm(`Are you sure you want to send a fire request for ${executiveName}?`)) return;
+        
+        const leader = currentLoggedInUser.data;
+        const fireRequestData = {
+            executiveId: executiveId,
+            executiveName: executiveName,
+            teamLeaderId: leader.id,
+            teamLeaderName: leader.basicInfo.fullName,
+            teamName: leader.credentials.teamName,
+            status: 'pending',
+            createdAt: serverTimestamp()
+        };
+
+        try {
+            await addDoc(fireRequestsCol, fireRequestData);
+            const execDocRef = doc(db, "jobPortalExecutiveApplications", executiveId);
+            await updateDoc(execDocRef, { status: 'fire_requested' });
+            alert("Request has been sent to the boss for review.");
+        } catch(error) {
+            console.error("Error sending fire request: ", error);
+            alert("Failed to send fire request.");
+        }
+    }
+    
+    async function handleFireRequest(requestId, executiveId, approve) {
+        const action = approve ? 'fire' : 'keep';
+        if (!confirm(`Are you sure you want to ${action} this team member? This action cannot be undone.`)) return;
+
+        try {
+            const requestRef = doc(db, "jobPortalFireRequests", requestId);
+            const executiveRef = doc(db, "jobPortalExecutiveApplications", executiveId);
+            if (approve) {
+                await updateDoc(requestRef, { status: 'approved' });
+                await updateDoc(executiveRef, { status: 'fired' });
+                alert("The team member has been marked as 'fired'.");
+            } else {
+                await updateDoc(requestRef, { status: 'denied' });
+                await updateDoc(executiveRef, { status: 'approved' }); // Revert status
+                alert("The fire request has been denied.");
+            }
+        } catch(e) { console.error(e); alert("An error occurred."); }
+    }
+    
+    function openEditProfileModal() {
+        if (!currentLoggedInUser) return;
+        showModal('edit-profile', currentLoggedInUser);
+    }
+    
+    async function saveProfileChanges() {
+        const user = currentLoggedInUser;
+        if (!user) return;
+
+        const button = document.getElementById('save-profile-button');
+        button.disabled = true;
+        button.innerText = 'Saving...';
+
+        const collectionName = user.type === 'leader' ? 'jobPortalLeaderApplications' : 'jobPortalExecutiveApplications';
+        const docRef = doc(db, collectionName, user.data.id);
+        
+        const updatedData = {};
+        const newBasicInfo = { ...user.data.basicInfo };
+        const newFormData = { ...user.data.formData };
+
+        if (user.type === 'executive') {
+            newBasicInfo.fullName = document.getElementById('edit-exec-fullname').value;
+            newBasicInfo.email = document.getElementById('edit-exec-email').value;
+            newFormData.contact = document.getElementById('edit-exec-contact').value;
+            newFormData.dob = document.getElementById('edit-exec-dob').value;
+            newFormData.location = document.getElementById('edit-exec-location').value;
+            newFormData.languages = document.getElementById('edit-exec-languages').value;
+            newFormData.education = document.getElementById('edit-exec-education').value;
+            newFormData.hasExperience = document.getElementById('edit-exec-has-experience').value;
+            newFormData.prevRole = document.getElementById('edit-exec-prev-role').value;
+            newFormData.trainingReady = document.getElementById('edit-exec-training-ready').value;
+            newFormData.confidence = document.getElementById('edit-exec-confidence').value;
+            newFormData.objectionHandling = document.getElementById('edit-exec-objection-handling').value;
+            newFormData.hasSmartphone = document.getElementById('edit-exec-has-smartphone').value;
+            newFormData.knowsTools = document.getElementById('edit-exec-knows-tools').value;
+            newFormData.wfhEnv = document.getElementById('edit-exec-wfh-env').value;
+            newFormData.motivation = document.getElementById('edit-exec-motivation').value;
+            newFormData.careerGoals = document.getElementById('edit-exec-career-goals').value;
+        } else if (user.type === 'leader') {
+            newBasicInfo.fullName = document.getElementById('edit-leader-fullname').value;
+            newBasicInfo.email = document.getElementById('edit-leader-email').value;
+            newFormData.contact = document.getElementById('edit-leader-contact').value;
+            newFormData.experienceYears = document.getElementById('edit-leader-experience-years').value;
+            newFormData.prevCompany = document.getElementById('edit-leader-prev-company').value;
+            newFormData.teamSize = document.getElementById('edit-leader-team-size').value;
+            newFormData.motivation = document.getElementById('edit-leader-motivation').value;
+            newFormData.strategy = document.getElementById('edit-leader-strategy').value;
+            newFormData.tracking = document.getElementById('edit-leader-tracking').value;
+        }
+
+        updatedData.basicInfo = newBasicInfo;
+        updatedData.formData = newFormData;
+
+        try {
+            await updateDoc(docRef, updatedData);
+            // Update local state
+            currentLoggedInUser.data.basicInfo = newBasicInfo;
+            currentLoggedInUser.data.formData = newFormData;
+            
+            // Re-render profile view
+            if(user.type === 'leader') displayLeaderProfile();
+            if(user.type === 'executive') displayExecutiveProfile();
+
+            closeModal();
+            alert('Profile updated successfully!');
+        } catch (error) {
+            console.error("Error updating profile: ", error);
+            alert('Failed to update profile.');
+            button.disabled = false;
+            button.innerText = 'Save Changes';
+        }
+    }
+
+    function generateEditProfileFormHTML(user) {
+        const info = user.data.basicInfo;
+        const data = user.data.formData || {};
+        
+        if (user.type === 'executive') {
+            return `
+                <div id="edit-profile-form" class="form-container" style="box-shadow: none; padding: 0;">
+                    <label for="edit-exec-fullname">Full name</label>
+                    <input type="text" id="edit-exec-fullname" value="${info.fullName || ''}" required>
+                    <label for="edit-exec-email">Email ID</label>
+                    <input type="email" id="edit-exec-email" value="${info.email || ''}" required>
+                    <label for="edit-exec-contact">Contact Number</label>
+                    <input type="tel" id="edit-exec-contact" value="${data.contact || ''}" required>
+                    <label for="edit-exec-dob">Date of Birth</label>
+                    <input type="date" id="edit-exec-dob" value="${data.dob || ''}" required>
+                    <label for="edit-exec-location">City / Location</label>
+                    <input type="text" id="edit-exec-location" value="${data.location || ''}" required>
+                    <label for="edit-exec-languages">Languages Known</label>
+                    <input type="text" id="edit-exec-languages" value="${data.languages || ''}" required>
+                    <label for="edit-exec-education">Educational Qualification</label>
+                    <input type="text" id="edit-exec-education" value="${data.education || ''}" required>
+                    
+                    <div class="grid-divider"></div>
+
+                    <label for="edit-exec-has-experience">Do you have prior sales experience?</label>
+                    <select id="edit-exec-has-experience" required>
+                         <option value="Yes" ${data.hasExperience === 'Yes' ? 'selected' : ''}>Yes</option>
+                         <option value="No" ${data.hasExperience === 'No' ? 'selected' : ''}>No (I'm a Fresher)</option>
+                    </select>
+                    <label for="edit-exec-prev-role">Previous Company & Role (if any)</label>
+                    <textarea id="edit-exec-prev-role">${data.prevRole || ''}</textarea>
+                    <label for="edit-exec-training-ready">Are you ready for training? (for freshers)</label>
+                     <select id="edit-exec-training-ready">
+                         <option value="Yes" ${data.trainingReady === 'Yes' ? 'selected' : ''}>Yes</option>
+                         <option value="No" ${data.trainingReady === 'No' ? 'selected' : ''}>No</option>
+                     </select>
+
+                    <div class="grid-divider"></div>
+                     
+                    <label for="edit-exec-confidence">Your confidence level in talking to clients?</label>
+                    <select id="edit-exec-confidence" required>
+                        <option value="High" ${data.confidence === 'High' ? 'selected' : ''}>High</option>
+                        <option value="Medium" ${data.confidence === 'Medium' ? 'selected' : ''}>Medium</option>
+                        <option value="Low" ${data.confidence === 'Low' ? 'selected' : ''}>Low</option>
+                    </select>
+                    <label for="edit-exec-objection-handling">How do you handle objections like "product is expensive"?</label>
+                    <textarea id="edit-exec-objection-handling">${data.objectionHandling || ''}</textarea>
+                    <label for="edit-exec-has-smartphone">Do you have a smartphone and good internet?</label>
+                     <select id="edit-exec-has-smartphone" required>
+                         <option value="Yes" ${data.hasSmartphone === 'Yes' ? 'selected' : ''}>Yes</option>
+                         <option value="No" ${data.hasSmartphone === 'No' ? 'selected' : ''}>No</option>
+                     </select>
+                     <label for="edit-exec-knows-tools">Are you familiar with WhatsApp Business, Google Sheets?</label>
+                     <select id="edit-exec-knows-tools" required>
+                         <option value="Yes" ${data.knowsTools === 'Yes' ? 'selected' : ''}>Yes</option>
+                         <option value="No" ${data.knowsTools === 'No' ? 'selected' : ''}>No</option>
+                     </select>
+
+                    <div class="grid-divider"></div>
+
+                    <label for="edit-exec-wfh-env">Do you have a suitable environment for Work From Home?</label>
+                    <select id="edit-exec-wfh-env" required>
+                         <option value="Yes" ${data.wfhEnv === 'Yes' ? 'selected' : ''}>Yes</option>
+                         <option value="No" ${data.wfhEnv === 'No' ? 'selected' : ''}>No</option>
+                    </select>
+                    <label for="edit-exec-motivation">What motivates you in a sales role?</label>
+                    <textarea id="edit-exec-motivation">${data.motivation || ''}</textarea>
+                    <label for="edit-exec-career-goals">What are your career goals for the next 2 years?</label>
+                    <textarea id="edit-exec-career-goals">${data.careerGoals || ''}</textarea>
+
+                    <button id="save-profile-button" class="btn-3d action-button" style="margin-top: 20px;" onclick="saveProfileChanges()">Save Changes</button>
+                </div>
+            `;
+        } else if (user.type === 'leader') {
+            return `
+                 <div id="edit-profile-form" class="form-container" style="box-shadow: none; padding: 0;">
+                    <label for="edit-leader-fullname">Full name</label>
+                    <input type="text" id="edit-leader-fullname" value="${info.fullName || ''}" required>
+                    <label for="edit-leader-email">Contact details (email)</label>
+                    <input type="email" id="edit-leader-email" value="${info.email || ''}" required>
+                    <label for="edit-leader-contact">Contact details (mobile)</label>
+                    <input type="tel" id="edit-leader-contact" value="${data.contact || ''}" required>
+                    
+                    <div class="grid-divider"></div>
+                    
+                    <label for="edit-leader-experience-years">Total sales experience (in years)</label>
+                    <input type="number" id="edit-leader-experience-years" value="${data.experienceYears || ''}" required>
+                    <label for="edit-leader-prev-company">Previous company and main responsibilities</label>
+                    <textarea id="edit-leader-prev-company" required>${data.prevCompany || ''}</textarea>
+                    <label for="edit-leader-team-size">Team size managed previously</label>
+                    <input type="text" id="edit-leader-team-size" value="${data.teamSize || ''}">
+                    
+                    <div class="grid-divider"></div>
+
+                    <label for="edit-leader-motivation">How do you motivate your team?</label>
+                    <textarea id="edit-leader-motivation" required>${data.motivation || ''}</textarea>
+                    <label for="edit-leader-strategy">What is your approach if a product is selling slow?</label>
+                     <textarea id="edit-leader-strategy">${data.strategy || ''}</textarea>
+                     <label for="edit-leader-tracking">How would you track the performance of a remote (WFH) team?</label>
+                     <textarea id="edit-leader-tracking" required>${data.tracking || ''}</textarea>
+                     
+                    <button id="save-profile-button" class="btn-3d action-button" style="margin-top: 20px;" onclick="saveProfileChanges()">Save Changes</button>
+                </div>
+            `;
+        }
+        return '<p>Could not load profile information.</p>';
+    }
+
+    function showModal(type, data) {
+        const modal = document.getElementById('app-modal');
+        const title = document.getElementById('modal-title');
+        const body = document.getElementById('modal-body');
+
+        if(type === 'job-desc') {
+            title.innerText = 'Job Description';
+            body.innerHTML = `
+                <div style="text-align: left;">
+                    <p><strong>🌐 Company Name:</strong> ShubhZone</p>
+                    <p><strong>💼 Role:</strong> Sales Executive</p>
+                    <p><strong>🧠 Experience:</strong> 0–2 Years</p>
+                    <p><strong>💰 Salary:</strong> Up to ₹20,000 per month (Fixed Salary)</p>
+                    <p><strong>🏠 Work Type:</strong> Work From Home (Remote)</p>
+                    <p><strong>📞 Contact Person:</strong> Himanshu Kumar</p>
+                    <p><strong>📱 Mobile:</strong> +91 7390928912</p>
+                    <p><strong>🌍 Website:</strong> www.shubhzone.shop</p>
+                    <hr>
+                    <h3>About Company</h3>
+                    <p>ShubhZone is an innovative digital entertainment and social platform designed for the modern generation. Our platform allows users to connect, chat, and enjoy entertainment — from the latest movies, web series, anime, and live shows — all in one place. We’re now expanding our Digital Marketing & Branding Team and looking for passionate, creative individuals who can drive our online presence and generate leads effectively.</p>
+                    <hr>
+                    <h3>Position Overview</h3>
+                    <p>As a Digital Marketing Executive at ShubhZone, you’ll be responsible for planning, executing, and optimizing online marketing campaigns to promote our brand and attract users. You’ll also be involved in content creation, lead generation, SEO, and communication with potential clients to enhance our digital reach and conversion rate.</p>
+                    <hr>
+                    <h3>Key Responsibilities</h3>
+                    <h4>🎯 Digital Marketing & Branding</h4>
+                    <ul>
+                        <li>Develop, execute, and monitor digital marketing campaigns across Instagram, Facebook, YouTube, Telegram, and LinkedIn.</li>
+                        <li>Assist in creating engaging and trendy content — including posts, reels, blogs, and promotional videos.</li>
+                        <li>Manage SEO (Search Engine Optimization) and SEM (Search Engine Marketing) to increase website visibility and traffic.</li>
+                        <li>Create and manage Google Ads and paid campaigns to attract quality leads.</li>
+                        <li>Work with the design team to produce visually appealing graphics and creatives for promotions.</li>
+                        <li>Track, analyze, and report campaign performance using analytics tools.</li>
+                    </ul>
+                    <h4>💬 Lead Generation & Client Communication</h4>
+                    <ul>
+                        <li>Identify and reach out to potential leads through calls, social media, and messaging platforms.</li>
+                        <li>Handle incoming inquiries, explain ShubhZone’s offerings, and convert leads into active users or subscribers.</li>
+                        <li>Build and maintain strong client relationships through regular communication and follow-ups.</li>
+                        <li>Collaborate with internal teams (operations, marketing, content) to ensure smooth project delivery.</li>
+                        <li>Generate new ideas for online promotions and lead generation strategies.</li>
+                    </ul>
+                    <hr>
+                    <h3>Required Skills & Qualities</h3>
+                    <ul>
+                        <li>Strong communication skills in Hindi and English.</li>
+                        <li>Good understanding of social media trends, digital tools, and campaign analytics.</li>
+                        <li>Knowledge of SEO, SEM, and paid ads is a plus.</li>
+                        <li>Ability to multitask, prioritize, and meet deadlines.</li>
+                        <li>Self-motivated, disciplined, and performance-driven attitude.</li>
+                        <li>Basic experience with tools like Canva, Meta Ads Manager, Google Ads, etc.</li>
+                    </ul>
+                    <hr>
+                     <h3>Qualification</h3>
+                    <ul>
+                        <li>Any Graduate / Undergraduate can apply.</li>
+                        <li>Freshers with good communication and creativity are welcome.</li>
+                        <li>Internship or previous experience in digital marketing or sales will be an added advantage.</li>
+                    </ul>
+                    <hr>
+                    <h3>Salary & Benefits</h3>
+                    <ul>
+                        <li>Salary up to ₹30,000/month (Fixed + Incentives)</li>
+                        <li>Work From Home flexibility.</li>
+                        <li>Full digital marketing training provided.</li>
+                        <li>Monthly performance-based bonuses and growth opportunities.</li>
+                        <li>Chance to work directly with the founder and core marketing team.</li>
+                    </ul>
+                     <hr>
+                     <h3>How to Apply</h3>
+                     <p>If you’re passionate about digital marketing, confident in communication, and ready to grow with a fast-moving brand — send your details or resume directly to:</p>
+                     <p><strong>📞 Himanshu Kumar</strong><br>
+                        <strong>📱 +91 7390928912</strong><br>
+                        <strong>🌐 www.shubhzone.shop</strong></p>
+                </div>
+            `;
+        } else if (type === 'terms') {
+            title.innerText = 'Terms and Conditions';
+            body.innerHTML = `<p>By applying, you agree to our terms of service.</p>`;
+        } else if (type === 'member-info' && data) {
+            title.innerText = 'Candidate Information';
+            const f = data.formData || {}; // fallback for safety
+            body.innerHTML = `
+                <img src="${data.imageUrl}" alt="Profile" class="modal-profile-img">
+                <div class="info-grid">
+                    <strong>Status:</strong> <span style="font-weight:bold; color: ${data.status === 'approved' ? 'var(--success-color)' : 'var(--secondary-color)'};">${data.status}</span>
+                    <strong>Name:</strong> <span>${data.basicInfo.fullName || 'N/A'}</span>
+                    <strong>Email:</strong> <span>${data.basicInfo.email || 'N/A'}</span>
+                    <strong>Contact:</strong> <span>${f.contact || 'N/A'}</span>
+                    <strong>Location:</strong> <span>${f.location || 'N/A'}</span>
+                    <strong>DOB:</strong> <span>${f.dob || 'N/A'}</span>
+                    <strong>Education:</strong> <span>${f.education || 'N/A'}</span>
+                    <strong>Languages:</strong> <span>${f.languages || 'N/A'}</span>
+
+                    <div class="grid-divider"></div>
+
+                    <strong>Experience:</strong> <span>${f.hasExperience || 'N/A'}</span>
+                    <strong>Previous Role:</strong> <span>${f.prevRole || 'N/A'}</span>
+                    <strong>Ready for Training:</strong> <span>${f.trainingReady || 'N/A'}</span>
+                    <strong>Confidence:</strong> <span>${f.confidence || 'N/A'}</span>
+                    
+                    <div class="grid-divider"></div>
+
+                    <strong>Smartphone/Internet:</strong> <span>${f.hasSmartphone || 'N/A'}</span>
+                    <strong>Knows Tools:</strong> <span>${f.knowsTools || 'N/A'}</span>
+                    <strong>WFH Ready:</strong> <span>${f.wfhEnv || 'N/A'}</span>
+                    
+                    <div class="grid-divider"></div>
+
+                    <strong>Motivation:</strong> <span>${f.motivation || 'N/A'}</span>
+                    <strong>Career Goals:</strong> <span>${f.careerGoals || 'N/A'}</span>
+                    <strong>Objection Handling:</strong> <span>${f.objectionHandling || 'N/A'}</span>
+                </div>
+            `;
+        } else if (type === 'member-data' && data) {
+            title.innerText = `Data Entry for ${data.name}`;
+            if (data.activities && data.activities.length > 0) {
+                body.innerHTML = `<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; text-align: left;"><thead><tr><th style="padding: 8px; border-bottom: 2px solid #ddd;">Customer Name</th><th style="padding: 8px; border-bottom: 2px solid #ddd;">Mobile No.</th><th style="padding: 8px; border-bottom: 2px solid #ddd;">Action</th></tr></thead><tbody>${data.activities.map((act, index) => `<tr><td style="padding: 8px; border-bottom: 1px solid #eee;">${act.customerName}</td><td style="padding: 8px; border-bottom: 1px solid #eee;">${act.customerPhone}</td><td style="padding: 8px; border-bottom: 1px solid #eee;"><button class="form-button view-btn view-desc-btn" data-index="${index}" style="padding: 5px 10px; font-size: 0.8em;">View Desc.</button></td></tr>`).join('')}</tbody></table></div>`;
+                
+                // Add event listeners after rendering
+                const viewButtons = body.querySelectorAll('.view-desc-btn');
+                viewButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const index = button.dataset.index;
+                        const description = data.activities[index].description;
+                        alert(`Call Description:\n\n${description}`);
+                    });
+                });
+            } else {
+                body.innerHTML = `<p>No data has been entered by this member.</p>`;
+            }
+        } else if (type === 'edit-profile' && data) {
+            title.innerText = 'Edit My Profile';
+            body.innerHTML = generateEditProfileFormHTML(data);
+        }
+        modal.classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('app-modal').classList.remove('active'); }
+
+    // --- BOSS: Instructions & Videos ---
+    async function updateInstructionTargetList() {
+        const type = document.getElementById('instruction-target-type').value;
+        const targetSelect = document.getElementById('instruction-target-id');
+        targetSelect.innerHTML = '';
+        
+        let options = [];
+        if (type === 'specific_leader') {
+            options = teamLeaderApplications.filter(a => a.status === 'approved').map(l => `<option value="${l.id}">${l.basicInfo.fullName} (Leader)</option>`);
+        } else if (type === 'specific_team') {
+            options = teamLeaderApplications.filter(a => a.status === 'approved').map(l => `<option value="${l.credentials.teamName}">Team ${l.credentials.teamName}</option>`);
+        } else if (type === 'specific_executive') {
+            options = executiveApplications.filter(a => a.status === 'approved').map(e => `<option value="${e.id}">${e.basicInfo.fullName} (${e.requestedTeam})</option>`);
+        }
+        
+        if (options.length > 0) {
+            targetSelect.innerHTML = options.join('');
+            targetSelect.style.display = 'block';
+        } else {
+            targetSelect.style.display = 'none';
+        }
+    }
+    
+    window.updateVideoTargetList = updateInstructionTargetList; // Reuse for videos
+    
+    async function sendInstruction() {
+        const text = document.getElementById('instruction-text').value;
+        const targetType = document.getElementById('instruction-target-type').value;
+        const targetId = document.getElementById('instruction-target-id').value;
+
+        if(!text) { alert('Please enter an instruction.'); return; }
+
+        const instructionData = { text, targetType, createdAt: serverTimestamp() };
+        if (targetId && document.getElementById('instruction-target-id').style.display !== 'none') {
+            instructionData.targetId = targetId;
+        }
+
+        await addDoc(instructionsCol, instructionData);
+        alert('Instruction sent!');
+        document.getElementById('instruction-text').value = '';
+    }
+
+    async function sendVideo() {
+        const title = document.getElementById('video-title').value;
+        const url = document.getElementById('video-url').value;
+        const videoType = document.getElementById('video-type').value;
+        const targetType = document.getElementById('video-target-type').value;
+        const targetId = document.getElementById('video-target-id').value;
+
+        if(!title || !url) { alert('Please enter video title and URL.'); return; }
+        
+        const videoData = { title, url, videoType, targetType, createdAt: serverTimestamp() };
+        if (targetId && document.getElementById('video-target-id').style.display !== 'none') {
+            videoData.targetId = targetId;
+        }
+
+        await addDoc(videosCol, videoData);
+        alert('Video added!');
+        document.getElementById('video-title').value = '';
+        document.getElementById('video-url').value = '';
+    }
+    
+    async function displaySentInstructions() {
+        const q = query(instructionsCol, orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('sent-instructions-list');
+            if(snapshot.empty) { container.innerHTML = '<p>No instructions sent yet.</p>'; return; }
+            container.innerHTML = snapshot.docs.map(doc => {
+                const item = doc.data();
+                return `<div class="list-item">
+                    <p>${item.text}</p>
+                    <small>Target: ${item.targetType.replace(/_/g, ' ')} ${item.targetId || ''}</small>
+                    <div class="list-item-actions"><button class="form-button reject-btn" onclick="deleteItem('${doc.id}', 'instructions')">Delete</button></div>
+                </div>`;
+            }).join('');
+        });
+    }
+
+    async function displaySentVideos() {
+        const q = query(videosCol, orderBy("createdAt", "desc"));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('sent-videos-list');
+            if(snapshot.empty) { container.innerHTML = '<p>No videos added yet.</p>'; return; }
+            container.innerHTML = snapshot.docs.map(doc => {
+                const item = doc.data();
+                return `<div class="list-item">
+                    <h3>${item.title}</h3>
+                    <p><a href="${item.url}" target="_blank">${item.url}</a></p>
+                    <small>Target: ${item.targetType.replace(/_/g, ' ')} ${item.targetId || ''}</small>
+                    <small>Format: ${item.videoType || 'long'}</small>
+                    <div class="list-item-actions"><button class="form-button reject-btn" onclick="deleteItem('${doc.id}', 'videos')">Delete</button></div>
+                </div>`;
+            }).join('');
+        });
+    }
+    
+    async function displayFireRequests() {
+         onSnapshot(query(fireRequestsCol, where("status", "==", "pending")), (snapshot) => {
+            const container = document.getElementById('fire-requests-list');
+            if (snapshot.empty) { container.innerHTML = '<p>No pending fire requests.</p>'; return; }
+            container.innerHTML = snapshot.docs.map(doc => {
+                const req = doc.data();
+                return `<div class="list-item">
+                            <h3>Request for: ${req.executiveName}</h3>
+                            <p>From: ${req.teamLeaderName} (Team ${req.teamName})</p>
+                       </div>`;
+            }).join('');
+         });
+    }
+    
+    async function deleteItem(id, collectionName) {
+        if (!confirm('Are you sure you want to delete this?')) return;
+        const properCollectionName = `jobPortal${collectionName.charAt(0).toUpperCase() + collectionName.slice(1)}`;
+        await deleteDoc(doc(db, properCollectionName, id));
+        alert('Item deleted.');
+    }
+
+    function getYoutubeEmbedUrl(url) {
+        if (!url) return null;
+        let videoId = '';
+        try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname === 'youtu.be') {
+                videoId = urlObj.pathname.slice(1);
+            } else if (urlObj.hostname.includes('youtube.com')) {
+                videoId = urlObj.searchParams.get('v');
+            }
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+        } catch (e) {
+            console.error("Invalid URL for embedding: ", url);
+            return null;
+        }
+    }
+    
+    // --- LEADER & EXECUTIVE: Instructions/Videos display ---
+    async function displayLeaderInstructions() {
+        const user = currentLoggedInUser.data;
+        const q1 = query(instructionsCol, where("targetType", "==", "all_leaders"));
+        const q2 = query(instructionsCol, where("targetType", "==", "specific_leader"), where("targetId", "==", user.id));
+        const q3 = query(instructionsCol, where("targetType", "==", "specific_team"), where("targetId", "==", user.credentials.teamName));
+        
+        const [s1, s2, s3] = await Promise.all([getDocs(q1), getDocs(q2), getDocs(q3)]);
+        const allInstructions = [...s1.docs, ...s2.docs, ...s3.docs]
+            .map(d => ({...d.data(), id: d.id}))
+            .sort((a,b) => b.createdAt - a.createdAt);
+
+        const container = document.getElementById('leader-instructions-list');
+        if(allInstructions.length === 0) { container.innerHTML = '<p>No new instructions.</p>'; return; }
+        container.innerHTML = allInstructions.map(item => `<div class="list-item"><h3>From Boss</h3><p>${item.text}</p></div>`).join('');
+    }
+    
+    async function displayLeaderVideos() {
+        const user = currentLoggedInUser.data;
+        const q1 = query(videosCol, where("targetType", "==", "all_leaders"));
+        const q2 = query(videosCol, where("targetType", "==", "specific_leader"), where("targetId", "==", user.id));
+        const q3 = query(videosCol, where("targetType", "==", "specific_team"), where("targetId", "==", user.credentials.teamName));
+        
+        const [s1, s2, s3] = await Promise.all([getDocs(q1), getDocs(q2), getDocs(q3)]);
+        const allVideos = [...s1.docs, ...s2.docs, ...s3.docs]
+            .map(d => ({...d.data(), id: d.id}))
+            .sort((a,b) => b.createdAt - a.createdAt);
+
+        const container = document.getElementById('leader-videos-list');
+        if(allVideos.length === 0) { container.innerHTML = '<p>No new videos.</p>'; return; }
+        container.innerHTML = allVideos.map(item => {
+            const embedUrl = getYoutubeEmbedUrl(item.url);
+            const containerClass = item.videoType === 'short' ? 'video-container-short' : 'video-container-long';
+            return `
+                <div class="list-item video-card">
+                    <h3>${item.title}</h3>
+                    <p>Link: <a href="${item.url}" target="_blank">${item.url}</a></p>
+                    ${embedUrl ? `<div class="video-container ${containerClass}">
+                        <iframe src="${embedUrl}" title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function displayExecutiveInstructions() {
+        const user = currentLoggedInUser.data;
+        const q1 = query(instructionsCol, where("targetType", "==", "all_executives"));
+        const q2 = query(instructionsCol, where("targetType", "==", "specific_executive"), where("targetId", "==", user.id));
+        const q3 = query(instructionsCol, where("targetType", "==", "specific_team"), where("targetId", "==", user.requestedTeam));
+        
+        const [s1, s2, s3] = await Promise.all([getDocs(q1), getDocs(q2), getDocs(q3)]);
+        const allInstructions = [...s1.docs, ...s2.docs, ...s3.docs]
+            .map(d => ({...d.data(), id: d.id}))
+            .sort((a,b) => b.createdAt - a.createdAt);
+
+        const container = document.getElementById('executive-instructions-list');
+        if(allInstructions.length === 0) { container.innerHTML = '<p>No new instructions.</p>'; return; }
+        container.innerHTML = allInstructions.map(item => `<div class="list-item"><h3>From Boss/Leader</h3><p>${item.text}</p></div>`).join('');
+    }
+    
+    async function displayExecutiveVideos() {
+        const user = currentLoggedInUser.data;
+        const q1 = query(videosCol, where("targetType", "==", "all_executives"));
+        const q2 = query(videosCol, where("targetType", "==", "specific_executive"), where("targetId", "==", user.id));
+        const q3 = query(videosCol, where("targetType", "==", "specific_team"), where("targetId", "==", user.requestedTeam));
+        
+        const [s1, s2, s3] = await Promise.all([getDocs(q1), getDocs(q2), getDocs(q3)]);
+        const allVideos = [...s1.docs, ...s2.docs, ...s3.docs]
+            .map(d => ({...d.data(), id: d.id}))
+            .sort((a,b) => b.createdAt - a.createdAt);
+
+        const container = document.getElementById('executive-videos-list');
+        if(allVideos.length === 0) { container.innerHTML = '<p>No new videos.</p>'; return; }
+        container.innerHTML = allVideos.map(item => {
+            const embedUrl = getYoutubeEmbedUrl(item.url);
+            const containerClass = item.videoType === 'short' ? 'video-container-short' : 'video-container-long';
+            return `
+                <div class="list-item video-card">
+                    <h3>${item.title}</h3>
+                    <p>Link: <a href="${item.url}" target="_blank">${item.url}</a></p>
+                    ${embedUrl ? `<div class="video-container ${containerClass}">
+                        <iframe src="${embedUrl}" title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    // --- NEW --- Offer Letter Function ---
+    function sendOfferLetter(applicantData) {
+        if (!applicantData || !applicantData.basicInfo || !applicantData.formData) {
+            alert("Error: Applicant data is incomplete.");
+            return;
+        }
+        
+        const candidateName = applicantData.basicInfo.fullName;
+        const candidateContact = applicantData.formData.contact;
+        const candidateEmail = applicantData.basicInfo.email;
+        const candidateAddress = applicantData.formData.location;
+
+        if (!candidateContact) {
+            alert("Error: Candidate contact number not found.");
+            return;
+        }
+        
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(candidateContact.trim())) {
+            alert(`Error: Invalid contact number format: ${candidateContact}. Please ensure it is a 10-digit number without country code or symbols.`);
+            return;
+        }
+
+        const today = new Date();
+        const dateString = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+
+        // Using template literal to create the offer letter text.
+        // WhatsApp uses markdown for formatting (* for bold).
+        const offerLetterText = `
+---
+
+*OFFER LETTER*
+
+*Company Name:* ShubhZone
+*Website:* www.shubhzone.shop
+*Work Type:* Work From Home
+*Contact Person:* Himanshu Kumar
+*Contact No.:* +91 7390928912
+
+---
+
+*Date:* ${dateString}
+
+*To,*
+${candidateName}
+${candidateAddress || candidateEmail}
+
+*Subject: Offer Letter for the Position of Sales Executive*
+
+Dear ${candidateName},
+
+We are pleased to offer you the position of *Sales Executive* at ShubhZone. Your skills in communication and lead generation make you a suitable fit for our growing team.
+
+As a Sales Executive, your primary responsibilities will include:
+
+1. Generating and qualifying leads through social media, calls, and online platforms.
+2. Communicating effectively with potential clients to explain our products and services.
+3. Following up with leads and converting them into active users or paid customers.
+4. Achieving assigned monthly sales targets (Target completion is mandatory).
+5. Submitting regular performance reports and maintaining professional communication with clients and team members.
+
+Your employment will be on a Work From Home basis. You are expected to maintain professionalism, discipline, and consistency in your work performance.
+
+Your compensation will be discussed and confirmed by the HR Department during the onboarding process. Additional performance incentives may be provided based on target achievement and overall contribution to the team.
+
+You will receive full training and guidance from our team to help you understand the product, sales process, and target structure before you begin your work.
+
+We look forward to having you as part of the ShubhZone family and are confident that your contribution will play a key role in the company’s success.
+
+Please reply to this letter with “Accepted” and confirm your joining date to proceed with the onboarding process.
+
+*Warm regards,*
+Himanshu Kumar
+Founder – ShubhZone
+📱 +91 7390928912
+🌐 www.shubhzone.shop
+
+---
+    `;
+
+        const encodedText = encodeURIComponent(offerLetterText);
+        const whatsappUrl = `https://wa.me/91${candidateContact.trim()}?text=${encodedText}`;
+
+        window.open(whatsappUrl, '_blank');
+    }
+
+
+    // --- Expose functions to global scope for HTML onclicks ---
+    window.showPage = showPage;
+    window.login = login;
+    window.logout = logout;
+    window.checkTeamLeaderStatus = checkTeamLeaderStatus;
+    window.switchBossView = switchBossView;
+    window.switchLeaderView = switchLeaderView;
+    window.switchExecutiveView = switchExecutiveView;
+    window.approveApplication = approveApplication;
+    window.rejectApplication = rejectApplication;
+    window.navigateForm = navigateForm;
+    window.uploadImage = uploadImage;
+    window.showModal = showModal;
+    window.closeModal = closeModal;
+    window.submitActivity = submitActivity;
+    window.viewMemberInfo = viewMemberInfo;
+    window.viewMemberData = viewMemberData;
+    window.requestFireMember = requestFireMember;
+    window.viewTeamAsBoss = viewTeamAsBoss;
+    window.showBossTeamList = showBossTeamList;
+    window.handleFireRequest = handleFireRequest;
+    window.updateInstructionTargetList = updateInstructionTargetList;
+    window.sendInstruction = sendInstruction;
+    window.sendVideo = sendVideo;
+    window.deleteItem = deleteItem;
+    window.openEditProfileModal = openEditProfileModal;
+    window.saveProfileChanges = saveProfileChanges;
+    window.sendOfferLetter = sendOfferLetter; // Exposing the new function
+    
+    // --- Initializer ---
+    document.addEventListener("DOMContentLoaded", () => {
+        listenForLeaderApplications();
+        onSnapshot(executiveApplicationsCol, (snapshot) => {
+            executiveApplications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if(currentPage === 'boss-admin' && document.getElementById('boss-view-teams').classList.contains('active')){
+                const singleView = document.getElementById('boss-teams-single-view');
+                if(singleView.style.display === 'block') { 
+                    // This is complex to refresh automatically, user can go back and re-enter to see changes.
+                }
+            }
+            if (currentLoggedInUser?.type === 'leader' && currentPage === 'leader-admin') {
+                 displayMyTeamMembers();
+            }
+        });
+        showPage('home');
+    });
+</script>
+
+</body>
+</html>
