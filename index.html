@@ -924,6 +924,10 @@ src="https://www.facebook.com/tr?id=4358427104412065&ev=PageView&noscript=1"
                 <button id="movie-btn" class="main-btn secondary-btn">
                    <span>Movie</span>
                 </button>
+                <!-- === NEW "Other" BUTTON ADDED HERE === -->
+                <a href="sales.html" class="main-btn secondary-btn">
+                   <span>Other</span>
+                </a>
                  <!-- === IMPORTANT CHANGE: The "Pay" button is now hidden by default using style="display: none;" === -->
                 <button id="payment-btn" class="main-btn" style="display: none;">
                    <span>Pay ₹5 to Activate</span>
@@ -1911,47 +1915,6 @@ src="https://www.facebook.com/tr?id=4358427104412065&ev=PageView&noscript=1"
                     },
                     theme: {
                         color: "#e91e63" // Match new theme
-                    }
-                };
-
-                const rzp1 = new Razorpay(options);
-
-                rzp1.on('payment.failed', function (response){
-                    alert("Payment Failed: " + response.error.description);
-                });
-
-                rzp1.open();
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Could not initiate payment. Please try again later. Error: ' + error.message);
-            }
-        }
-
-        // === IMPORTANT CHANGE: This function handles what happens when a start button is clicked ===
-        function handleStartClick(event) {
-            // Prevent the default link behavior
-            event.preventDefault();
-
-            // Check if payment has already been done
-            if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
-                // === IMPORTANT CHANGE: If paid, go directly to the new app URL ===
-                window.location.href = "https://datin.onrender.com";
-            } else {
-                // If not paid, start the payment process
-                initiatePayment();
-            }
-        }
-
-        // === IMPORTANT CHANGE: Add the click event listener to ALL start buttons ===
-        allStartButtons.forEach(btn => {
-            btn.addEventListener('click', handleStartClick);
-        });
-
-    });
-    </script>
-</body>
-</html>                        color: "#e91e63" // Match new theme
                     }
                 };
 
