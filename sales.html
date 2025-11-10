@@ -451,8 +451,8 @@
     <main class="content">
         <div class="role-card-container">
             <div class="role-card single-role-card" onclick="showPage('boss-login')">
-                <img src="https://i.ibb.co/Gv9H2mLT/85-XZ1-SRBQk6-Fu-CZjbq-Er-Q.webp" alt="Boss">
-                <h3>Boss Login</h3>
+                <img src="https://i.ibb.co/Gv9H2mLT/85-XZ1-SRBQk6-Fu-CZjbq-Er-Q.webp" alt="Admin">
+                <h3>Admin Login</h3>
             </div>
             <div class="role-card single-role-card" onclick="checkTeamLeaderStatus()">
                 <img src="https://i.ibb.co/5WpD9NDL/2-ZN4g-S1d-T9-GB3-NNs9-X8-s-A.webp" alt="Team Leader">
@@ -1124,7 +1124,7 @@
         if (approvedTeams.length === 0) { container.innerHTML = '<p>No approved teams yet.</p>'; return; }
         container.innerHTML = approvedTeams.map(leader => `
              <div class="boss-team-card">
-                <div class="card-image-container"><img src="${leader.imageUrl}" alt="${leader.basicInfo.fullName}"></div>
+                <div class="card-image-container"><img src="${leader.imageUrl || 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg'}" alt="${leader.basicInfo.fullName}"></div>
                 <div class="card-info">
                     <h3>${leader.basicInfo.fullName}</h3>
                     <p>Team: ${leader.credentials.teamName}</p>
@@ -1166,7 +1166,7 @@
                 }
                 return `
                 <div class="team-member-card">
-                    <div class="card-image-container"><img src="${app.imageUrl || 'https://via.placeholder.com/320x180'}" alt="${app.basicInfo.fullName}"></div>
+                    <div class="card-image-container"><img src="${app.imageUrl || 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg'}" alt="${app.basicInfo.fullName}"></div>
                     <div class="card-info"><h3>${app.basicInfo.fullName}</h3></div>
                     <div class="card-actions">
                         <button class="form-button view-btn" onclick='viewMemberInfo(${JSON.stringify(app)})'>View</button>
@@ -1217,7 +1217,7 @@
         container.innerHTML = myMembers.map(app => `
             <div class="team-member-card">
                 <div class="card-image-container">
-                    <img src="${app.imageUrl || 'https://via.placeholder.com/320x180'}" alt="${app.basicInfo.fullName}">
+                    <img src="${app.imageUrl || 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg'}" alt="${app.basicInfo.fullName}">
                 </div>
                 <div class="card-info">
                      <h3>${app.basicInfo.fullName}</h3>
@@ -1238,7 +1238,7 @@
         const leader = currentLoggedInUser.data;
         container.innerHTML = `
             <button onclick="openEditProfileModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--secondary-color);"><i class="fa-solid fa-edit"></i></button>
-            <img src="${leader.imageUrl}" alt="Profile Pic" style="max-width: 120px; border-radius: 50%; display: block; margin: 0 auto 15px;">
+            <img src="${leader.imageUrl || 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg'}" alt="Profile Pic" style="max-width: 120px; border-radius: 50%; display: block; margin: 0 auto 15px;">
             <h3>${leader.basicInfo.fullName}</h3>
             <p><strong>Team Name:</strong> ${leader.credentials.teamName}</p>
             <p><strong>Email:</strong> ${leader.basicInfo.email}</p>
@@ -1252,7 +1252,7 @@
         const executive = currentLoggedInUser.data;
         container.innerHTML = `
             <button onclick="openEditProfileModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--secondary-color);"><i class="fa-solid fa-edit"></i></button>
-            <img src="${executive.imageUrl}" alt="Profile Pic" style="max-width: 120px; border-radius: 50%; display: block; margin: 0 auto 15px;">
+            <img src="${executive.imageUrl || 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg'}" alt="Profile Pic" style="max-width: 120px; border-radius: 50%; display: block; margin: 0 auto 15px;">
             <h3>${executive.basicInfo.fullName}</h3>
             <p><strong>Username:</strong> ${executive.credentials.username}</p>
             <p><strong>Email:</strong> ${executive.basicInfo.email}</p>
@@ -1371,16 +1371,20 @@
 
     async function submitApplication(form, submitButton) {
         if (submitButton.disabled) return;
-        submitButton.disabled = true; submitButton.innerHTML = 'Submitting...';
+        submitButton.disabled = true;
+        submitButton.innerHTML = 'Submitting...';
         const type = form.dataset.type;
-        const fullName = form.querySelector(`#${type}-fullname`).value;
-        const email = form.querySelector(`#${type}-email`).value;
-        const contact = form.querySelector(`#${type}-contact`).value;
+
+        // FIX: Use a prefix to correctly select elements for either form type.
+        const prefix = type === 'leader' ? 'leader' : 'exec';
+        const fullName = form.querySelector(`#${prefix}-fullname`).value;
+        const email = form.querySelector(`#${prefix}-email`).value;
 
         const finalApplicationData = {
             basicInfo: { fullName, email },
             imageUrl: form.querySelector('.image_url_input').value,
-            status: 'pending', createdAt: serverTimestamp(),
+            status: 'pending',
+            createdAt: serverTimestamp(),
             formData: {}
         };
 
@@ -1589,6 +1593,29 @@
         if (!currentLoggedInUser) return;
         showModal('edit-profile', currentLoggedInUser);
     }
+
+    function uploadProfileImageInModal() {
+        const myWidget = cloudinary.createUploadWidget({
+            cloudName: 'dzq7qb6ew', uploadPreset: 'bookswamp_unsigned', folder: 'job_portal_profiles'
+        }, (error, result) => { 
+            if (!error && result && result.event === "success") { 
+                const newUrl = result.info.secure_url;
+                document.getElementById('edit-image-url-input').value = newUrl;
+                document.getElementById('edit-profile-preview').src = newUrl;
+                alert('New photo selected. Click "Save Changes" to apply.');
+            }
+        });
+        myWidget.open();
+    }
+
+    function removeProfileImageInModal() {
+        if (confirm('Are you sure you want to remove your profile photo?')) {
+            const placeholder = 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg';
+            document.getElementById('edit-image-url-input').value = ''; // Set to empty to signify removal
+            document.getElementById('edit-profile-preview').src = placeholder;
+            alert('Photo removed. Click "Save Changes" to apply.');
+        }
+    }
     
     async function saveProfileChanges() {
         const user = currentLoggedInUser;
@@ -1604,6 +1631,9 @@
         const updatedData = {};
         const newBasicInfo = { ...user.data.basicInfo };
         const newFormData = { ...user.data.formData };
+        
+        const newImageUrl = document.getElementById('edit-image-url-input').value;
+        updatedData.imageUrl = newImageUrl;
 
         if (user.type === 'executive') {
             newBasicInfo.fullName = document.getElementById('edit-exec-fullname').value;
@@ -1643,6 +1673,7 @@
             // Update local state
             currentLoggedInUser.data.basicInfo = newBasicInfo;
             currentLoggedInUser.data.formData = newFormData;
+            currentLoggedInUser.data.imageUrl = newImageUrl;
             
             // Re-render profile view
             if(user.type === 'leader') displayLeaderProfile();
@@ -1661,10 +1692,22 @@
     function generateEditProfileFormHTML(user) {
         const info = user.data.basicInfo;
         const data = user.data.formData || {};
+        const imageUrl = user.data.imageUrl || '';
+        const placeholder = 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg';
+
+        let imageSectionHTML = `
+            <img id="edit-profile-preview" src="${imageUrl || placeholder}" alt="Profile Preview" class="modal-profile-img">
+            <input type="hidden" id="edit-image-url-input" value="${imageUrl}">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 25px;">
+                <button type="button" class="form-button next" style="padding: 10px 20px;" onclick="uploadProfileImageInModal()">Change Photo</button>
+                <button type="button" class="form-button prev" style="padding: 10px 20px;" onclick="removeProfileImageInModal()">Remove Photo</button>
+            </div>
+        `;
         
         if (user.type === 'executive') {
             return `
                 <div id="edit-profile-form" class="form-container" style="box-shadow: none; padding: 0;">
+                    ${imageSectionHTML}
                     <label for="edit-exec-fullname">Full name</label>
                     <input type="text" id="edit-exec-fullname" value="${info.fullName || ''}" required>
                     <label for="edit-exec-email">Email ID</label>
@@ -1734,6 +1777,7 @@
         } else if (user.type === 'leader') {
             return `
                  <div id="edit-profile-form" class="form-container" style="box-shadow: none; padding: 0;">
+                    ${imageSectionHTML}
                     <label for="edit-leader-fullname">Full name</label>
                     <input type="text" id="edit-leader-fullname" value="${info.fullName || ''}" required>
                     <label for="edit-leader-email">Contact details (email)</label>
@@ -1849,7 +1893,7 @@
             title.innerText = 'Candidate Information';
             const f = data.formData || {}; // fallback for safety
             body.innerHTML = `
-                <img src="${data.imageUrl}" alt="Profile" class="modal-profile-img">
+                <img src="${data.imageUrl || 'https://i.ibb.co/61D2Sg8/default-profile-pic.jpg'}" alt="Profile" class="modal-profile-img">
                 <div class="info-grid">
                     <strong>Status:</strong> <span style="font-weight:bold; color: ${data.status === 'approved' ? 'var(--success-color)' : 'var(--secondary-color)'};">${data.status}</span>
                     <strong>Name:</strong> <span>${data.basicInfo.fullName || 'N/A'}</span>
@@ -2243,7 +2287,9 @@ Founder – ShubhZone
     window.deleteItem = deleteItem;
     window.openEditProfileModal = openEditProfileModal;
     window.saveProfileChanges = saveProfileChanges;
-    window.sendOfferLetter = sendOfferLetter; // Exposing the new function
+    window.sendOfferLetter = sendOfferLetter;
+    window.uploadProfileImageInModal = uploadProfileImageInModal;
+    window.removeProfileImageInModal = removeProfileImageInModal;
     
     // --- Initializer ---
     document.addEventListener("DOMContentLoaded", () => {
