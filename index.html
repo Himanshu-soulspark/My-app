@@ -1,1 +1,1958 @@
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '4358427104412065');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=4358427104412065&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubhzone - Entertainment & Dating Hub</title>
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
 
+        :root {
+            --brand-cyan: #ff4d6a; /* Dating theme color */
+            --brand-blue: #e91e63; /* Dating theme color */
+            --bg-dark: #05070a;
+            --bg-card: #10141b;
+            --text-primary: #f0f6fc;
+            --text-secondary: #a1a9b2;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --danger-color: #ff4d4d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-secondary);
+            overflow-x: hidden;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .spotlight {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle at 50% 50%, rgba(233, 30, 99, 0.1), transparent 30%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        body:hover .spotlight {
+            opacity: 1;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section {
+            padding: 120px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 50px;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+        }
+
+        p {
+            line-height: 1.7;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .header {
+            padding: 1.5rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(5, 7, 10, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--brand-cyan);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .main-btn {
+            background: var(--brand-cyan);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .secondary-btn {
+             background: transparent;
+             color: var(--brand-cyan);
+             border: 1px solid var(--brand-cyan);
+        }
+
+        .main-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .secondary-btn:hover {
+            background: var(--brand-cyan);
+            color: #fff;
+        }
+
+        .main-btn svg {
+            transition: transform 0.3s ease;
+        }
+
+        .main-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Style for disabled buttons */
+        .start-btn.disabled {
+            background-color: #555;
+            border-color: #555;
+            color: #999;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .hero {
+            padding-top: 200px;
+            padding-bottom: 150px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            line-height: 1.1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--brand-cyan), var(--brand-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 30px auto 40px auto;
+        }
+
+        .hero-skills {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .hero-skills span {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .hero-image-container {
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .hero-image-container img {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+        
+        /* New Styles for Entertainment Section */
+        .entertainment-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.1);
+        }
+        
+        .feature-item svg {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 15px auto;
+            color: var(--brand-cyan);
+        }
+
+        .feature-item p {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        /* New Styles for Content Carousel */
+        .content-carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: none; /* For Firefox */
+        }
+
+        .content-carousel::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, and Opera */
+        }
+
+        .carousel-item {
+            flex: 0 0 180px; /* Adjust width here */
+            width: 180px;
+            aspect-ratio: 2 / 3;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel-item:hover {
+            transform: scale(1.05);
+        }
+
+
+        .feature-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            align-items: center;
+            gap: 80px;
+        }
+
+        .feature-layout.reverse .feature-image {
+            order: 2;
+        }
+
+        .feature-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .feature-list svg {
+            color: var(--brand-cyan);
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .feature-image img {
+            width: 100%;
+            border-radius: 12px;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        .feature-image:hover img {
+            transform: scale(1.03);
+            box-shadow: 0 0 30px -5px rgba(233, 30, 99, 0.4);
+        }
+
+        .showcase-section {
+            text-align: center;
+        }
+
+        .showcase-section h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+        }
+
+        .showcase-section p {
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+        }
+
+        .showcase-image-wrapper {
+            padding: 2rem;
+            background: linear-gradient(var(--bg-card), transparent);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+        }
+
+        .showcase-image-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .cta-section {
+            background: linear-gradient(45deg, var(--bg-card), #181e28);
+            padding: 80px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+
+        .footer {
+            padding: 60px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer .logo {
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+        }
+
+        .footer a {
+            color: var(--brand-cyan);
+            text-decoration: none;
+        }
+
+        .footer-policies {
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .footer-policies nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+        .footer-policies nav a:hover {
+            color: var(--brand-cyan);
+        }
+
+        .page {
+            display: none;
+            padding-top: 40px;
+            padding-bottom: 120px;
+            min-height: 100vh;
+        }
+
+        .policy-page .container {
+            max-width: 800px;
+        }
+        .policy-page h1 {
+            color: var(--brand-cyan);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+        }
+        .policy-page h2 {
+            color: var(--brand-cyan);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        .policy-page p, .policy-page li {
+            color: #c3cad2;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .policy-page ul {
+            padding-left: 20px;
+        }
+        .policy-page a {
+            color: var(--brand-cyan);
+            text-decoration: underline;
+        }
+        .policy-page .store-back-btn {
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+        }
+
+
+        .store-header {
+            background: rgba(5, 7, 10, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 60px;
+        }
+        .store-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .store-back-btn {
+            font-size: 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .store-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: center;
+        }
+        .store-title span {
+            font-size: 1.2em;
+            vertical-align: middle;
+        }
+        .store-header-icon {
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+        .store-header-icon:hover {
+            color: var(--brand-cyan);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .app-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.1);
+        }
+
+        .app-card-top-content {}
+
+        .app-card-bottom-content {
+            margin-top: 20px;
+        }
+
+        .app-card-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .app-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .app-card .app-card-description {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-card .app-image-container {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+
+        .app-card .app-image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .download-btn {
+            background: var(--brand-blue);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            flex-grow: 1;
+        }
+
+        .download-btn:hover {
+            background: var(--brand-cyan);
+            color: #000;
+        }
+
+        .description-btn {
+            background: transparent;
+            border: 1px solid var(--brand-blue);
+            color: var(--brand-blue);
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        .description-btn:hover {
+            background: var(--brand-blue);
+            color: #fff;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        .modal-content .lang-toggle {
+            margin-bottom: 20px;
+        }
+        .modal-content .lang-toggle button {
+            background: none;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content .lang-toggle button.active {
+            background: var(--brand-cyan);
+            border-color: var(--brand-cyan);
+            color: #000;
+        }
+        .modal-message {
+            margin-bottom: 30px;
+            font-size: 1rem;
+            text-align: left;
+        }
+        .modal-message p {
+            margin-bottom: 10px;
+        }
+        .modal-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            cursor: pointer;
+            display: block;
+        }
+        #countdown-timer {
+            color: var(--brand-cyan);
+            font-weight: 700;
+        }
+
+        .form-page-container {
+            max-width: 500px;
+            margin: 60px auto 0 auto;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 40px;
+        }
+        .form-page-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .form-group input, .form-group textarea {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        #password-error, #movie-password-error {
+            color: var(--danger-color);
+            text-align: center;
+            margin-top: 15px;
+            height: 20px;
+        }
+
+        .manage-apps-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .manage-app-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .manage-app-item p {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .manage-app-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .edit-btn, .delete-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .edit-btn {
+            background-color: var(--brand-blue);
+            color: #fff;
+        }
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+
+        @media (max-width: 992px) {
+            .feature-layout {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            .feature-layout.reverse .feature-image {
+                order: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 80px 0;
+            }
+            .header {
+                padding: 1rem 0;
+            }
+            .hero {
+                padding-top: 150px;
+                padding-bottom: 100px;
+            }
+            .hero h1 {
+                font-size: 3.2rem;
+            }
+            .hero p {
+                font-size: 1.1rem;
+            }
+            h2, .section-title {
+                font-size: 2.2rem;
+            }
+            .feature-content h2, .showcase-section h2 {
+                font-size: 2.4rem;
+            }
+            .cta-section {
+                padding: 60px 40px;
+            }
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+            .form-page-container {
+                padding: 30px;
+            }
+            .store-header {
+                margin-bottom: 40px;
+            }
+            .carousel-item {
+                flex: 0 0 140px;
+                width: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section {
+                padding: 60px 0;
+            }
+            .header .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .hero {
+                padding-top: 180px;
+                padding-bottom: 80px;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .hero-skills span {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            h2, .section-title {
+                font-size: 2rem;
+            }
+            .feature-content h2, .showcase-section h2 {
+                font-size: 2rem;
+            }
+            .main-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .cta-section {
+                padding: 40px 20px;
+            }
+            .modal-content {
+                padding: 30px 20px;
+            }
+            .modal-content h2 {
+                font-size: 1.5rem;
+            }
+            .store-title {
+                font-size: 1.2rem;
+            }
+            .form-page-container {
+                padding: 20px;
+                margin-top: 40px;
+            }
+            .form-page-container h1 {
+                font-size: 1.8rem;
+            }
+            .footer-policies nav {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .footer-policies nav a {
+                margin: 0;
+            }
+            .app-card-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="spotlight"></div>
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo" id="home-logo">Shubh<span>zone</span></a>
+            <div class="header-buttons">
+                <!-- === IMPORTANT CHANGE: The "Start" button text is updated === -->
+                <a href="#" id="start-payment-btn" class="main-btn start-btn">
+                    <span>Get Started - Pay ₹5</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                </a>
+                <!-- === Movie button remains the same === -->
+                <button id="movie-btn" class="main-btn secondary-btn">
+                   <span>Movie</span>
+                </button>
+                <!-- === NEW "Other" BUTTON ADDED HERE === -->
+                <a href="sales.html" class="main-btn secondary-btn">
+                   <span>Other</span>
+                </a>
+                 <!-- === IMPORTANT CHANGE: The "Pay" button is now hidden by default using style="display: none;" === -->
+                <button id="payment-btn" class="main-btn" style="display: none;">
+                   <span>Pay ₹5 to Activate</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="main-content">
+        <main>
+            <section class="hero">
+                <canvas id="particle-canvas"></canvas>
+                <div class="container">
+                    <div class="reveal">
+                        <!-- === CONTENT CHANGE: Merged Hero section for both Entertainment and Dating === -->
+                        <h1>All-in-one Entertainment Hub & <span>Dating</span></h1>
+                        <p>Welcome to Shubhzone, your single destination for the latest Movies, Webseries, Cartoons, and Live TV. Plus, discover meaningful connections on India's new-age platform for finding a relationship that truly matters.</p>
+                        <div class="hero-skills">
+                            <span>HD Streaming</span><span>Meaningful Connections</span><span>Verified Profiles</span><span>24/7 Entertainment</span><span>Private Chats</span><span>AI Matchmaking</span>
+                        </div>
+                        <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow with updated text === -->
+                        <a href="#" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
+                            <span>Get Started - Pay ₹5</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- === NEW SECTION: Added from movie page theme === -->
+            <section class="section">
+                <div class="container">
+                    <h2 class="section-title reveal">Everything You're Looking For</h2>
+                    <div class="entertainment-features reveal">
+                        <div class="feature-item">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
+                            </svg>
+                            <p>Movies</p>
+                        </div>
+                        <div class="feature-item">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            <p>Webseries</p>
+                        </div>
+                        <div class="feature-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                            </svg>
+                            <p>Dating App</p>
+                        </div>
+                        <div class="feature-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 20.25h12m-7.5-3.75v3.75m-3.75-3.75v3.75m-3.75-3.75v3.75m9.75-15.75A2.25 2.25 0 0 1 12 6.75v3.75m0 0a2.25 2.25 0 0 1 2.25 2.25M12 10.5a2.25 2.25 0 0 0-2.25 2.25m0 0a2.25 2.25 0 0 0 2.25 2.25m0 0A2.25 2.25 0 0 1 12 15m0 0A2.25 2.25 0 0 1 9.75 12.75M12 3.75A2.25 2.25 0 0 0 9.75 6.75v3.75m0 0a2.25 2.25 0 0 0 2.25 2.25" />
+                            </svg>
+                            <p>Live TV</p>
+                        </div>
+                        <div class="feature-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 8.682A4.5 4.5 0 0 1 12.002 15h-.004a4.5 4.5 0 0 1-3.178-6.318m3.182 6.318A4.5 4.5 0 0 0 15.182 8.682M12 12a2.25 2.25 0 0 1-2.25-2.25a2.25 2.25 0 0 1 2.25-2.25M12 12a2.25 2.25 0 0 0 2.25-2.25a2.25 2.25 0 0 0-2.25-2.25m-2.25 4.5A2.25 2.25 0 0 1 7.5 9.75a2.25 2.25 0 0 1 2.25-2.25" />
+                            </svg>
+                            <p>Cartoons</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- === NEW SECTION: Added from movie page theme === -->
+            <section class="section" style="padding-top: 0;">
+                 <div class="container">
+                    <h2 class="section-title reveal">Hot Right Now</h2>
+                    <div class="content-carousel reveal">
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCrPlJ_wsCIiFWsSLwA5L13ILqjjvaC1ePhU4vyeUWgbqaVyI45cYRm-0OYk_CjUwK3H8k_Ogm87POYPd7vCZubQN_7cNVwYkYx7y9D9WYHYIQHMTsRfCbY2phWqZwg1xMfwMKznLhUP6dYcO33UoqtYhmIpdqqijxT5kKTNrGKwYTHQtOlYTQWmIq77ORIkT-PTowNMIbzknrtlO4g-15O_YT_8Uc3bkyZbnxNn7cg3yr0A1iCr41vZ-7Xndem25XauLVxmtfv2yA");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD_HBnW3JO4XEbAKuPIV92Hgz_Aa01QaOCQshVpa2oZdVEDeC8t6nilny9y9-QZf50vXAvjI2BwELLuyEcmD36bvaeLT6VfliBZ5sLQxq2uzaBph_HeXn_NxdD9m2U_UpVqCLqSMSIeC7A1zPGIIZAhyQ3uNAmpYqlPxQaTgf875q8XxgoDRqjYvXjALxpRi4MsV7WeHXAhKpZH3fH8Xqot3qX4Qc4LzTMRp37UOqLj85qX6BHs2LNVnDOb7cTqe7XkKMz06sVFVkU");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAySbHNOyWGbaFUrnZCTtuu3PzAF30f6bdC7yPUwPZ6bGsCRRwD8VBMPAKqeu0rqAhMsWoBHpmf2uYpHCp3O14BJf2xgwtp7_cdyXn6BLoSVtq4VyK_86xq4kH3r0Mf0nAhxDcGXKm936rpDnU3dn8OCldDjpPEuv81BHsrBeLByCa2_v9QNrPXU6_-RgWP_zczDojb_eXNeF5NdT4y-keciMP4zQ3FXXOQWJtYMEBIHYZWXAeOtPcKDP72sUqDml1JWXYvR37FYIM");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0eylGLOsEiJySumdLd40DIQj1pX87MrPpUUWuByJF_aJF6TKTxFYmZOC3hmGjdM9XLWykarHCfDm8v6KwrcOHNuPraPNwJADKdUo8LW2m8gCrpRHEXulAh9ICTl_KH9IuXNPFLAE7Qg1CaR8vcRT0Yp3e1QDECs4d5U0f0vz45rt1KWhLvrny-hWP4naMLow_F3v4ZA3VuqGTRsjyV2CbmYTpOngWqohg0i0_WBoHX5V5-vZG3waGsH46POkpfyDpPrXX1A1re3g");'></div>
+                         <div class="carousel-item" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgL2rY73rJau1WWsys1jxCsQe4H1taepjezZ7CqkyUZZElKUG7kugN4LodaAJdjdXaR2QQCx3OOu3ZSpiPXd_lg11Xpme3n4-yMTawXwckT0o-NOrgLhn6iNZENdlwiGHmoz20tumLEd5eIXCnBqRb4e400HQqnMAScb1yV4lOGY52WLeoPfvaJb77eIUyBztTltebo3h566pl4u27m8OA_wb0NhEHMuhc7XxwVn0E8WgII1eQHZnBvCS3j7c95DGDzPuMyrEph5k");'></div>
+                         <div class="carousel-item" style='background-image: url("https://i.ibb.co/HTjy6Cjd/Leonardo-Phoenix-10-A-young-girl-sitting-in-a-cozy-dimly-lit-r-0.jpg");'></div>
+                    </div>
+                 </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="feature-layout">
+                        <div class="feature-content reveal">
+                            <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                            <h2>A Safe & Secure Dating Environment</h2>
+                            <p>Your privacy and safety are our top priority. We provide robust tools to ensure you can connect with others confidently and securely.</p>
+                            <ul class="feature-list">
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Profile verification to ensure genuine users.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Private and secure chat and call features.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Advanced reporting and blocking tools.</li>
+                            </ul>
+                        </div>
+                        <div class="feature-image reveal" style="transition-delay: 200ms;">
+                             <!-- === CONTENT CHANGE: Updated image alt text === -->
+                            <img src="https://i.ibb.co/HJ6rvsn/Leonardo-Phoenix-10-Prompt-Create-a-darkthemed-futuristic-dash-3.jpg" alt="A person chatting securely on their phone">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="feature-layout reverse">
+                        <div class="feature-content reveal">
+                            <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                            <h2>Discover Meaningful Matches</h2>
+                            <p>Our intelligent algorithm helps you find people who share your interests, values, and life goals. Move beyond superficial swipes.</p>
+                             <ul class="feature-list">
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>AI-powered matchmaking for better compatibility.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Detailed profiles with interests, prompts, and photos.</li>
+                                <li><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>Fun icebreakers to start engaging conversations.</li>
+                            </ul>
+                        </div>
+                        <div class="feature-image reveal" style="transition-delay: 200ms;">
+                            <!-- === CONTENT CHANGE: Updated image alt text === -->
+                            <img src="https://i.ibb.co/whFbVG20/Leonardo-Phoenix-10-Prompt-Design-a-digital-workspace-showing-2.jpg" alt="Digital interface showing compatible user profiles">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section showcase-section">
+                <div class="container">
+                    <div class="reveal">
+                        <!-- === CONTENT CHANGE: Updated for dating app theme === -->
+                        <h2>Where Real Connections Happen</h2>
+                        <p>Join thousands of users in India who have found genuine friendships, companionship, and love on our platform. Your success story could be next.</p>
+                        <div class="showcase-image-wrapper">
+                             <!-- === CONTENT CHANGE: Updated image alt text === -->
+                             <img src="https://i.ibb.co/KzBLKyvN/Leonardo-Phoenix-10-Prompt-Show-a-digital-billboard-or-futuris-1.jpg" alt="Billboard showcasing happy couples">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="cta-section reveal">
+                         <!-- === CONTENT CHANGE: Merged CTA === -->
+                        <h2>Ready to Start Your Journey?</h2>
+                        <p>Join a community committed to top-tier entertainment and authentic connections. Your story starts now.</p>
+                        <!-- === IMPORTANT CHANGE: This button now also triggers the payment/redirect flow === -->
+                        <a href="#" class="main-btn start-btn" style="padding: 16px 40px; font-size: 1.1rem;">
+                            <span>Join Now for ₹5</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <a href="#" class="logo footer-logo">Shubh<span>zone</span></a>
+                <p>A vision by Himanshu Kumar from India.</p>
+                <p>Contact: <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a></p>
+                <p>YouTube: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a></p>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-secondary);">© 2025 Shubhzone.shop. All Rights Reserved.</p>
+
+                <div class="footer-policies">
+                    <nav>
+                        <a data-page="terms-page">Terms & Conditions</a>
+                        <a data-page="privacy-page">Privacy Policy</a>
+                        <a data-page="shipping-page">Shipping Policy</a>
+                        <a data-page="contact-page">Contact Us</a>
+                    </nav>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Warning Modal -->
+    <div id="warning-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="warning-modal-close-btn" class="modal-close-btn">×</button>
+            <h2>🛡️ App Trust & Safety Message</h2>
+            <div class="lang-toggle">
+                <button id="lang-hi" class="active">हिन्दी</button>
+                <button id="lang-en">English</button>
+            </div>
+            <div id="message-hi" class="modal-message">
+                <p><strong>प्रिय यूज़र,</strong></p>
+                <p>हम आपकी चिंता को समझते हैं। जब आप हमारी ऐप ब्राउज़र से डाउनलोड करते हैं (Play Store के बाहर से), तो आपके फ़ोन में यह मैसेज आ सकता है – "यह ऐप आपके डिवाइस को नुकसान पहुँचा सकता है।" लेकिन कृपया घबराएं नहीं – यह मैसेज केवल इसलिए आता है क्योंकि ऐप प्ले स्टोर से नहीं है, इसका मतलब यह नहीं कि ऐप हानिकारक है।</p>
+                <p>✅ हम आपको पूरा भरोसा दिलाते हैं कि यह ऐप पूरी तरह से सुरक्षित और भरोसेमंद है।</p>
+                <p>✅ इसमें कोई वायरस, मालवेयर या ट्रैकिंग सिस्टम नहीं है।</p>
+                <p>✅ यह आपके डिवाइस, बैटरी या निजी डेटा को कोई नुकसान नहीं पहुँचाता।</p>
+                <p>✅ हम आपके किसी भी पर्सनल डाटा को इकट्ठा या गलत तरीके से इस्तेमाल नहीं करते।</p>
+                <p>यह ऐप हमने आपकी सुविधा, सुरक्षा और विश्वास को ध्यान में रखकर बनाया है। आपके भरोसे के लिए दिल से धन्यवाद। ❤️</p>
+            </div>
+            <div id="message-en" class="modal-message" style="display: none;">
+                <p><strong>Dear User,</strong></p>
+                <p>We understand your concern. When you download our app from a browser (outside of Play Store), your phone may show a warning like "This app may harm your device." But please don’t worry — this message is shown only because the app is not from the official store, not because it is harmful.</p>
+                <p>✅ We give you our full assurance that our app is developed with care and tested thoroughly.</p>
+                <p>✅ It does not contain any virus, malware, or tracking system.</p>
+                <p>✅ It does not harm your device, battery, or personal data in any way.</p>
+                <p>✅ We do not collect or misuse any of your personal information.</p>
+                <p>We have built this app with love, keeping your safety, convenience, and trust at the core. Thank you for trusting us. ❤️</p>
+            </div>
+            <div class="modal-footer">
+                <p>You can proceed in <span id="countdown-timer">5</span> seconds...</p>
+                <button id="modal-proceed-btn" class="main-btn" disabled>Proceed to Store</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Description Modal -->
+    <div id="description-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="description-modal-close-btn" class="modal-close-btn">×</button>
+            <h2 id="description-modal-title">App Description</h2>
+            <div id="description-modal-content" class="modal-message"></div>
+        </div>
+    </div>
+
+    <!-- === ज़रूरी बदलाव: यह नया Modal जोड़ा गया है === -->
+    <div id="ad-free-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="ad-free-modal-close-btn" class="modal-close-btn">×</button>
+            <h2>Ad-Free Experience Recommended</h2>
+            <div class="modal-message" style="text-align: center;">
+                <p>For the best ad-free movie experience, we recommend using Brave Browser.</p>
+                <p>Brave automatically blocks ads and trackers.</p>
+            </div>
+            <div class="modal-footer">
+                <a href="https://brave.com/download/" target="_blank" class="main-btn">Download Brave Browser</a>
+                <button id="ad-free-proceed-btn" class="main-btn secondary-btn" style="margin-top: 15px;">OK, Proceed Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie Password Modal -->
+    <div id="movie-password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="movie-password-close-btn" class="modal-close-btn">×</button>
+            <h2>Enter Password</h2>
+            <form id="movie-password-form" style="margin-top: 20px;">
+                <div class="form-group">
+                    <input type="password" id="movie-password-input" placeholder="Password" required style="text-align: center;">
+                </div>
+                <div id="movie-password-error"></div>
+                <button type="submit" class="main-btn" style="width: 100%; justify-content: center; margin-top: 10px;">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Store Page -->
+    <div id="other-apps-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">←</a>
+                <h2 class="store-title" id="store-title-btn">Shubhzone Store <span>🏬</span></h2>
+                <div style="width: 24px;"></div>
+            </div>
+        </header>
+        <div class="container">
+            <div id="apps-grid-container" class="apps-grid"></div>
+        </div>
+    </div>
+
+    <!-- Password Page -->
+    <div id="password-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">←</a>
+                <h2 class="store-title">Admin Access</h2>
+                 <div style="width: 24px;"></div>
+            </div>
+        </header>
+        <div class="form-page-container">
+            <h1>Enter Security Code</h1>
+            <form id="password-form">
+                <div class="form-group">
+                    <input type="password" id="admin-password" placeholder="Password" required>
+                </div>
+                <div id="password-error"></div>
+                <button type="submit" class="main-btn" style="width: 100%; justify-content: center; margin-top: 20px;">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin App Submission Page -->
+    <div id="admin-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                 <a class="store-back-btn">←</a>
+                <h2 class="store-title">Add / Edit App</h2>
+                <svg id="manage-apps-btn" xmlns="http://www.w3.org/2000/svg" class="store-header-icon" fill="currentColor" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M13.85 22.25h-3.71c-1.39 0-2.5-1.12-2.5-2.5V18.5c0-.41.34-.75.75-.75s.75.34.75.75v1.25c0 .55.45 1 1 1h3.71c.55 0 1-.45 1-1V18.5c0-.41.34-.75.75-.75s.75.34.75.75v1.25c0 1.38-1.12 2.5-2.5 2.5ZM19.25 8.5c0-.41-.34-.75-.75-.75h-3.71c-.55 0-1 .45-1 1v1.25c0 .41-.34-.75-.75-.75s-.75-.34-.75-.75V8.75c0-1.38 1.12-2.5 2.5-2.5h3.71c1.39 0 2.5 1.12 2.5 2.5v1.25c0 .41-.34-.75-.75-.75s-.75-.34-.75-.75V8.5ZM12 16.25c-.41 0-.75-.34-.75-.75V8.75c0-.41-.34-.75-.75-.75s-.75.34.75.75v6.75c0 .41-.34-.75-.75-.75s-.75-.34-.75-.75V8.75c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v6.75c0 .41.34.75.75.75s.75-.34.75-.75V8.75c0-.41.34-.75.75-.75s.75.34.75.75v6.75c0 1.38-1.12 2.5-2.5 2.5s-2.5-1.12-2.5-2.5ZM4.75 16.25c0 .41.34.75.75.75h3.71c.55 0 1-.45 1-1V14c0-.41.34-.75.75-.75s.75.34.75.75v1.25c0 1.38-1.12 2.5-2.5 2.5H5.5c-1.39 0-2.5-1.12-2.5-2.5V14c0-.41.34-.75.75-.75s.75.34.75.75v1.25ZM10.15 1.75H6.5c-1.39 0-2.5 1.12-2.5 2.5v1.25c0 .41.34.75.75-.75s.75-.34.75-.75V4.25c0-.55.45-1 1-1h3.65c.55 0 1 .45 1 1v1.25c0 .41.34.75.75-.75s.75-.34.75-.75V4.25c0-1.38-1.12-2.5-2.5-2.5Z"/></svg>
+            </div>
+        </header>
+        <div class="form-page-container">
+            <h1 id="admin-form-title">App Submission Form</h1>
+            <form id="app-submission-form">
+                <input type="hidden" id="app-edit-index">
+                <div class="form-group">
+                    <label for="app-name">App Name</label>
+                    <input type="text" id="app-name" placeholder="e.g., SoulSpark Dating" required>
+                </div>
+                <div class="form-group">
+                    <label for="app-desc">App Description</label>
+                    <textarea id="app-desc" placeholder="A short description of the app." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-image-html">Image HTML from ImgBB</label>
+                    <textarea id="app-image-html" placeholder="Paste the full HTML code from ImgBB here..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="app-download-link">Download Link (.apk)</label>
+                    <input type="url" id="app-download-link" placeholder="https://github.com/.../app.apk" required>
+                </div>
+                <button type="submit" id="app-submit-btn" class="main-btn" style="width: 100%; justify-content: center; margin-top: 20px;">Add App to Store</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Manage Apps Page -->
+    <div id="manage-apps-page" class="page">
+        <header class="store-header">
+            <div class="container">
+                 <a class="store-back-btn">←</a>
+                <h2 class="store-title">Manage Apps</h2>
+                 <div style="width: 24px;"></div>
+            </div>
+        </header>
+        <div class="container">
+            <ul id="manage-apps-list" class="manage-apps-list">
+                <!-- App list will be rendered here -->
+            </ul>
+        </div>
+    </div>
+
+    <div id="contact-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>If you have any questions, concerns, or feedback about our services, please feel free to reach out to us. We are here to help!</p>
+            <ul>
+                <li><strong>Email Support:</strong> For any inquiries, you can email us directly at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>. We aim to respond within 24-48 hours.</li>
+                <li><strong>Community & Updates:</strong> Follow our journey and get the latest updates on our official YouTube channel: <a href="https://www.youtube.com/@Udbhavfact" target="_blank">Udbhav fact</a>.</li>
+                 <li><strong>Business Address:</strong> [Your Full Address Here], [City], [State], [PIN Code], India.</li>
+            </ul>
+            <p>Your feedback is valuable to us as we continue to improve our platform.</p>
+        </div>
+    </div>
+
+    <div id="terms-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Terms and Conditions</h1>
+            <p>Last updated: September 10, 2025</p>
+            <p>Welcome to Shubhzone.shop! These terms and conditions outline the rules and regulations for the use of our website and services.</p>
+            <p>By accessing this website, we assume you accept these terms and conditions. Do not continue to use Shubhzone.shop if you do not agree to all of the terms and conditions stated on this page.</p>
+            <h2>1. Services</h2>
+            <p>Shubhzone.shop provides an online platform offering a digital dating application and related services ("Services").</p>
+            <h2>2. Payments and Subscriptions</h2>
+            <p>We use Razorpay for processing payments, including recurring subscriptions (eMandate) for premium features. We do not store your card or bank data on our servers. By making a payment, you agree to Razorpay's terms and conditions. All transactions are secure and encrypted.</p>
+            <h2>3. Intellectual Property</h2>
+            <p>The content, logo, and visual design on this website are the exclusive property of Shubhzone.shop and are protected by copyright laws. You may not reproduce, distribute, or transmit any part of the website without our prior written permission.</p>
+            <h2>4. User Accounts</h2>
+            <p>When you create an account with us, you must provide information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service.</p>
+            <h2>5. Cancellation and Refund Policy</h2>
+            <p>Due to the digital nature of our products, all sales are final and non-refundable. Subscriptions can be canceled at any time from your account settings, which will stop future billing cycles. No refunds will be provided for partial subscription periods.</p>
+            <h2>6. Limitation of Liability</h2>
+            <p>In no event shall Shubhzone.shop, nor its owners, be liable for any indirect, incidental, or consequential damages arising out of your use of our services.</p>
+            <h2>7. Governing Law</h2>
+            <p>These terms will be governed by and interpreted in accordance with the laws of India, and you submit to the non-exclusive jurisdiction of the state and federal courts located in India for the resolution of any disputes.</p>
+            <h2>8. Contact Information</h2>
+            <p>If you have any questions about these Terms, please contact us at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <div id="privacy-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: September 10, 2025</p>
+            <p>Shubhzone.shop ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and share your personal information when you use our services.</p>
+            <h2>1. Information We Collect</h2>
+            <ul>
+                <li><strong>Personal Information:</strong> We collect your name, email address, and contact details when you register or contact us. For the dating service, we may also collect profile information such as photos, interests, and bio.</li>
+                <li><strong>Payment Information:</strong> We do not collect or store your payment card or bank account details. This information is provided directly to our third-party payment processor, Razorpay, whose use of your personal information is governed by their Privacy Policy.</li>
+                <li><strong>Usage Data:</strong> We may collect information on how the Service is accessed and used.</li>
+            </ul>
+            <h2>2. How We Use Your Information</h2>
+            <ul>
+                <li>To provide, operate, and maintain our services.</li>
+                <li>To process your transactions and manage your subscriptions.</li>
+                <li>To communicate with you, including for customer service and to send you updates about our services.</li>
+                <li>To improve our website and services.</li>
+            </ul>
+            <h2>3. Data Security</h2>
+            <p>We use administrative and technical measures to safeguard your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that no security measures are perfect or impenetrable, and we cannot guarantee "perfect security."</p>
+            <h2>4. Your Data Rights</h2>
+            <p>You have the right to access, update, or delete the information we have on you. You can do this at any time by accessing your account settings or by contacting us directly.</p>
+            <h2>5. Contact Us</h2>
+            <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a>.</p>
+        </div>
+    </div>
+
+    <div id="shipping-page" class="page policy-page">
+        <header class="store-header">
+            <div class="container">
+                <a class="store-back-btn">← Back to Home</a>
+            </div>
+        </header>
+        <div class="container">
+            <h1>Shipping & Delivery Policy</h1>
+            <p>Last updated: September 10, 2025</p>
+            <p>Shubhzone.shop is a platform for digital goods and services, primarily a dating application. As such, we do not ship any physical products.</p>
+            <h2>Delivery Process</h2>
+            <p>Upon successful payment confirmation via our payment gateway (Razorpay), you will receive immediate access to your purchased digital service or premium features. Access will be granted automatically to your user account on our platform.</p>
+            <p>There is no "shipping" time as all deliveries are instantaneous and digital.</p>
+            <h2>No Shipping Costs</h2>
+            <p>Since all our products are digital, there are absolutely no shipping or handling fees involved.</p>
+            <h2>Contact Us</h2>
+            <p>If you have any questions or have not received access to your purchase after a successful payment, please contact us immediately at <a href="mailto:udbhavscience12@gmail.com">udbhavscience12@gmail.com</a> with your transaction details, and we will resolve the issue promptly.</p>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- GLOBAL PAGE ELEMENTS ---
+        const mainContent = document.getElementById('main-content');
+        const otherAppsPage = document.getElementById('other-apps-page');
+        const passwordPage = document.getElementById('password-page');
+        const adminPage = document.getElementById('admin-page');
+        const manageAppsPage = document.getElementById('manage-apps-page');
+
+        const contactPage = document.getElementById('contact-page');
+        const termsPage = document.getElementById('terms-page');
+        const privacyPage = document.getElementById('privacy-page');
+        const shippingPage = document.getElementById('shipping-page');
+
+        const allPages = [mainContent, otherAppsPage, passwordPage, adminPage, manageAppsPage, contactPage, termsPage, privacyPage, shippingPage];
+        const header = document.querySelector('.header');
+        const bodyEl = document.body;
+
+        function showPage(pageToShow) {
+            allPages.forEach(page => {
+                if (page) page.style.display = 'none';
+            });
+            if (pageToShow) {
+                pageToShow.style.display = 'block';
+            }
+            if (header) {
+               header.style.display = (pageToShow === mainContent) ? 'flex' : 'none';
+            }
+            window.scrollTo(0, 0);
+        }
+
+        // --- PARTICLE & REVEAL ANIMATIONS (No changes) ---
+        const spotlight = document.querySelector('.spotlight');
+        if(spotlight) {
+            document.addEventListener('mousemove', (e) => {
+                spotlight.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(233, 30, 99, 0.1), transparent 30%)`;
+            });
+        }
+
+        const reveals = document.querySelectorAll('.reveal');
+        if (reveals.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(reveal => observer.observe(reveal));
+        }
+
+        const canvas = document.getElementById('particle-canvas');
+        if (canvas) {
+            const heroSection = document.querySelector('.hero');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = heroSection.offsetHeight;
+            let particles = [];
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 1.5 + 0.5;
+                    this.speedX = (Math.random() * 0.5 - 0.25);
+                    this.speedY = (Math.random() * 0.5 - 0.25);
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                }
+                draw() {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                let numParticles = window.innerWidth < 768 ? 30 : 50;
+                for (let i = 0; i < numParticles; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateParticles);
+            }
+
+            function handleResize() {
+                canvas.width = window.innerWidth;
+                canvas.height = heroSection.offsetHeight;
+                initParticles();
+            }
+
+            initParticles();
+            animateParticles();
+            window.addEventListener('resize', handleResize);
+        }
+
+        // --- WARNING MODAL LOGIC (No changes) ---
+        const warningModal = document.getElementById('warning-modal');
+        const warningModalCloseBtn = document.getElementById('warning-modal-close-btn');
+        const modalProceedBtn = document.getElementById('modal-proceed-btn');
+        const langHiBtn = document.getElementById('lang-hi');
+        const langEnBtn = document.getElementById('lang-en');
+        const messageHi = document.getElementById('message-hi');
+        const messageEn = document.getElementById('message-en');
+        let countdownInterval;
+
+        function closeWarningModal() {
+            clearInterval(countdownInterval);
+            if(warningModal) warningModal.style.display = 'none';
+            bodyEl.classList.remove('modal-open');
+        }
+
+        if(warningModalCloseBtn) warningModalCloseBtn.addEventListener('click', closeWarningModal);
+
+        if(modalProceedBtn) modalProceedBtn.addEventListener('click', () => {
+            closeWarningModal();
+            renderApps();
+            showPage(otherAppsPage);
+        });
+
+        if(langHiBtn) langHiBtn.addEventListener('click', () => {
+            messageHi.style.display = 'block';
+            messageEn.style.display = 'none';
+            langHiBtn.classList.add('active');
+            langEnBtn.classList.remove('active');
+        });
+
+        if(langEnBtn) langEnBtn.addEventListener('click', () => {
+            messageHi.style.display = 'none';
+            messageEn.style.display = 'block';
+            langEnBtn.classList.add('active');
+            hiBtn.classList.remove('active');
+        });
+
+        // --- DESCRIPTION MODAL LOGIC ---
+        const descriptionModal = document.getElementById('description-modal');
+        const descriptionModalCloseBtn = document.getElementById('description-modal-close-btn');
+        const descriptionModalTitle = document.getElementById('description-modal-title');
+        const descriptionModalContent = document.getElementById('description-modal-content');
+
+        function openDescriptionModal(name, description) {
+            descriptionModalTitle.textContent = name;
+            descriptionModalContent.innerHTML = description.replace(/\n/g, '<br>');
+            descriptionModal.style.display = 'flex';
+            bodyEl.classList.add('modal-open');
+        }
+
+        function closeDescriptionModal() {
+            descriptionModal.style.display = 'none';
+            bodyEl.classList.remove('modal-open');
+        }
+        if(descriptionModalCloseBtn) descriptionModalCloseBtn.addEventListener('click', closeDescriptionModal);
+
+
+        // --- APP STORE LOGIC (No changes) ---
+        const appsGridContainer = document.getElementById('apps-grid-container');
+
+        const initialApps = [
+            {
+                name: "SoulSpark Dating",
+                description: "This is a dating app to connect with new people.",
+                imageHTML: '<a href="https://ibb.co/Z6GS7jzZ"><img src="https://i.ibb.co/1f7MjgGS/IMG-20250801-WA0001.jpg" alt="SoulSpark Dating App"></a>',
+                downloadLink: "https://github.com/Himanshu-soulspark/soul_spark/releases/download/V2.0/SoulSpark.apk"
+            },
+            {
+                name: "Another App Name",
+                description: "Write about your second app here. You can change this from the admin panel.",
+                imageHTML: '<img src="https://via.placeholder.com/250x250/10141b/f0f6fc?text=App+Icon" alt="App Icon">',
+                downloadLink: "#"
+            }
+        ];
+
+        function getApps() {
+            try {
+                const appsFromStorage = localStorage.getItem('shubhzone_apps');
+                if (appsFromStorage) {
+                    return JSON.parse(appsFromStorage);
+                } else {
+                    localStorage.setItem('shubhzone_apps', JSON.stringify(initialApps));
+                    return initialApps;
+                }
+            } catch (e) {
+                console.error("Could not access localStorage. Using default apps.", e);
+                return initialApps;
+            }
+        }
+
+        function saveApps(apps) {
+             try {
+                   localStorage.setItem('shubhzone_apps', JSON.stringify(apps));
+                } catch (err) {
+                   alert('Could not save the app. Local storage might be full or disabled.');
+                }
+        }
+
+        function renderApps() {
+            if(!appsGridContainer) return;
+            const apps = getApps();
+            appsGridContainer.innerHTML = '';
+            apps.forEach((app, index) => {
+                const isComingSoon = app.downloadLink === '#';
+                const downloadButtonHTML = `<a href="${app.downloadLink}" class="download-btn" ${isComingSoon ? 'style="background-color: grey; cursor: not-allowed;"' : ''}>${isComingSoon ? 'Coming Soon' : 'Download'}</a>`;
+                const descriptionButtonHTML = `<button class="description-btn" data-index="${index}">Description</button>`;
+
+                const appCardHTML = `
+                    <div class="app-card">
+                        <div class="app-card-top-content">
+                            <h3>${app.name || ''}</h3>
+                            <p class="app-card-description">${app.description || ''}</p>
+                            <div class="app-image-container">${app.imageHTML || ''}</div>
+                        </div>
+                        <div class="app-card-bottom-content">
+                           <div class="app-card-buttons">
+                                ${downloadButtonHTML}
+                                ${descriptionButtonHTML}
+                           </div>
+                        </div>
+                    </div>
+                `;
+                appsGridContainer.innerHTML += appCardHTML;
+            });
+        }
+
+        if(appsGridContainer) {
+            appsGridContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('description-btn')) {
+                    const appIndex = e.target.getAttribute('data-index');
+                    const apps = getApps();
+                    const app = apps[appIndex];
+                    if (app) {
+                        openDescriptionModal(app.name, app.description);
+                    }
+                }
+            });
+        }
+
+
+        // --- NAVIGATION LOGIC ---
+        document.getElementById('home-logo').addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(mainContent);
+        });
+        document.querySelector('.footer-logo').addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(mainContent);
+        });
+
+        document.querySelectorAll('.store-back-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const parentPage = btn.closest('.page');
+                if (parentPage.id === 'password-page') {
+                    showPage(mainContent);
+                } else if (parentPage.id === 'admin-page') {
+                    showPage(passwordPage);
+                } else if (parentPage.id === 'manage-apps-page') {
+                    resetAdminForm();
+                    showPage(adminPage);
+                }
+                else {
+                    showPage(mainContent);
+                }
+            });
+        });
+
+        document.getElementById('store-title-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(passwordPage);
+        });
+
+        document.getElementById('manage-apps-btn').addEventListener('click', () => {
+            renderManageableApps();
+            showPage(manageAppsPage);
+        });
+
+        document.querySelectorAll('.footer-policies nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = e.target.getAttribute('data-page');
+                const pageToShow = document.getElementById(pageId);
+                showPage(pageToShow);
+            });
+        });
+
+        // --- PASSWORD PAGE LOGIC (No changes) ---
+        const passwordForm = document.getElementById('password-form');
+        const passwordErrorEl = document.getElementById('password-error');
+
+        const correctPassword = "himanshu@123";
+
+        if (passwordForm) {
+            passwordForm.addEventListener('submit', e => {
+                e.preventDefault();
+                if (passwordErrorEl) passwordErrorEl.textContent = '';
+
+                const inputElement = document.getElementById('admin-password');
+                const enteredPassword = inputElement.value;
+
+                if (enteredPassword === correctPassword) {
+                    resetAdminForm();
+                    showPage(adminPage);
+                    passwordForm.reset();
+                } else {
+                    if (passwordErrorEl) passwordErrorEl.textContent = 'Incorrect password.';
+                }
+            });
+        }
+
+        // --- ADMIN & MANAGE APPS LOGIC (No changes) ---
+        const appSubmissionForm = document.getElementById('app-submission-form');
+        const adminFormTitle = document.getElementById('admin-form-title');
+        const appSubmitBtn = document.getElementById('app-submit-btn');
+        const appEditIndexInput = document.getElementById('app-edit-index');
+
+        function resetAdminForm() {
+            appSubmissionForm.reset();
+            appEditIndexInput.value = '';
+            adminFormTitle.textContent = 'App Submission Form';
+            appSubmitBtn.textContent = 'Add App to Store';
+        }
+
+        if (appSubmissionForm) {
+            appSubmissionForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const appData = {
+                    name: document.getElementById('app-name').value,
+                    description: document.getElementById('app-desc').value,
+                    imageHTML: document.getElementById('app-image-html').value,
+                    downloadLink: document.getElementById('app-download-link').value
+                };
+
+                let apps = getApps();
+                const editIndex = appEditIndexInput.value;
+
+                if (editIndex !== '' && apps[editIndex]) {
+                    apps[editIndex] = appData;
+                    alert('App updated successfully!');
+                } else {
+                    apps.push(appData);
+                    alert('App added successfully!');
+                }
+
+                saveApps(apps);
+                resetAdminForm();
+                renderApps(); // Render apps for the store page
+                showPage(otherAppsPage); // Show the app store page after submission
+            });
+        }
+
+        function renderManageableApps() {
+            const manageList = document.getElementById('manage-apps-list');
+            if (!manageList) return;
+            const apps = getApps();
+            manageList.innerHTML = '';
+            if (apps.length === 0) {
+                manageList.innerHTML = '<p style="text-align:center;">No apps to manage. Add one from the form.</p>';
+                return;
+            }
+            apps.forEach((app, index) => {
+                const item = document.createElement('li');
+                item.className = 'manage-app-item';
+                item.innerHTML = `
+                    <p>${app.name}</p>
+                    <div class="manage-app-buttons">
+                        <button class="edit-btn" data-index="${index}">Edit</button>
+                        <button class="delete-btn" data-index="${index}">Delete</button>
+                    </div>
+                `;
+                manageList.appendChild(item);
+            });
+        }
+
+        const manageListContainer = document.getElementById('manage-apps-list');
+        if(manageListContainer) {
+            manageListContainer.addEventListener('click', e => {
+                const index = e.target.getAttribute('data-index');
+                if (index === null) return;
+
+                let apps = getApps();
+
+                if (e.target.classList.contains('delete-btn')) {
+                    if (confirm(`Are you sure you want to delete "${apps[index].name}"?`)) {
+                       apps.splice(index, 1);
+                       saveApps(apps);
+                       renderManageableApps();
+                       renderApps();
+                    }
+                } else if (e.target.classList.contains('edit-btn')) {
+                    const appToEdit = apps[index];
+                    document.getElementById('app-name').value = appToEdit.name;
+                    document.getElementById('app-desc').value = appToEdit.description;
+                    document.getElementById('app-image-html').value = appToEdit.imageHTML;
+                    document.getElementById('app-download-link').value = appToEdit.downloadLink;
+                    appEditIndexInput.value = index;
+                    adminFormTitle.textContent = 'Edit App';
+                    appSubmitBtn.textContent = 'Update App';
+                    showPage(adminPage);
+                }
+            });
+        }
+         
+        // =================================================================================
+        // ==================== सिर्फ इस हिस्से में ज़रूरी बदलाव किया गया है ==================
+        // =================================================================================
+        const moviePasswordModal = document.getElementById('movie-password-modal');
+        const moviePasswordCloseBtn = document.getElementById('movie-password-close-btn');
+        const moviePasswordForm = document.getElementById('movie-password-form');
+        const moviePasswordErrorEl = document.getElementById('movie-password-error');
+        const movieBtn = document.getElementById('movie-btn');
+
+        // नया Ad-Free Modal
+        const adFreeModal = document.getElementById('ad-free-modal');
+        const adFreeModalCloseBtn = document.getElementById('ad-free-modal-close-btn');
+        const adFreeProceedBtn = document.getElementById('ad-free-proceed-btn');
+
+        const correctMoviePassword = "Himanshu@123";
+        const movieLink = "https://filmzio.netlify.app/"; // आपका मूवी लिंक यहाँ डाला गया है
+
+        // --- नए Ad-Free Modal के लिए Functions ---
+        function openAdFreeModal() {
+            if (adFreeModal) adFreeModal.style.display = 'flex';
+            bodyEl.classList.add('modal-open');
+        }
+
+        function closeAdFreeModal() {
+            if (adFreeModal) adFreeModal.style.display = 'none';
+            // बॉडी से modal-open तभी हटाएँ जब कोई और modal खुला न हो
+            if (!moviePasswordModal || moviePasswordModal.style.display === 'none') {
+                bodyEl.classList.remove('modal-open');
+            }
+        }
+
+        // --- पुराने Password Modal के लिए Functions ---
+        function openMoviePasswordModal() {
+            if (moviePasswordErrorEl) moviePasswordErrorEl.textContent = '';
+            if (moviePasswordForm) moviePasswordForm.reset();
+            if (moviePasswordModal) moviePasswordModal.style.display = 'flex';
+            bodyEl.classList.add('modal-open');
+        }
+
+        function closeMoviePasswordModal() {
+            if (moviePasswordModal) moviePasswordModal.style.display = 'none';
+            bodyEl.classList.remove('modal-open');
+        }
+        
+        // --- Event Listeners ---
+        if (moviePasswordCloseBtn) moviePasswordCloseBtn.addEventListener('click', closeMoviePasswordModal);
+        if (adFreeModalCloseBtn) adFreeModalCloseBtn.addEventListener('click', closeAdFreeModal);
+
+        // "Movie" बटन पर क्लिक करने पर अब हमेशा Ad-Free Modal खुलेगा
+        if(movieBtn) {
+            movieBtn.addEventListener('click', () => {
+                openAdFreeModal();
+            });
+        }
+        
+        // Ad-Free Modal के "OK" बटन का लॉजिक
+        if(adFreeProceedBtn) {
+            adFreeProceedBtn.addEventListener('click', () => {
+                closeAdFreeModal(); // पहले इस modal को बंद करें
+                
+                // अब पेमेंट की स्थिति जांचें
+                if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
+                    // अगर पेमेंट हो गया है, तो सीधे मूवी लिंक पर भेजें
+                    window.location.href = movieLink;
+                } else {
+                    // अगर पेमेंट नहीं हुआ है, तो पासवर्ड वाला modal दिखाएँ
+                    openMoviePasswordModal();
+                }
+            });
+        }
+        
+        // Password फॉर्म जमा करने का लॉजिक
+        if(moviePasswordForm) {
+            moviePasswordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const enteredPassword = document.getElementById('movie-password-input').value;
+                if (enteredPassword === correctMoviePassword) {
+                    closeMoviePasswordModal();
+                    window.location.href = movieLink; // सही पासवर्ड पर मूवी लिंक पर भेजें
+                } else {
+                    moviePasswordErrorEl.textContent = 'Incorrect password.';
+                }
+            });
+        }
+        // =================================================================================
+        // ============================= बदलाव यहाँ खत्म होता है ============================
+        // =================================================================================
+
+
+        // Initial setup
+        showPage(mainContent);
+
+    });
+    </script>
+
+    <!-- === THIS SCRIPT HAS BEEN MODIFIED AS PER YOUR REQUEST === -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // === IMPORTANT CHANGE: Select all generic start buttons ===
+        const allStartButtons = document.querySelectorAll('.start-btn');
+
+        // This is the function that will perform the payment
+        async function initiatePayment() {
+            try {
+                const response = await fetch('/api/create-subscription', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Network response was not ok');
+                }
+
+                const data = await response.json();
+                const subscription_id = data.subscription_id;
+                const razorpayKeyId = data.key_id;
+
+                const options = {
+                    key: razorpayKeyId,
+                    name: "Shubhzone Activation",
+                    description: "UPI AutoPay Setup (₹5)",
+                    subscription_id: subscription_id,
+
+                    handler: function (response) {
+                        alert("Payment Successful! UPI AutoPay is now active.");
+                        localStorage.setItem('shubhzonePaymentDone', 'true');
+                        // === IMPORTANT CHANGE: After payment, redirect to the new app link ===
+                        window.location.href = "https://datin.onrender.com";
+                    },
+                    prefill: {
+                        name: "Shubhzone User",
+                        email: "user@shubhzone.shop",
+                        contact: "9999999999"
+                    },
+                    notes: {
+                        "purpose": "Setting up UPI AutoPay for Shubhzone"
+                    },
+                    theme: {
+                        color: "#e91e63" // Match new theme
+                    }
+                };
+
+                const rzp1 = new Razorpay(options);
+
+                rzp1.on('payment.failed', function (response){
+                    alert("Payment Failed: " + response.error.description);
+                });
+
+                rzp1.open();
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Could not initiate payment. Please try again later. Error: ' + error.message);
+            }
+        }
+
+        // === IMPORTANT CHANGE: This function handles what happens when a start button is clicked ===
+        function handleStartClick(event) {
+            // Prevent the default link behavior
+            event.preventDefault();
+
+            // Check if payment has already been done
+            if (localStorage.getItem('shubhzonePaymentDone') === 'true') {
+                // === IMPORTANT CHANGE: If paid, go directly to the new app URL ===
+                window.location.href = "https://datin.onrender.com";
+            } else {
+                // If not paid, start the payment process
+                initiatePayment();
+            }
+        }
+
+        // === IMPORTANT CHANGE: Add the click event listener to ALL start buttons ===
+        allStartButtons.forEach(btn => {
+            btn.addEventListener('click', handleStartClick);
+        });
+
+    });
+    </script>
+</body>
+</html>
